@@ -1,12 +1,13 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Input} from "@/components/custom/input.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {Button} from "@/components/ui/button.tsx";
+import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod"
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Separator} from "@/components/ui/separator.tsx";
 import loginImg from "./assets/login-img.svg";
+import {useState} from "react";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 
 const schema = z.object({
@@ -27,8 +28,13 @@ function App() {
     resolver: zodResolver(schema)
   })
 
+  const [loading, setLoading] = useState(false)
+
   const onSubmit = (data: any) => {
-    console.log(data)
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+    }, 2000)
   }
 
   return (
@@ -71,8 +77,10 @@ function App() {
                 </div>
               </CardContent>
               <CardFooter className='flex justify-between'>
-                <a href='#' className='text-sm'>Esqueci a senha</a>
-                <Button>
+                <Button variant='link' asChild>
+                  <a href='#'>Esqueci a senha</a>
+                </Button>
+                <Button type='submit' loading={loading} disabled={loading}>
                   Entrar
                 </Button>
               </CardFooter>
