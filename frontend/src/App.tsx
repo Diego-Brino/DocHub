@@ -7,6 +7,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Separator} from "@/components/ui/separator.tsx";
 import loginImg from "./assets/login-img.svg";
+import {InputValidation} from "@/components/custom/input-validation.tsx";
 
 const schema = z.object({
   email: z.string()
@@ -61,12 +62,12 @@ function App() {
                 <div className='space-y-2'>
                   <Label htmlFor='email'>Email</Label>
                   <Input {...register('email')} id='email' type='email' error={errors?.email?.toString()}/>
-                  {errors?.email && <p className='text-xs text-red-500'>{errors?.email.message?.toString()}</p>}
+                  <InputValidation error={errors?.email?.message?.toString()}/>
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='password'>Senha</Label>
                   <Input {...register('password')} id='password' type='password' error={errors?.password?.toString()}/>
-                  {errors?.password && <p className='text-xs text-red-500'>{errors?.password.message?.toString()}</p>}
+                  <InputValidation error={errors?.password?.message?.toString()}/>
                 </div>
               </CardContent>
               <CardFooter className='flex justify-between'>
