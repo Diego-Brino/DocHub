@@ -1,5 +1,5 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Input} from "@/components/ui/input.tsx";
+import {Input} from "@/components/custom/input.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {z} from "zod"
@@ -60,13 +60,12 @@ function App() {
               <CardContent className='space-y-2'>
                 <div className='space-y-2'>
                   <Label htmlFor='email'>Email</Label>
-                  <Input {...register('email')} id='email' type='email' className={errors?.email && 'border-red-500'}/>
+                  <Input {...register('email')} id='email' type='email' error={errors?.email?.toString()}/>
                   {errors?.email && <p className='text-xs text-red-500'>{errors?.email.message?.toString()}</p>}
                 </div>
                 <div className='space-y-2'>
                   <Label htmlFor='password'>Senha</Label>
-                  <Input {...register('password')} id='password' type='password'
-                         className={errors?.password && 'border-red-500'}/>
+                  <Input {...register('password')} id='password' type='password' error={errors?.password?.toString()}/>
                   {errors?.password && <p className='text-xs text-red-500'>{errors?.password.message?.toString()}</p>}
                 </div>
               </CardContent>
