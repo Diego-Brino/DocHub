@@ -39,9 +39,9 @@ function LoginPage() {
 
   return (
     <div className='container h-screen flex justify-center items-center'>
-      <Card className='w-[680px]'>
+      <Card className='w-full shadow-none md:w-[700px] border p-2'>
         <div className='flex gap-2 items-stretch'>
-          <div className='flex-1 flex flex-col'>
+          <div className='flex-1 hidden md:flex flex-col'>
             <CardHeader>
               <CardTitle>
                 Bem vindo(a) ao DocHub!
@@ -54,7 +54,7 @@ function LoginPage() {
               <img src={loginImg} alt='Login image'/>
             </CardContent>
           </div>
-          <div className='py-6'>
+          <div className='py-6 hidden md:block'>
             <Separator orientation='vertical'/>
           </div>
           <div className='flex-1'>
@@ -64,23 +64,25 @@ function LoginPage() {
               </CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <CardContent className='space-y-2'>
+              <CardContent className='space-y-4'>
                 <div className='space-y-2'>
                   <Label htmlFor='email'>Email</Label>
-                  <Input {...register('email')} id='email' type='email' error={errors?.email?.toString()}/>
+                  <Input {...register('email')} id='email' type='text' error={errors?.email?.toString()}/>
                   <InputValidation error={errors?.email?.message?.toString()}/>
                 </div>
                 <div className='space-y-2'>
-                  <Label htmlFor='password'>Senha</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password">Password</Label>
+                    <Button variant='link' asChild className='p-0 h-min underline text-black hover:text-primary'>
+                      <a href='#'>Esqueceu a senha?</a>
+                    </Button>
+                  </div>
                   <Input {...register('password')} id='password' type='password' error={errors?.password?.toString()}/>
                   <InputValidation error={errors?.password?.message?.toString()}/>
                 </div>
               </CardContent>
-              <CardFooter className='flex justify-between'>
-                <Button variant='link' asChild>
-                  <a href='#'>Esqueci a senha</a>
-                </Button>
-                <Button type='submit' loading={loading} disabled={loading}>
+              <CardFooter className='block space-y-2'>
+                <Button type='submit' loading={loading} disabled={loading} className='w-full'>
                   Entrar
                 </Button>
               </CardFooter>
