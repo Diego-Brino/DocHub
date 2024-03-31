@@ -10,7 +10,7 @@ export interface InputValidationProps {
 const InputValidation = React.forwardRef<HTMLInputElement, InputValidationProps>(
   ({ error, className }, ref) => {
     return (
-      <p ref={ref} className={cn('text-xs text-red-500', !error && 'h-4', className)}>{error && error}</p>
+      <p ref={ref} className={cn('text-xs text-red-500', className)}>{error && error}</p>
     )
   }
 )
