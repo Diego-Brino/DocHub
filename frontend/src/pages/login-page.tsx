@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
@@ -9,6 +9,7 @@ import {Input} from "@/components/custom/input.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
+import {TLogin} from "@/types/auth/login.ts";
 
 const schema = z.object({
   email: z.string()
@@ -24,13 +25,14 @@ function LoginPage() {
     register,
     handleSubmit,
     formState: {errors}
-  } = useForm({
-    resolver: zodResolver(schema)
+  } = useForm<TLogin>({
+    resolver: zodResolver(schema),
   })
 
   const [loading, setLoading] = useState(false)
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: TLogin) => {
+    console.log(data)
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
