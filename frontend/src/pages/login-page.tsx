@@ -71,7 +71,7 @@ function LoginPage() {
                   <InputValidation error={errors?.email?.message?.toString()}/>
                 </div>
                 <div className='space-y-2'>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <Label htmlFor="password">Password</Label>
                     <Button variant='link' asChild className='p-0 h-min underline text-black hover:text-primary'>
                       <a href='#'>Esqueceu a senha?</a>
