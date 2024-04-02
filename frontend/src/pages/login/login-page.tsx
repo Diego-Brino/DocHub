@@ -5,11 +5,12 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import loginImg from "@/assets/login-img.svg";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/custom/input.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
 import {TLogin} from "@/types/auth/login.ts";
+import {PasswordInput} from "@/pages/login/components/password-input.tsx";
+import {EmailInput} from "@/pages/login/components/email-input.tsx";
 
 const schema = z.object({
   email: z.string()
@@ -69,17 +70,25 @@ function LoginPage() {
               <CardContent className='space-y-4'>
                 <div className='space-y-2'>
                   <Label htmlFor='email'>Email</Label>
-                  <Input {...register('email')} id='email' type='text' error={errors?.email?.toString()}/>
+                  <EmailInput
+                    {...register('email')}
+                    id='email'
+                    error={errors?.email?.toString()}
+                  />
                   <InputValidation error={errors?.email?.message?.toString()}/>
                 </div>
                 <div className='space-y-2'>
                   <div className="flex items-center justify-between gap-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Senha</Label>
                     <Button variant='link' asChild className='p-0 h-min underline text-black hover:text-primary'>
                       <a href='#'>Esqueceu a senha?</a>
                     </Button>
                   </div>
-                  <Input {...register('password')} id='password' type='password' error={errors?.password?.toString()}/>
+                  <PasswordInput
+                    {...register('password')}
+                    id='password'
+                    error={errors?.password?.toString()}
+                  />
                   <InputValidation error={errors?.password?.message?.toString()}/>
                 </div>
               </CardContent>
