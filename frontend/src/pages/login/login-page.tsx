@@ -8,7 +8,7 @@ import {Label} from "@/components/ui/label.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
-import {TLogin} from "@/types/auth/login.ts";
+import {Login} from "@/types/auth/login.ts";
 import {PasswordInput} from "@/pages/login/components/password-input.tsx";
 import {EmailInput} from "@/pages/login/components/email-input.tsx";
 
@@ -26,13 +26,13 @@ function LoginPage() {
     register,
     handleSubmit,
     formState: {errors}
-  } = useForm<TLogin>({
+  } = useForm<Login>({
     resolver: zodResolver(schema),
   })
 
   const [loading, setLoading] = useState(false)
 
-  const onSubmit = (data: TLogin) => {
+  const onSubmit = (data: Login) => {
     console.log(data)
     setLoading(true)
     setTimeout(() => {
