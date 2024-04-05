@@ -8,7 +8,7 @@ import {Label} from "@/components/ui/label.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
-import {Login} from "@/types/auth/login.ts";
+import {Login} from "@/types/login.ts";
 import {PasswordInput} from "@/pages/login/components/password-input.tsx";
 import {EmailInput} from "@/pages/login/components/email-input.tsx";
 
