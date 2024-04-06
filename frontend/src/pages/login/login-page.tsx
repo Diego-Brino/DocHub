@@ -42,9 +42,9 @@ function LoginPage() {
 
   return (
     <div className='container h-screen flex flex-col gap-6 justify-center items-center'>
-      <div className='text-5xl font-semibold flex md:hidden gap-4 justify-center'>
+      <div className='flex md:hidden gap-4 justify-center'>
         <img src={logo} alt='logo' className='h-12'/>
-        DocHub
+        <h1 className='text-5xl font-semibold'>DocHub</h1>
       </div>
       <Card className='w-full shadow-none md:w-[700px] border p-2'>
         <div className='flex gap-2 items-stretch'>
