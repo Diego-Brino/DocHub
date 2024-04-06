@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import loginImg from "@/assets/login-img.svg";
+import logo from "@/assets/logo.svg";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
@@ -41,7 +41,11 @@ function LoginPage() {
   }
 
   return (
-    <div className='container h-screen flex justify-center items-center'>
+    <div className='container h-screen flex flex-col gap-6 justify-center items-center'>
+      <div className='text-5xl font-semibold flex md:hidden gap-4 justify-center'>
+        <img src={logo} alt='logo' className='h-12'/>
+        DocHub
+      </div>
       <Card className='w-full shadow-none md:w-[700px] border p-2'>
         <div className='flex gap-2 items-stretch'>
           <div className='flex-1 hidden md:flex flex-col'>
@@ -54,7 +58,7 @@ function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className='h-full flex justify-center items-center'>
-              <img src={loginImg} alt='Login image'/>
+              <img src={logo} alt='logo' className='h-40'/>
             </CardContent>
           </div>
           <div className='py-6 hidden md:block'>
