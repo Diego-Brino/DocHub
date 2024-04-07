@@ -3,6 +3,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import logo from "@/assets/logo.svg";
+import logoDark from "@/assets/logo-dark.svg";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
@@ -11,6 +12,9 @@ import {z} from "zod";
 import {Login} from "@/types/login.ts";
 import {PasswordInput} from "@/pages/login/components/password-input.tsx";
 import {EmailInput} from "@/pages/login/components/email-input.tsx";
+import {DarkModeButton} from "@/components/common/dark-mode-button.tsx";
+import {useDarkModeContext} from "@/hooks/use-dark-mode-context.ts";
+import {useNavigate} from "react-router-dom";
 
 const schema = z.object({
   email: z.string()
@@ -21,6 +25,10 @@ const schema = z.object({
 })
 
 function LoginPage() {
+
+  const {darkMode} = useDarkModeContext();
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -33,17 +41,18 @@ function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const onSubmit = (data: Login) => {
-    console.log(data)
-    setLoading(true)
+    console.log(data);
+    setLoading(true);
     setTimeout(() => {
-      setLoading(false)
+      setLoading(false);
+      navigate('/home')
     }, 2000)
   }
 
   return (
     <div className='container h-screen flex flex-col gap-6 justify-center items-center'>
       <div className='flex md:hidden gap-4 justify-center'>
-        <img src={logo} alt='logo' className='h-12'/>
+        <img src={darkMode ? logoDark : logo} alt='logo' className='size-12'/>
         <h1 className='text-5xl font-semibold'>DocHub</h1>
       </div>
       <Card className='w-full shadow-none md:w-[700px] border p-2'>
@@ -58,16 +67,19 @@ function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className='h-full flex justify-center items-center'>
-              <img src={logo} alt='logo' className='h-40'/>
+              <img src={darkMode ? logoDark : logo} alt='logo' className='size-40'/>
             </CardContent>
           </div>
           <div className='py-6 hidden md:block'>
-            <Separator orientation='vertical'/>
+          <Separator orientation='vertical'/>
           </div>
           <div className='flex-1'>
             <CardHeader>
               <CardTitle>
-                Login
+                <div className='flex justify-between items-center'>
+                  Login
+                  <DarkModeButton/>
+                </div>
               </CardTitle>
             </CardHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,7 +96,7 @@ function LoginPage() {
                 <div className='space-y-2'>
                   <div className="flex items-center justify-between gap-2">
                     <Label htmlFor="password">Senha</Label>
-                    <Button variant='link' asChild className='p-0 h-min underline text-black hover:text-primary'>
+                    <Button variant='link' asChild className='p-0 h-min underline text-current hover:text-primary'>
                       <a href='#'>Esqueceu a senha?</a>
                     </Button>
                   </div>
