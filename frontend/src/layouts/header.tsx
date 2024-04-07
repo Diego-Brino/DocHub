@@ -19,7 +19,7 @@ function Header() {
 
   return (
     <div className='border-b bg-background'>
-      <div className='container flex gap-2 p-6 justify-between items-center'>
+      <div className='container flex gap-2 py-4 justify-between items-center'>
         <div className='flex gap-2 md:gap-4 items-center justify-center'>
           <img src={darkMode ? logoDark : logo} alt="logo" className='size-8 md:size-10'/>
           <h1 className='text-2xl md:text-4xl font-semibold'>DocHub</h1>
