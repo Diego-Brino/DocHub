@@ -1,8 +1,11 @@
 import {Outlet} from "react-router-dom";
+import {DarkModeProvider} from "@/providers/dark-mode-provider.tsx";
 
 function App() {
   return (
-    <Outlet/>
+    <DarkModeProvider>
+      <Outlet/>
+    </DarkModeProvider>
   )
 }
 
