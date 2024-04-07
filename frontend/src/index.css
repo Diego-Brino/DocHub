@@ -9,6 +9,7 @@
         background-position: center;
         @apply shadow-[0_0_250px_5rem_white_inset] dark:shadow-[0_0_250px_5rem_black_inset];
         @apply min-h-screen;
+        @apply overflow-x-hidden;
     }
 }
 

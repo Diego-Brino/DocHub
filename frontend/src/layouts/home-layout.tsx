@@ -1,16 +1,16 @@
-import {Outlet} from "react-router-dom";
 import {Header} from "@/layouts/header.tsx";
+import {Outlet} from "react-router-dom";
+import {withPageTransition} from "@/hocs/with-page-transition.tsx";
 
 function HomeLayout() {
-
   return (
     <div>
       <Header/>
       <Outlet/>
     </div>
-  )
+  );
 }
 
-HomeLayout.displayName = "HomeLayout"
+const HomeLayoutWithTransition = withPageTransition(HomeLayout);
 
-export {HomeLayout}
+export { HomeLayoutWithTransition as HomeLayout };

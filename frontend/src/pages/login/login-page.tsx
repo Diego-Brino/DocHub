@@ -15,6 +15,7 @@ import {EmailInput} from "@/pages/login/components/email-input.tsx";
 import {DarkModeButton} from "@/components/common/dark-mode-button.tsx";
 import {useDarkModeContext} from "@/hooks/use-dark-mode-context.ts";
 import {useNavigate} from "react-router-dom";
+import {withPageTransition} from "@/hocs/with-page-transition.tsx";
 
 const schema = z.object({
   email: z.string()
@@ -121,6 +122,6 @@ function LoginPage() {
   )
 }
 
-LoginPage.displayName = "LoginPage"
+const LoginPageWithTransition = withPageTransition(LoginPage);
 
-export {LoginPage}
+export { LoginPageWithTransition as LoginPage };
