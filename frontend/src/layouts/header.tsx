@@ -37,7 +37,7 @@ function Header() {
           </div>
           <div className='md:hidden flex'>
             <DropdownMenu>
-              <DropdownMenuTrigger  asChild>
+              <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
                   <Menu/>
                 </Button>
