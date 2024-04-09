@@ -14,18 +14,9 @@ const withPageTransition = <T extends object>(WrappedComponent: ComponentType<T>
       <motion.div
         key={location.pathname}
         className='absolute h-screen w-screen'
-        initial={{
-          x: getFirstPath() === "login" ? "-100vw" : "100vw",
-          opacity: 0
-        }}
-        animate={{
-          x: "0",
-          opacity: 1
-        }}
-        exit={{
-          x: getFirstPath() === "login" ? "-100vw" : "100vw",
-          opacity: 0
-        }}
+        initial={{x: getFirstPath() === "login" ? "-100vw" : "100vw",}}
+        animate={{x: "0",}}
+        exit={{x: getFirstPath() === "login" ? "-100vw" : "100vw",}}
         transition={{duration: 1, ease: [0.22, 1, 0.36, 1]}}
       >
         <WrappedComponent {...props} />
