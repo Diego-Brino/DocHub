@@ -1,8 +1,6 @@
 import logo from "@/assets/logo.svg"
-import logoDark from "@/assets/logo-dark.svg"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {DarkModeButton} from "@/components/common/dark-mode-button.tsx";
-import {useDarkModeContext} from "@/hooks/use-dark-mode-context.ts";
 import {Button} from "@/components/custom/button.tsx";
 import {Menu} from "lucide-react";
 import {
@@ -14,14 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 
 function Header() {
-
-  const {darkMode} = useDarkModeContext();
-
   return (
     <div className='border-b bg-background'>
       <div className='container flex gap-2 py-4 justify-between items-center'>
         <div className='flex gap-2 md:gap-4 items-center justify-center'>
-          <img src={darkMode ? logoDark : logo} alt="logo" className='size-8 md:size-10'/>
+          <img src={logo} alt="logo" className='size-8 md:size-10'/>
           <h1 className='text-2xl md:text-4xl font-semibold'>DocHub</h1>
         </div>
         <div className='flex gap-4 items-center justify-center'>
