@@ -11,7 +11,6 @@ import {z} from "zod";
 import {Login} from "@/types/login.ts";
 import {PasswordInput} from "@/pages/login/components/password-input.tsx";
 import {EmailInput} from "@/pages/login/components/email-input.tsx";
-import {DarkModeButton} from "@/components/common/dark-mode-button.tsx";
 import {useNavigate} from "react-router-dom";
 import {withPageTransition} from "@/hocs/with-page-transition.tsx";
 
@@ -74,7 +73,6 @@ function LoginPage() {
               <CardTitle>
                 <div className='flex justify-between items-center'>
                   Login
-                  <DarkModeButton/>
                 </div>
               </CardTitle>
             </CardHeader>

@@ -10,45 +10,74 @@ import {
   UsersRound,
   Waypoints
 } from "lucide-react";
-import {Button} from "@/components/custom/button.tsx";
-import {Link} from "react-router-dom";
+import {SidebarItem} from "@/layouts/sidebar-item.tsx";
+import {DarkModeSwitch} from "@/components/custom/dark-mode-switch.tsx";
+
+const SIDEBAR_ITEMS = [
+  {
+    icon: <AppWindow/>,
+    title: 'Início',
+    link: '#'
+  },
+  {
+    icon: <File/>,
+    title: 'Arquivos',
+    link: '#'
+  },
+  {
+    icon: <Boxes/>,
+    title: 'Grupos',
+    link: '#'
+  },
+  {
+    icon: <Waypoints/>,
+    title: 'Fluxos',
+    link: '#'
+  },
+  {
+    icon: <KeyRound/>,
+    title: 'Permissões',
+    link: '#'
+  },
+  {
+    icon: <ScanEye/>,
+    title: 'Monitoramento',
+    link: '#'
+  },
+  {
+    icon: <UserRound/>,
+    title: 'Perfil',
+    link: '#'
+  },
+  {
+    icon: <UsersRound/>,
+    title: 'Usuários',
+    link: '#'
+  },
+  {
+    icon: <Settings/>,
+    title: 'Configurações',
+    link: '#'
+  },
+]
 
 function Sidebar() {
   return (
-    <div className='flex-1 border-r'>
-      <nav className='flex flex-col h-full gap-2 p-4 items-start'>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><AppWindow className='size-4'/>Início</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><File className='size-4'/>Arquivos</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><Boxes className='size-4'/>Grupos</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><Waypoints className='size-4'/>Fluxos</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><KeyRound className='size-4'/>Permissões</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><ScanEye className='size-4'/>Monitoramento</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><UserRound className='size-4'/>Perfil</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><UsersRound className='size-4'/>Usuários</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><Settings className='size-4'/>Configurações</Link>
-        </Button>
-        <Button variant='ghost' asChild className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground'>
-          <Link to='#'><LogOut className='size-4'/>Sair</Link>
-        </Button>
-      </nav>
-    </div>
+    <nav className='hidden sm:flex items-center justify-between flex-col border-r w-[60px] md:w-auto bg-muted/40'>
+      <div className='w-full h-full flex flex-col justify-between items-start'>
+        <div className='w-full h-full flex flex-col items-start p-4 gap-4'>
+          {SIDEBAR_ITEMS.map((item, index) => (
+            <SidebarItem key={index} icon={item.icon} title={item.title}/>
+          ))}
+        </div>
+        <div className='w-full h-full flex flex-col items-center justify-end p-4 gap-4'>
+          <DarkModeSwitch/>
+        </div>
+      </div>
+      <div className='w-full border-t gap-4 p-4 flex flex-col-reverse md:flex-row justify-center items-center'>
+        <SidebarItem icon={<LogOut/>} title='Sair'/>
+      </div>
+    </nav>
   )
 }
 
