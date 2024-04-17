@@ -20,7 +20,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         />
         {endIcon && (
           <div
-            className={cn('absolute right-0 -translate-y-full h-full flex justify-center items-center px-3 py-2 bg-primary rounded-r-[5px] text-white', props.disabled && 'cursor-not-allowed opacity-50', endIcon && onClickEndIcon && 'cursor-pointer hover:bg-primary/90')}
+            className={cn('absolute right-0 -translate-y-full h-full flex justify-center items-center px-3 py-2 bg-primary rounded-r-[5px] text-secondary', props.disabled && 'cursor-not-allowed opacity-50', endIcon && onClickEndIcon && 'cursor-pointer hover:bg-primary/90')}
             onClick={(event) => onClickEndIcon && onClickEndIcon(event)}
           >
             {endIcon}
