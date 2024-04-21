@@ -8,11 +8,8 @@ import {Label} from "@/components/ui/label.tsx";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
-import {Login} from "@/types/login.ts";
-import {PasswordInput} from "@/pages/login/components/password-input.tsx";
-import {EmailInput} from "@/pages/login/components/email-input.tsx";
 import {useNavigate} from "react-router-dom";
-import {withPageTransition} from "@/hocs/with-page-transition.tsx";
+import {PasswordInput, EmailInput, Login} from "@/features/auth";
 
 const schema = z.object({
   email: z.string()
@@ -115,6 +112,6 @@ function LoginPage() {
   )
 }
 
-const LoginPageWithTransition = withPageTransition(LoginPage);
+LoginPage.displayName = "LoginPage"
 
-export { LoginPageWithTransition as LoginPage };
+export { LoginPage };
