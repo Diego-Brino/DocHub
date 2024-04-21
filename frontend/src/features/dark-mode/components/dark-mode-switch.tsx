@@ -1,4 +1,4 @@
-import {useDarkModeContext} from "@/hooks/use-dark-mode-context.ts";
+import {useDarkModeContext} from "@/features/dark-mode/hooks/use-dark-mode-context.ts";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
 import React from "react";
 import {cn} from "@/lib/utils.ts";

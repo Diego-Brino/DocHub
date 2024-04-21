@@ -10,54 +10,54 @@ import {
   UsersRound,
   Waypoints
 } from "lucide-react";
-import {SidebarItem} from "@/layouts/sidebar-item.tsx";
-import {DarkModeSwitch} from "@/components/custom/dark-mode-switch.tsx";
+import {SidebarItem} from "@/layouts/dashboard/components/sidebar-item.tsx";
+import {DarkModeSwitch} from "@/features/dark-mode/components/dark-mode-switch.tsx";
 
 const SIDEBAR_ITEMS = [
   {
     icon: <AppWindow/>,
     title: 'Início',
-    link: '#'
+    link: '/dashboard/home'
   },
   {
     icon: <File/>,
     title: 'Arquivos',
-    link: '#'
+    link: '/files'
   },
   {
     icon: <Boxes/>,
     title: 'Grupos',
-    link: '#'
+    link: '/groups'
   },
   {
     icon: <Waypoints/>,
     title: 'Fluxos',
-    link: '#'
+    link: '/flows'
   },
   {
     icon: <KeyRound/>,
     title: 'Permissões',
-    link: '#'
+    link: '/permissions'
   },
   {
     icon: <ScanEye/>,
     title: 'Monitoramento',
-    link: '#'
+    link: '/monitoring'
   },
   {
     icon: <UserRound/>,
     title: 'Perfil',
-    link: '#'
+    link: '/profile'
   },
   {
     icon: <UsersRound/>,
     title: 'Usuários',
-    link: '#'
+    link: '/users'
   },
   {
     icon: <Settings/>,
     title: 'Configurações',
-    link: '#'
+    link: '/settings'
   },
 ]
 
@@ -67,7 +67,7 @@ function Sidebar() {
       <div className='w-full h-full flex flex-col justify-between items-start'>
         <div className='w-full h-full flex flex-col items-start p-4 gap-4'>
           {SIDEBAR_ITEMS.map((item, index) => (
-            <SidebarItem key={index} icon={item.icon} title={item.title}/>
+            <SidebarItem key={index} icon={item.icon} title={item.title} link={item.link}/>
           ))}
         </div>
         <div className='w-full h-full flex flex-col items-center justify-end p-4 gap-4'>
@@ -75,7 +75,7 @@ function Sidebar() {
         </div>
       </div>
       <div className='w-full border-t gap-4 p-4 flex flex-col-reverse md:flex-row justify-center items-center'>
-        <SidebarItem icon={<LogOut/>} title='Sair'/>
+        <SidebarItem icon={<LogOut/>} title='Sair' link='#'/>
       </div>
     </nav>
   )

@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import {Link} from "react-router-dom";
-import {DarkModeSwitch} from "@/components/custom/dark-mode-switch.tsx";
+import {DarkModeSwitch} from "@/features/dark-mode/components/dark-mode-switch.tsx";
 
 const MENU_ITEMS = [
   {
@@ -73,7 +73,7 @@ const MENU_ITEMS = [
   }
 ]
 
-function RightHeader() {
+function HeaderContent() {
   return (
     <div className='flex flex-row-reverse gap-2 p-4 md:p-6 justify-between items-center border-b bg-muted/40'>
       <div className='flex gap-4 items-center justify-center'>
@@ -133,6 +133,6 @@ function RightHeader() {
   )
 }
 
-RightHeader.displayName = "RightHeader"
+HeaderContent.displayName = "HeaderContent"
 
-export {RightHeader}
+export {HeaderContent}
