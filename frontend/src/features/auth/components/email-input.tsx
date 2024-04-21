@@ -1,6 +1,6 @@
 import * as React from "react"
 import {LucideMail} from "lucide-react";
-import {Input, InputProps} from "@/components/custom/input";
+import {Input, InputProps} from "@/components/custom/input.tsx";
 
 export interface EmailInputProps extends InputProps {
   error?: string

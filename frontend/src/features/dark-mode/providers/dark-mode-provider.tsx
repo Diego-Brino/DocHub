@@ -1,5 +1,5 @@
 import {ReactNode, useCallback, useEffect, useState} from "react";
-import DarkModeContext from "@/contexts/dark-mode-context.tsx";
+import DarkModeContext from "@/features/dark-mode/contexts/dark-mode-context.tsx";
 
 type DarkModeProviderProps = {
   children: ReactNode
