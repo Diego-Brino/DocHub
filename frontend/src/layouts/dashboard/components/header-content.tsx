@@ -1,18 +1,6 @@
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Button} from "@/components/custom/button.tsx";
-import {
-  AppWindow,
-  Boxes,
-  File,
-  KeyRound,
-  LogOut,
-  Menu,
-  ScanEye,
-  Settings,
-  UserRound,
-  UsersRound,
-  Waypoints
-} from "lucide-react";
+import {LogOut, Menu} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,55 +11,8 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import {Link} from "react-router-dom";
-import {DarkModeSwitch} from "@/features/dark-mode/components/dark-mode-switch.tsx";
-
-const MENU_ITEMS = [
-  {
-    icon: AppWindow,
-    title: 'Início',
-    link: '#'
-  },
-  {
-    icon: File,
-    title: 'Arquivos',
-    link: '#'
-  },
-  {
-    icon: Boxes,
-    title: 'Grupos',
-    link: '#'
-  },
-  {
-    icon: Waypoints,
-    title: 'Fluxos',
-    link: '#'
-  },
-  {
-    icon: KeyRound,
-    title: 'Permissões',
-    link: '#'
-  },
-  {
-    icon: ScanEye,
-    title: 'Monitoramento',
-    link: '#'
-  },
-  {
-    icon: UserRound,
-    title: 'Perfil',
-    link: '#'
-  },
-  {
-    icon: UsersRound,
-    title: 'Usuários',
-    link: '#'
-  },
-  {
-    icon: Settings,
-    title: 'Configurações',
-    link: '#'
-  }
-]
+import {DarkModeSwitch} from "@/features/dark-mode";
+import {LINKS} from "@/layouts/dashboard/constants/constants.ts";
 
 function HeaderContent() {
   return (
@@ -105,7 +46,7 @@ function HeaderContent() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator/>
               <DropdownMenuGroup>
-                {MENU_ITEMS.map((item, index) => (
+                {LINKS.map((item, index) => (
                   <DropdownMenuItem key={index}>
                     <Link to={item.link} className='flex gap-2 items-center w-full'>
                       <item.icon className='size-4'/>

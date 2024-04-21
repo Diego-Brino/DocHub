@@ -1,15 +1,15 @@
 import {Button} from "@/components/custom/button.tsx";
 import {Link} from "react-router-dom";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
-import {cloneElement, ReactElement} from "react";
+import {LucideIcon} from "lucide-react";
 
 type SidebarItemProps = {
-  icon: ReactElement,
+  icon: LucideIcon,
   title: string,
   link: string
 }
 
-function SidebarItem({icon, title, link}: SidebarItemProps) {
+function SidebarItem({icon: Icon, title, link}: SidebarItemProps) {
   return (
     <>
       <div className="w-full flex md:hidden justify-center items-center">
@@ -17,7 +17,7 @@ function SidebarItem({icon, title, link}: SidebarItemProps) {
           <TooltipTrigger asChild>
             <Button asChild variant='ghost' className='w-full flex justify-center items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground px-0 h-[27px]'>
               <Link to={link}>
-                {cloneElement(icon, {className: 'size-5'})}
+                <Icon className='size-5'/>
                 <span className='hidden md:inline'>{title}</span>
               </Link>
             </Button>
@@ -30,7 +30,7 @@ function SidebarItem({icon, title, link}: SidebarItemProps) {
       <div className="w-full hidden md:block">
         <Button asChild variant='ghost' className='w-full flex justify-start items-center gap-2 bg-none hover:bg-transparent hover:text-muted-foreground px-0 md:px-4 h-[27px]'>
           <Link to={link}>
-            {cloneElement(icon, {className: 'size-5'})}
+            <Icon className='size-5'/>
             <span className='hidden md:inline'>{title}</span>
           </Link>
         </Button>
