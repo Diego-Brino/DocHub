@@ -10,6 +10,7 @@ import {MonitoringPage} from "@/pages/monitoring-page.tsx";
 import {ProfilePage} from "@/pages/profile-page.tsx";
 import {UsersPage} from "@/pages/users-page.tsx";
 import {SettingsPage} from "@/pages/settings-page.tsx";
+import {NotFoundPage} from "@/pages/not-found-page.tsx";
 
 const Router = () => {
   const location = useLocation();
@@ -27,6 +28,7 @@ const Router = () => {
         <Route path="profile" element={<ProfilePage/>}/>
         <Route path="users" element={<UsersPage/>}/>
         <Route path="settings" element={<SettingsPage/>}/>
+        <Route path='*' element={<NotFoundPage/>} />
       </Route>
     </Routes>
   );
