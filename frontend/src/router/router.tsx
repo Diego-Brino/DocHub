@@ -13,7 +13,6 @@ const Router = () => {
         {["/", "login"].map(path => (
             <Route path={path} element={<LoginPage/>}/>
         ))}
-        <Route path="login" element={<LoginPage/>}/>
         <Route path="groups" element={<GroupsPage/>}/>
         <Route path='*' element={<NotFoundPage/>} />
       </Route>
