@@ -1,7 +1,8 @@
-import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {LoginPage} from "../pages/login-page.tsx";
 import {GroupsPage} from "@/pages/groups-page.tsx";
 import {NotFoundPage} from "@/pages/not-found-page.tsx";
+import {Main} from "@/layouts/main";
 
 const AppBrowserRouter = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ const AppBrowserRouter = createBrowserRouter([
       },
       {
         path: "/",
-        element: <Outlet/>,
+        element: <Main/>,
         children: [
           {
             path: "/groups",

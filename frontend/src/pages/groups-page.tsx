@@ -1,10 +1,6 @@
-import {Dashboard} from "@/layouts/dashboard";
-
 function GroupsPage() {
   return (
-    <Dashboard>
-      <p>FLOWS</p>
-    </Dashboard>
+    <p>GROUPS</p>
   )
 }
 
