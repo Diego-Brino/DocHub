@@ -23,6 +23,14 @@ const AppBrowserRouter = createBrowserRouter([
           {
             path: "/groups",
             element: <GroupsPage/>
+          },
+          {
+            path: "/users",
+            element: <GroupsPage/>
+          },
+          {
+            path: "/roles",
+            element: <GroupsPage/>
           }
         ]
       },
