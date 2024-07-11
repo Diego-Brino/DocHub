@@ -1,6 +1,6 @@
 import {Undo2} from "lucide-react";
 import {Button} from "@/components/custom/button.tsx";
-import {useGoToPreviousRoute} from "@/features/route";
+import {useGoToPreviousRoute} from "@/features/not-found";
 
 function NotFoundPage() {
   const goToPreviousRoute = useGoToPreviousRoute();
