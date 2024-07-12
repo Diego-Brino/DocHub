@@ -1,10 +1,16 @@
 import {useEffect, useRef} from "react";
 import {lerp} from "../utils/utils.ts";
 
-const BLOB_OFFSET = {x: -64, y: -64};
 const LERP_AMOUNT = 0.03;
 
-function MouseBlob() {
+type MouseBlobProps = {
+  offset: {
+    x: number
+    y: number
+  }
+}
+
+function MouseBlob({offset}: MouseBlobProps) {
   const blobRef = useRef<HTMLDivElement>(null);
   const mousePositionRef = useRef({ x: 0, y: 0 });
 
@@ -14,8 +20,8 @@ function MouseBlob() {
         return;
       }
 
-      const targetX = mousePositionRef.current.x + BLOB_OFFSET.x;
-      const targetY = mousePositionRef.current.y + BLOB_OFFSET.y;
+      const targetX = mousePositionRef.current.x + offset.x;
+      const targetY = mousePositionRef.current.y + offset.y;
 
       const blobStyle = getComputedStyle(blobRef.current);
       const currentX = parseFloat(blobStyle.getPropertyValue('transform').split(',')[4]) || 0;
@@ -43,9 +49,9 @@ function MouseBlob() {
   }, []);
 
   return (
-    <div ref={blobRef} className='absolute pointer-events-none -z-10'>
+    <div ref={blobRef} className='absolute pointer-events-none'>
       <div
-        className='relative h-44 w-44 rounded-full bg-black bg-gradient-to-bl from-[#e5d8fb] to-[#7c3aed] opacity-50 blur-2xl animate-blob'
+        className='relative h-44 w-44 rounded-full bg-black bg-gradient-to-bl from-[#e5d8fb] to-[#7c3aed] opacity-10 blur-3xl animate-blob'
       />
     </div>
   )
