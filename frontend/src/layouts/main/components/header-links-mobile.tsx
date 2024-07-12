@@ -2,8 +2,8 @@ import {useState} from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Command, CommandGroup} from "@/components/ui/command.tsx";
 import {Link} from "../types/types.ts";
-import {HeaderLinksMobileCommandItem} from "@/layouts/main/components/header-links-mobile-command-item.tsx";
-import {HeaderLinksMobileButton} from "@/layouts/main/components/header-links-mobile-button.tsx";
+import {HeaderLinksMobileCommandItem} from "./header-links-mobile-command-item.tsx";
+import {HeaderLinksMobileButton} from "./header-links-mobile-button.tsx";
 
 type HeaderLinksMobileProps = {
   links: Link[],

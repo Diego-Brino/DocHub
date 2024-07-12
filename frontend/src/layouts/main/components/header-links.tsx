@@ -2,7 +2,7 @@ import {useCurrentPathname} from "../hooks/use-current-pathname.ts";
 import {Bookmark, Group, Users} from "lucide-react";
 import {HeaderLinksDesktop} from "./header-links-desktop.tsx";
 import {HeaderLinksMobile} from "./header-links-mobile.tsx";
-import {Link} from "@/layouts/main/types/types.ts";
+import {Link} from "../types/types.ts";
 
 const LINKS: Link[] = [
   {name: "Grupos", to: "/groups", icon: <Group className='size-4'/>},

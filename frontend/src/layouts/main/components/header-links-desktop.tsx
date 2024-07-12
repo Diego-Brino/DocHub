@@ -1,7 +1,7 @@
 import {Separator} from "@/components/ui/separator.tsx";
 import {Fragment} from "react";
-import {Link} from "@/layouts/main/types/types.ts";
-import {HeaderLinksDesktopLink} from "@/layouts/main/components/header-links-desktop-link.tsx";
+import {Link} from "../types/types.ts";
+import {HeaderLinksDesktopLink} from "./header-links-desktop-link.tsx";
 
 type HeaderLinksDesktopProps = {
   links: Link[],

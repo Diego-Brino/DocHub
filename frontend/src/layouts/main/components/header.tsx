@@ -1,6 +1,6 @@
 import {HeaderLogo} from "./header-logo.tsx";
 import {HeaderProfile} from "./header-profile.tsx";
-import {HeaderLinks} from "@/layouts/main/components/header-links.tsx";
+import {HeaderLinks} from "./header-links.tsx";
 
 function Header() {
   return (

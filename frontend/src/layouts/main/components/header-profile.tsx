@@ -1,5 +1,4 @@
-
-function HeaderProfile(){
+function HeaderProfile() {
   return (
     <div className='flex md:flex-1 gap-2 items-center justify-end'>
       <img src='https://github.com/diego-manucci-bizzotto.png' alt='avatar' className='rounded-full size-10'/>

@@ -1,4 +1,4 @@
-import {Link} from "@/layouts/main/types/types.ts";
+import {Link} from "../types/types.ts";
 import {ChevronsUpDown} from "lucide-react";
 import {Button, ButtonProps} from "@/components/custom/button.tsx";
 import * as React from "react";
