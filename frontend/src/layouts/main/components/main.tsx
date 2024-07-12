@@ -5,7 +5,7 @@ function Main() {
   return (
     <div className='grid grid-cols-1 grid-rows-[max-content_1fr] min-h-screen'>
       <Header/>
-      <div className='flex bg-background-60 md:m-8 p-8 rounded md:border backdrop-blur-xl'>
+      <div className='flex bg-background md:m-8 p-8 rounded md:border'>
         <Outlet/>
       </div>
     </div>
