@@ -1,6 +1,6 @@
 import {CardContent, CardFooter} from "@/components/ui/card.tsx";
 import {Label} from "@/components/ui/label.tsx";
-import {EmailInput, Login, PasswordInput} from "@/features/auth";
+import {EmailInput, PasswordInput} from "@/features/auth";
 import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
+import {Login} from "@/features/auth/types";
 
 const schema = z.object({
   email: z.string()
