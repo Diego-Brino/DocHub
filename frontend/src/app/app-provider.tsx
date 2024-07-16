@@ -15,9 +15,9 @@ function AppProvider({children}: AppProviderProps) {
       <TooltipProvider>
         <QueryClientProvider client={queryClient}>
           {children}
+          <Toaster/>
         </QueryClientProvider>
       </TooltipProvider>
-      <Toaster/>
     </DarkModeProvider>
   );
 }
