@@ -1,16 +1,20 @@
 import React from "react";
 import {DarkModeProvider} from "@/features/dark-mode";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
+import {QueryClientProvider} from "react-query";
+import queryClient from "@/lib/react-query";
 
 type AppProviderProps = {
   children: React.ReactNode
 }
 
-function AppProvider({ children }: AppProviderProps) {
+function AppProvider({children}: AppProviderProps) {
   return (
     <DarkModeProvider>
       <TooltipProvider>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
       </TooltipProvider>
     </DarkModeProvider>
   );
