@@ -1,7 +1,8 @@
-import {http, HttpResponse} from "msw";
+import {delay, http, HttpResponse} from "msw";
 
 const handlers = [
-  http.get('api/groups', () => {
+  http.get('api/groups', async () => {
+    await delay(1000)
     return HttpResponse.json([
       {
         avatarUrl: 'https://picsum.photos/600?a=1',
