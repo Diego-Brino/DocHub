@@ -1,5 +1,3 @@
-import {DarkModeSwitch} from "@/features/dark-mode";
-
 function HeaderProfile() {
   return (
     <div className='flex md:flex-1 gap-4 items-center justify-end'>
@@ -10,7 +8,6 @@ function HeaderProfile() {
           <p className='text-sm text-muted-foreground'>dbizzotto@example.com</p>
         </div>
       </div>
-      <DarkModeSwitch/>
     </div>
   )
 }
