@@ -16,7 +16,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
         id={props.id}
         type='text'
         error={error}
-        endIcon={<LucideMail/>}
+        endIcon={<LucideMail className='size-5'/>}
       />
     )
   }

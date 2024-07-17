@@ -13,7 +13,7 @@ function GroupsToolbar() {
         <Input
           value={filter}
           placeholder='Filtrar...'
-          endIcon={<Search/>}
+          endIcon={<Search className='size-5'/>}
           onChange={(event) => setFilter(event.target.value)}
         />
       </div>

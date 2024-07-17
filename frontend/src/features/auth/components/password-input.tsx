@@ -24,7 +24,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
         id={props.id}
         type={showPassword ? 'text' : 'password'}
         error={error}
-        endIcon={showPassword ? <Eye/> : <EyeOff/>}
+        endIcon={showPassword ? <Eye className='size-5'/> : <EyeOff className='size-5'/>}
         onClickEndIcon={onClickShowPassword}
       />
     )
