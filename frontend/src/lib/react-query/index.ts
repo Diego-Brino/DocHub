@@ -5,6 +5,11 @@ import {RotateCcw} from "lucide-react";
 import {createElement} from "react";
 
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false
+    }
+  },
   queryCache: new QueryCache({
     onError: ((error , query) => {
       if(!axios.isAxiosError(error)) {
