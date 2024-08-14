@@ -1,4 +1,4 @@
-import {GroupsContent} from "@/features/groups/components/groups-content.tsx";
+import {GroupsContent} from "@/features/groups";
 
 function GroupsPage() {
   return (
