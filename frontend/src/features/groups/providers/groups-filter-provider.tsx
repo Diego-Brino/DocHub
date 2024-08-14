@@ -8,9 +8,14 @@ type GroupsFilterProviderProps = {
 function GroupsFilterProvider({children}: GroupsFilterProviderProps){
 
   const [filter, setFilter] = useState<string>('');
+  const [appliedFilter, setAppliedFilter] = useState<string>('');
+
+  const applyFilter = () => {
+    setAppliedFilter(filter);
+  };
 
   return (
-    <GroupsFilterContext.Provider value={{ filter, setFilter }}>
+    <GroupsFilterContext.Provider value={{ filter, setFilter, appliedFilter, applyFilter }}>
       {children}
     </GroupsFilterContext.Provider>
   )

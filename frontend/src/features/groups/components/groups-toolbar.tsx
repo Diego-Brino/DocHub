@@ -5,7 +5,7 @@ import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.t
 import {useGroupsFilterContext} from "@/features/groups/hooks/use-groups-filter-context.ts";
 
 function GroupsToolbar() {
-  const {filter, setFilter} = useGroupsFilterContext();
+  const {filter, setFilter, applyFilter} = useGroupsFilterContext();
 
   return(
     <div className='flex items-center gap-4 border-b p-4'>
@@ -15,6 +15,7 @@ function GroupsToolbar() {
           placeholder='Filtrar...'
           endIcon={<Search className='size-5'/>}
           onChange={(event) => setFilter(event.target.value)}
+          onClickEndIcon={() => applyFilter()}
         />
       </div>
       <div className='flex-1 flex justify-end items-center'>
