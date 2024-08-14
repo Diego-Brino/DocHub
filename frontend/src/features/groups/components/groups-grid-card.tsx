@@ -13,14 +13,14 @@ function GroupsGridCard({group}: GroupsGridCardProps) {
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
   return (
-    <div className='flex flex-col p-4 gap-4 rounded-lg bg-card border overflow-hidden min-w-32 w-full h-[30rem]'>
+    <div className='flex flex-col p-4 gap-4 rounded-lg bg-card border md:overflow-hidden min-w-32 w-full md:h-[30rem]'>
       <img
         src={group.avatarUrl}
         className={`h-64 w-full object-cover rounded-sm transition-opacity duration-500 ${isAvatarLoaded ? 'opacity-100' : 'opacity-0'}`}
         alt='avatar'
         onLoad={() => setIsAvatarLoaded(true)}
       />
-      <div className='flex flex-col gap-4 flex-1 overflow-hidden'>
+      <div className='flex flex-col gap-4 flex-1 overflow-auto md:overflow-hidden'>
         <h1 className='text-xl font-semibold tracking-tight'>{group.title}</h1>
         <ScrollArea className='flex-1'>
           <p className='text-muted-foreground'>{group.description}</p>
