@@ -4,7 +4,7 @@ import {cn} from "@/lib/utils"
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   endIcon?: React.ReactNode,
-  onClickEndIcon?(event: React.MouseEvent<HTMLDivElement, MouseEvent> | undefined): void,
+  onClickEndIcon?(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void,
   error?: string
 }
 
