@@ -1,5 +1,8 @@
-package com.dochub.api.user;
+package com.dochub.api.entity;
 
+import com.dochub.api.dtos.RegisterUserDTO;
+import com.dochub.api.utils.Constants;
+import com.dochub.api.utils.Utils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,8 +42,30 @@ public class User implements UserDetails {
     @Column(name = "AVATAR")
     private byte[] avatar;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_ULTIMO_ACESSO")
     private Date lastAccess;
+
+    @Embedded
+    private AuditRecord auditRecord;
+
+    //region Constructors
+
+    public User (RegisterUserDTO registerUserDTO) {
+        this.name = registerUserDTO.name();
+        this.email = registerUserDTO.email();
+        this.username = registerUserDTO.username();
+        this.password = Utils.encodePassword(registerUserDTO.password());
+        this.avatar = registerUserDTO.avatar();
+
+        this.auditRecord = AuditRecord
+            .builder()
+            .insertionUser(Constants.SYSTEM_NAME)
+            .insertionDate(new Date())
+            .build();
+    }
+
+    //endregion
 
     // region UserDetails Methods
 
@@ -51,7 +76,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername () {
-        return username;
+        return email;
     }
 
     @Override
