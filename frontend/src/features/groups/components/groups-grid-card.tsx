@@ -4,6 +4,7 @@ import {ArrowRight, Edit, Trash2} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 import {Group} from "@/features/groups/types";
 import {useState} from "react";
+import { motion } from "framer-motion";
 
 type GroupsGridCardProps = {
   group: Group
@@ -13,7 +14,12 @@ function GroupsGridCard({group}: GroupsGridCardProps) {
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
   return (
-    <div className='flex flex-col p-4 gap-4 rounded-lg bg-card border md:overflow-hidden min-w-32 w-full md:h-[30rem]'>
+    <motion.div
+      layout
+      animate={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
+      exit={{ opacity: 0 }}
+      className='flex flex-col p-4 gap-4 rounded-lg bg-card border md:overflow-hidden min-w-32 w-full md:h-[30rem]'>
       <img
         src={group.avatarUrl}
         className={`h-64 w-full object-cover rounded-sm transition-opacity duration-500 ${isAvatarLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -51,7 +57,7 @@ function GroupsGridCard({group}: GroupsGridCardProps) {
           </Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

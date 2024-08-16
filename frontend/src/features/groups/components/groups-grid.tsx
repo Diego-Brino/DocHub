@@ -4,6 +4,7 @@ import {filterGroups} from "@/features/groups/utils";
 import {useGroupsFilterContext} from "@/features/groups/hooks/use-groups-filter-context.ts";
 import {GroupsGridCardSkeleton} from "@/features/groups/components/groups-grid-card-skeleton.tsx";
 import {useMemo} from "react";
+import {AnimatePresence} from "framer-motion";
 
 function GroupsGrid() {
   const {appliedFilter} = useGroupsFilterContext();
@@ -16,11 +17,11 @@ function GroupsGrid() {
       {!isLoading
         ? filteredGroups.length > 0 ?
           (
-            <>
-              {filteredGroups.map((group, index) => (
-                <GroupsGridCard key={index} group={group}/>
-              ))}
-            </>
+            <AnimatePresence>
+              {filteredGroups.map((group) =>
+                <GroupsGridCard key={group.id} group={group}/>
+              )}
+            </AnimatePresence>
           ) : (
             <div className='col-span-full flex justify-center items-center'>
               <p className='text-muted-foreground'>Nenhum registro encontrado :(</p>
