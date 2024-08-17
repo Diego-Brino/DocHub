@@ -1,8 +1,7 @@
 package com.dochub.api.handler;
 
 import com.dochub.api.dtos.ErrorDTO;
-import com.dochub.api.exceptions.EmailAlreadyRegisterException;
-import com.dochub.api.exceptions.EntityNotFoundByEmailException;
+import com.dochub.api.exceptions.*;
 import com.dochub.api.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -68,5 +67,29 @@ public class ApplicationHandler {
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(MultipartFileReadException.class)
+    public ResponseEntity<ErrorDTO> handleMultipartFileReadException (MultipartFileReadException e) {
+        log.error(Constants.MULTIPART_FILE_READ_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(InputStreamFileReadException.class)
+    public ResponseEntity<ErrorDTO> handleInputStreamFileReadException (InputStreamFileReadException e) {
+        log.error(Constants.INPUT_STREAM_READ_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(InvalidTokenFormatException.class)
+    public ResponseEntity<ErrorDTO> handleInvalidTokenFormatException (InvalidTokenFormatException e) {
+        log.error(Constants.INVALID_TOKEN_FORMAT_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 }

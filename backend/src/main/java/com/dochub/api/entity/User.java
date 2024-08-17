@@ -56,7 +56,7 @@ public class User implements UserDetails {
         this.email = registerUserDTO.email();
         this.username = registerUserDTO.username();
         this.password = Utils.encodePassword(registerUserDTO.password());
-        this.avatar = registerUserDTO.avatar();
+        this.avatar = Utils.readBytesFromMultipartFile(registerUserDTO.avatar());
 
         this.auditRecord = AuditRecord
             .builder()
