@@ -3,8 +3,6 @@ package com.dochub.api.utils;
 public interface Constants {
     String SYSTEM_NAME = "DocHub";
 
-    String SECRET_KEY = "oSFhWKDttuPQudTwQeU6bIhgPBKo63WK3HfsUJzol6VFHfNHi2JcPv6WEr3WgtHKuJz539Z0howHyDvi6mkPhsKCc2/bqPiMo50gUDxgsSBYO+eFQtmUh2o4D8Nx3l0R/SC26iRMwZ4rk/M+Cx7JN+2uWF0QSRI+UbDA9XzCXlI5QfV0r+zLNnayqzeBiaowqqKdSCgIfmnOwOpeRlWpZCY6sVNTXGFzXCn2kGUOm9T6DbtwbkkilPFjQefi4povQj7xwavePDrxZSMhPUC0F3tQqjoAJ7RHR47UxKa25UJUJx3bn9T4sZ3H0TsZMiroLPUbo5jW+3EaL9ShMqKv+9gMT8ESdRl5RePjO9NxsO0=";
-
     String NAME_IS_REQUIRED_MESSAGE = "O campo nome é obrigatório";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo senha é obrigatório";
     String EMAIL_IS_REQUIRED_MESSAGE = "O campo email é obrigatório";

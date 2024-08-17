@@ -3,6 +3,7 @@ package com.dochub.api.dtos;
 import com.dochub.api.utils.Constants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
 
 public record RegisterUserDTO(
     @NotBlank(message = Constants.NAME_IS_REQUIRED_MESSAGE)
@@ -18,5 +19,5 @@ public record RegisterUserDTO(
     @NotBlank(message = Constants.USERNAME_IS_REQUIRED_MESSAGE)
     String username,
 
-    byte[] avatar) {
+    MultipartFile avatar) {
 }
