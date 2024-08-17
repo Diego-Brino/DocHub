@@ -16,6 +16,11 @@ function GroupsToolbar() {
           endIcon={<Search className='size-5'/>}
           onChange={(event) => setFilter(event.target.value)}
           onClickEndIcon={() => applyFilter()}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              applyFilter();
+            }
+          }}
         />
       </div>
       <div className='flex-1 flex justify-end items-center'>
