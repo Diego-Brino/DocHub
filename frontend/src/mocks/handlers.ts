@@ -1,7 +1,7 @@
 import {delay, http, HttpResponse} from "msw";
 
 const handlers = [
-  http.get('api/groups', async () => {
+  http.get('groups', async () => {
     await delay(1000)
     return HttpResponse.json([
       {

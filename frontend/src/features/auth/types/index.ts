@@ -1,8 +1,13 @@
-type Login = {
+type Authentication = {
   email: string
   password: string
 }
 
+type Token = {
+  token: string
+}
+
 export type {
-  Login
+  Authentication,
+  Token
 }

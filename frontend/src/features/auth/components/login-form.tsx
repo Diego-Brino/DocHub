@@ -6,9 +6,8 @@ import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useNavigate} from "react-router-dom";
-import {useState} from "react";
-import {Login} from "@/features/auth/types";
+import {Authentication} from "@/features/auth/types";
+import {usePostAuthenticate} from "@/features/auth/hooks/use-post-authenticate.ts";
 
 const schema = z.object({
   email: z.string()
@@ -19,25 +18,18 @@ const schema = z.object({
 })
 
 function LoginForm() {
-  const navigate = useNavigate();
-
-  const [loading, setLoading] = useState(false)
+  const {mutate, isLoading} = usePostAuthenticate();
 
   const {
     register,
     handleSubmit,
     formState: {errors}
-  } = useForm<Login>({
+  } = useForm<Authentication>({
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (data: Login) => {
-    console.log(data);
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/home')
-    }, 2000)
+  const onSubmit = (data: Authentication) => {
+    mutate(data);
   }
 
   return (
@@ -68,7 +60,7 @@ function LoginForm() {
         </div>
       </CardContent>
       <CardFooter className='block space-y-2'>
-        <Button type='submit' loading={loading} disabled={loading} className='w-full'>
+        <Button type='submit' loading={isLoading} disabled={isLoading} className='w-full'>
           Entrar
         </Button>
       </CardFooter>
