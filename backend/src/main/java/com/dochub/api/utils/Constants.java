@@ -3,9 +3,13 @@ package com.dochub.api.utils;
 public interface Constants {
     String SYSTEM_NAME = "DocHub";
 
+    long TOKEN_EXPIRATION_TIME_MILLIS = 1000 * 60 * 20;
+
     String AUTHORIZATION_HEADER = "Authorization";
 
     String USER_ICON_PATH = "images/UserIcon.png";
+
+    String AVATAR = "avatar";
 
     String NAME_IS_REQUIRED_MESSAGE = "O campo nome é obrigatório";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo senha é obrigatório";
@@ -21,4 +25,5 @@ public interface Constants {
     String MULTIPART_FILE_READ_EXCEPTION_MESSAGE = "Não foi possível ler os bytes desse arquivo!";
     String INPUT_STREAM_READ_EXCEPTION_MESSAGE = "Não foi possível ler os bytes desse arquivo!";
     String INVALID_TOKEN_FORMAT_EXCEPTION_MESSAGE = "O token informado é inválido!";
+    String EXPIRED_TOKEN_EXCEPTION_MESSAGE = "Token expirado!";
 }

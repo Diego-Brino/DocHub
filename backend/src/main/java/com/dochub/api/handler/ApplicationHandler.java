@@ -3,6 +3,7 @@ package com.dochub.api.handler;
 import com.dochub.api.dtos.ErrorDTO;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.utils.Constants;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,14 @@ public class ApplicationHandler {
 
         final ErrorDTO errorDTO = new ErrorDTO(Constants.BAD_CREDENTIALS_EXCEPTION_MESSAGE);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorDTO> handleExpiredJwtException (ExpiredJwtException e) {
+        log.error(Constants.EXPIRED_TOKEN_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(Constants.EXPIRED_TOKEN_EXCEPTION_MESSAGE);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDTO);
     }
 
     @ExceptionHandler(EmailAlreadyRegisterException.class)
