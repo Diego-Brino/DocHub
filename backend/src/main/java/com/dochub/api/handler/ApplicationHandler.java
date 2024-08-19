@@ -70,6 +70,14 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
+    @ExceptionHandler(UsernameAlreadyRegisterException.class)
+    public ResponseEntity<ErrorDTO> handleUsernameAlreadyRegisterException (UsernameAlreadyRegisterException e) {
+        log.error(Constants.USERNAME_ALREADY_REGISTER_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
     @ExceptionHandler(EntityNotFoundByEmailException.class)
     public ResponseEntity<ErrorDTO> handleEntityNotFoundByEmailException (EntityNotFoundByEmailException e) {
         log.error(Constants.ENTITY_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);

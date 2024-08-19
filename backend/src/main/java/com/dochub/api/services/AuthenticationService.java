@@ -6,6 +6,7 @@ import com.dochub.api.dtos.RegisterUserDTO;
 import com.dochub.api.entity.User;
 import com.dochub.api.exceptions.EmailAlreadyRegisterException;
 import com.dochub.api.exceptions.EntityNotFoundByEmailException;
+import com.dochub.api.exceptions.UsernameAlreadyRegisterException;
 import com.dochub.api.infra.security.JwtService;
 import com.dochub.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponseDTO register (final RegisterUserDTO registerUserDTO) {
-        if(_isEmailAlreadyRegister(registerUserDTO.email())) {
-            throw new EmailAlreadyRegisterException();
-        }
+        _validateRegistration(registerUserDTO);
 
         final User user = new User(registerUserDTO);
 
@@ -53,8 +52,24 @@ public class AuthenticationService {
         return new AuthenticationResponseDTO(token);
     }
 
+    private void _validateRegistration (final RegisterUserDTO registerUserDTO) {
+        if (_isEmailAlreadyRegister(registerUserDTO.email())) {
+            throw new EmailAlreadyRegisterException();
+        }
+
+        if (_isUsernameAlreadyRegister(registerUserDTO.username())) {
+            throw new UsernameAlreadyRegisterException();
+        }
+    }
+
     private Boolean _isEmailAlreadyRegister (final String email) {
         final Optional<User> user = userRepository.findByEmail(email);
+
+        return user.isPresent();
+    }
+
+    private Boolean _isUsernameAlreadyRegister (final String username) {
+        final Optional<User> user = userRepository.findByUsername(username);
 
         return user.isPresent();
     }
