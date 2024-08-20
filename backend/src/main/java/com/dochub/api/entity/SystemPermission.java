@@ -6,14 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PERMISSAO_SISTEMA")
+@Table(schema = "DOCHUB", name = "PERMISSAO_SISTEMA")
 public class SystemPermission {
     @Id
     @Column(name = "ID_PERMISSAO_SISTEMA")

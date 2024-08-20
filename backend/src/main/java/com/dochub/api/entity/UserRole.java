@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "USUARIO_CARGO")
+@Table(schema = "DOCHUB", name = "USUARIO_CARGO")
 public class UserRole {
     @EmbeddedId
     private UserRolePK id;

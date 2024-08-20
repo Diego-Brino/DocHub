@@ -22,7 +22,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "USUARIO")
+@Table(schema = "DOCHUB", name = "USUARIO")
 public class User implements UserDetails {
     @Id
     @Column(name = "ID_USUARIO")

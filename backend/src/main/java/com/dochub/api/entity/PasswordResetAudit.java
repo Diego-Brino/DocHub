@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "AUDITORIA_REDIFINICAO_SENHA")
+@Table(schema = "DOCHUB", name = "AUDITORIA_REDIFINICAO_SENHA")
 public class PasswordResetAudit {
     @Id
     @Column(name = "TOKEN")

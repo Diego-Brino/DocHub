@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CARGO_PERMISSAO_SISTEMA")
+@Table(schema = "DOCHUB", name = "CARGO_PERMISSAO_SISTEMA")
 public class SystemRolePermission {
     @Id
     @Column(name = "ID_CARGO_PERMISSAO_SISTEMA")
