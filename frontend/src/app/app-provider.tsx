@@ -17,7 +17,7 @@ function AppProvider({children}: AppProviderProps) {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             {children}
-            <Toaster/>
+            <Toaster richColors/>
           </AuthProvider>
         </QueryClientProvider>
       </TooltipProvider>

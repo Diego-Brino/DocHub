@@ -4,10 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.animate-blob {
-    animation: animate-blob 10s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite alternate forwards;
-}
-
 @layer base {
     body {
         @apply font-body;
@@ -16,22 +12,6 @@
         @apply shadow-[0_0_250px_5rem_white_inset] dark:shadow-[0_0_250px_5rem_black_inset];
         @apply min-h-screen;
         @apply overflow-x-hidden;
-    }
-
-    @keyframes animate-blob {
-        0% {
-            border-radius: 60% 40% 30% 70% / 100% 85% 92% 74%;
-        }
-        50% {
-            border-radius: 20% 71% 47% 70% / 81% 15% 22% 54%;
-            rotate: 41deg;
-            scale: 1.15;
-        }
-        100% {
-            border-radius: 100% 75% 92% 74% / 60% 80% 30% 70%;
-            rotate: -60deg;
-            scale: 1.05;
-        }
     }
 }
 
