@@ -1,4 +1,4 @@
-package com.dochub.api.infra.security;
+package com.dochub.api.infra;
 
 import com.dochub.api.exceptions.EntityNotFoundByEmailException;
 import com.dochub.api.repositories.UserRepository;

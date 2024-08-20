@@ -24,7 +24,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> get (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
         return ResponseEntity
             .ok()
-            .body(userService.get(token));
+            .body(userService.getByToken(token));
     }
 
     @GetMapping("/all")
@@ -51,7 +51,7 @@ public class UserController {
 
     @PatchMapping("/avatar")
     public ResponseEntity<Void> updateAvatar (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                              @RequestPart(Constants.AVATAR) @NonNull final MultipartFile avatar) {
+                                              @RequestPart(Constants.AVATAR_PARAMETER) @NonNull final MultipartFile avatar) {
         userService.updateAvatar(token, avatar);
 
         return ResponseEntity.ok().build();
@@ -59,8 +59,8 @@ public class UserController {
 
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                                @RequestBody String password) {
-        userService.updatePassword(token, password);
+                                                @RequestBody String newPassword) {
+        userService.updatePassword(token, newPassword);
 
         return ResponseEntity.ok().build();
     }

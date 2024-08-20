@@ -1,5 +1,6 @@
 package com.dochub.api.infra.security;
 
+import com.dochub.api.services.JwtService;
 import com.dochub.api.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

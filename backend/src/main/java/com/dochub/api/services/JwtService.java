@@ -1,4 +1,4 @@
-package com.dochub.api.infra.security;
+package com.dochub.api.services;
 
 import com.dochub.api.utils.Constants;
 import io.jsonwebtoken.Claims;

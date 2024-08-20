@@ -7,7 +7,6 @@ import com.dochub.api.entity.User;
 import com.dochub.api.exceptions.EmailAlreadyRegisterException;
 import com.dochub.api.exceptions.EntityNotFoundByEmailException;
 import com.dochub.api.exceptions.UsernameAlreadyRegisterException;
-import com.dochub.api.infra.security.JwtService;
 import com.dochub.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

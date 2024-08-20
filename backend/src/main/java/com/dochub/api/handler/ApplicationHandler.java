@@ -48,9 +48,9 @@ public class ApplicationHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorDTO> handleBadCredentialsException (BadCredentialsException e) {
-        log.error(Constants.BAD_CREDENTIALS_EXCEPTION_MESSAGE, e);
+        log.error(Constants.INVALID_CREDENTIALS_EXCEPTION_MESSAGE, e);
 
-        final ErrorDTO errorDTO = new ErrorDTO(Constants.BAD_CREDENTIALS_EXCEPTION_MESSAGE);
+        final ErrorDTO errorDTO = new ErrorDTO(Constants.INVALID_CREDENTIALS_EXCEPTION_MESSAGE);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
@@ -64,7 +64,7 @@ public class ApplicationHandler {
 
     @ExceptionHandler(EmailAlreadyRegisterException.class)
     public ResponseEntity<ErrorDTO> handleEmailAlreadyRegisterException (EmailAlreadyRegisterException e) {
-        log.error(Constants.EMAIL_ALREADY_REGISTER_EXCEPTION_MESSAGE, e);
+        log.error(Constants.EMAIL_ALREADY_REGISTERED_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
@@ -72,7 +72,7 @@ public class ApplicationHandler {
 
     @ExceptionHandler(UsernameAlreadyRegisterException.class)
     public ResponseEntity<ErrorDTO> handleUsernameAlreadyRegisterException (UsernameAlreadyRegisterException e) {
-        log.error(Constants.USERNAME_ALREADY_REGISTER_EXCEPTION_MESSAGE, e);
+        log.error(Constants.USERNAME_ALREADY_REGISTERED_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
@@ -81,6 +81,14 @@ public class ApplicationHandler {
     @ExceptionHandler(EntityNotFoundByEmailException.class)
     public ResponseEntity<ErrorDTO> handleEntityNotFoundByEmailException (EntityNotFoundByEmailException e) {
         log.error(Constants.ENTITY_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(EntityNotFoundByIdException.class)
+    public ResponseEntity<ErrorDTO> handleEntityNotFoundByIdException (EntityNotFoundByIdException e) {
+        log.error(Constants.ENTITY_NOT_FOUND_BY_ID_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
@@ -108,5 +116,29 @@ public class ApplicationHandler {
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(PasswordResetAuditTokenInvalidException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenInvalidException (PasswordResetAuditTokenInvalidException e) {
+        log.error(Constants.INVALIDATED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(PasswordResetAuditTokenUsedException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenUsedException (PasswordResetAuditTokenUsedException e) {
+        log.error(Constants.USED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(PasswordResetAuditTokenNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenNotFoundException (PasswordResetAuditTokenNotFoundException e) {
+        log.error(Constants.PASSWORD_RESET_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
     }
 }
