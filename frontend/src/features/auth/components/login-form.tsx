@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Authentication} from "@/features/auth/types";
 import {usePostAuthenticate} from "@/features/auth/hooks/use-post-authenticate.ts";
+import {useRecoverPasswordDialogContext} from "@/features/auth/hooks/use-recover-password-dialog-context.ts";
 
 const schema = z.object({
   email: z.string()
@@ -18,6 +19,9 @@ const schema = z.object({
 })
 
 function LoginForm() {
+
+  const {open} = useRecoverPasswordDialogContext();
+
   const {mutate, isLoading} = usePostAuthenticate();
 
   const {
@@ -47,8 +51,13 @@ function LoginForm() {
         <div className='space-y-2'>
           <div className="flex items-center justify-between gap-2">
             <Label htmlFor="password">Senha</Label>
-            <Button variant='link' asChild className='p-0 h-min underline text-current hover:text-primary'>
-              <a href='#'>Esqueceu a senha?</a>
+            <Button
+              className='p-0 h-min underline text-current hover:text-primary'
+              variant='link'
+              onClick={open}
+              type='button'
+            >
+              Esqueci minha senha
             </Button>
           </div>
           <PasswordInput
