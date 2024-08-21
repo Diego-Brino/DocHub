@@ -1,7 +1,8 @@
 package com.dochub.api.controllers;
 
-import com.dochub.api.dtos.UpdateUserDTO;
-import com.dochub.api.dtos.UserResponseDTO;
+import com.dochub.api.dtos.user.UpdatePasswordDTO;
+import com.dochub.api.dtos.user.UpdateUserDTO;
+import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
@@ -43,7 +44,7 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                        @ModelAttribute @Valid @NonNull final UpdateUserDTO updateUserDTO) {
+                                        @ModelAttribute @NonNull @Valid final UpdateUserDTO updateUserDTO) {
         userService.update(token, updateUserDTO);
 
         return ResponseEntity.ok().build();
@@ -59,8 +60,8 @@ public class UserController {
 
     @PatchMapping("/password")
     public ResponseEntity<Void> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                                @RequestBody String newPassword) {
-        userService.updatePassword(token, newPassword);
+                                                @RequestBody @NonNull @Valid final UpdatePasswordDTO updatePasswordDTO) {
+        userService.updatePassword(token, updatePasswordDTO);
 
         return ResponseEntity.ok().build();
     }

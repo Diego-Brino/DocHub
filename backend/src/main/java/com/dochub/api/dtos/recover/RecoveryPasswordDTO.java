@@ -1,13 +1,13 @@
-package com.dochub.api.dtos;
+package com.dochub.api.dtos.recover;
 
 import com.dochub.api.utils.Constants;
 import jakarta.validation.constraints.NotBlank;
 
-public record ChangeUserPasswordByResetLinkDTO (
+public record RecoveryPasswordDTO(
     @NotBlank(message = Constants.AUTHENTICATION_TOKEN_IS_REQUIRED_MESSAGE)
     String token,
 
-    @NotBlank(message = Constants.PASSWORD_IS_REQUIRED_MESSAGE)
+    @NotBlank(message = Constants.NEW_PASSWORD_IS_REQUIRED_MESSAGE)
     String newPassword
 ) {
 }

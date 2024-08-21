@@ -1,8 +1,8 @@
 package com.dochub.api.controllers;
 
-import com.dochub.api.dtos.AuthenticationRequestDTO;
-import com.dochub.api.dtos.AuthenticationResponseDTO;
-import com.dochub.api.dtos.RegisterUserDTO;
+import com.dochub.api.dtos.auth.AuthenticationRequestDTO;
+import com.dochub.api.dtos.auth.AuthenticationResponseDTO;
+import com.dochub.api.dtos.user.CreateUserDTO;
 import com.dochub.api.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseDTO> register (@ModelAttribute @Valid final RegisterUserDTO registerUserDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> register (@ModelAttribute @Valid final CreateUserDTO createUserDTO) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(authenticationService.register(registerUserDTO));
+            .body(authenticationService.register(createUserDTO));
     }
 
     @PostMapping("/authenticate")

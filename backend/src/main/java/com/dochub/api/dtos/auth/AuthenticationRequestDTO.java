@@ -1,4 +1,4 @@
-package com.dochub.api.dtos;
+package com.dochub.api.dtos.auth;
 
 import com.dochub.api.utils.Constants;
 import jakarta.validation.constraints.Email;

@@ -1,6 +1,6 @@
 package com.dochub.api.infra;
 
-import com.dochub.api.exceptions.EntityNotFoundByEmailException;
+import com.dochub.api.exceptions.UserNotFoundByEmailException;
 import com.dochub.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService () {
-        return username -> userRepository.findByEmail(username).orElseThrow(EntityNotFoundByEmailException::new);
+        return username -> userRepository.findByEmail(username).orElseThrow(UserNotFoundByEmailException::new);
     }
 
     @Bean

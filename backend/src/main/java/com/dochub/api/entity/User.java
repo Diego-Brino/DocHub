@@ -1,7 +1,6 @@
 package com.dochub.api.entity;
 
-import com.dochub.api.dtos.RegisterUserDTO;
-import com.dochub.api.dtos.UpdateUserDTO;
+import com.dochub.api.dtos.user.CreateUserDTO;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import jakarta.persistence.*;
@@ -53,18 +52,17 @@ public class User implements UserDetails {
 
     //region Constructors
 
-    public User (RegisterUserDTO registerUserDTO) {
-        this.name = registerUserDTO.name();
-        this.email = registerUserDTO.email();
-        this.username = registerUserDTO.username();
-        this.password = Utils.encodePassword(registerUserDTO.password());
+    public User (final CreateUserDTO createUserDTO) {
+        this.name = createUserDTO.name();
+        this.email = createUserDTO.email();
+        this.username = createUserDTO.username();
+        this.password = Utils.encodePassword(createUserDTO.password());
 
-        if (Objects.nonNull(registerUserDTO.avatar())) {
-            this.avatar = Utils.readBytesFromMultipartFile(registerUserDTO.avatar());
+        if (Objects.nonNull(createUserDTO.avatar())) {
+            this.avatar = Utils.readBytesFromMultipartFile(createUserDTO.avatar());
         }
 
-        this.auditRecord = AuditRecord
-            .builder()
+        this.auditRecord = AuditRecord.builder()
             .insertionUser(Constants.SYSTEM_NAME)
             .insertionDate(new Date())
             .build();

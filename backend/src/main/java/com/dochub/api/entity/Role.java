@@ -1,11 +1,15 @@
 package com.dochub.api.entity;
 
+import com.dochub.api.converters.RoleStatusConverter;
+import com.dochub.api.dtos.role.CreateRoleDTO;
 import com.dochub.api.enums.RoleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -29,9 +33,21 @@ public class Role {
     private String color;
 
     @Column(name = "STATUS")
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = RoleStatusConverter.class)
     private RoleStatus roleStatus;
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Role (final CreateRoleDTO createRoleDTO, final String initiatorUsername) {
+        this.name = createRoleDTO.name();
+        this.description = createRoleDTO.description();
+        this.color = createRoleDTO.color();
+        this.roleStatus = RoleStatus.ACTIVE;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

@@ -14,7 +14,7 @@ public enum RoleStatus {
     }
 
     @Override
-    public String toString() {
-        return this.name();
+    public String toString () {
+        return this.code;
     }
 }

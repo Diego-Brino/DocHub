@@ -219,9 +219,9 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- dochub.auditoria_redifinicao_senha definition
+-- dochub.auditoria_recuperacao_senha definition
 
-CREATE TABLE IF NOT EXISTS `dochub`.`auditoria_redifinicao_senha` (
+CREATE TABLE `auditoria_recuperacao_senha` (
                                                `TOKEN` varchar(256) NOT NULL,
                                                `ID_USUARIO` int NOT NULL,
                                                `DATA_EXPIRACAO` datetime NOT NULL,

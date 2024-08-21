@@ -16,8 +16,8 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "DOCHUB", name = "AUDITORIA_REDIFINICAO_SENHA")
-public class PasswordResetAudit {
+@Table(schema = "DOCHUB", name = "AUDITORIA_RECUPERACAO_SENHA")
+public class PasswordRecoveryAudit {
     @Id
     @Column(name = "TOKEN")
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,7 +35,7 @@ public class PasswordResetAudit {
     @Convert(converter = TokenStatusConverter.class)
     private TokenStatus status;
 
-    public PasswordResetAudit (final User user) {
+    public PasswordRecoveryAudit(final User user) {
         this.user = user;
         this.expirationDate = new Date(System.currentTimeMillis() + Constants.RECOVER_PASSWORD_TOKEN_EXPIRATION_TIME_MILLIS);
         this.status = TokenStatus.UNUSED;

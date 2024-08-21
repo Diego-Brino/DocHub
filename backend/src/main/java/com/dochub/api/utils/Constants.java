@@ -31,6 +31,9 @@ public interface Constants {
     String INVALID_EMAIL_MESSAGE = "O endereço de e-mail fornecido é inválido.";
     String USERNAME_IS_REQUIRED_MESSAGE = "O campo 'Nome de Usuário' é obrigatório.";
     String AUTHENTICATION_TOKEN_IS_REQUIRED_MESSAGE = "O token de autenticação é obrigatório.";
+    String COLOR_IS_REQUIRED_MESSAGE = "O campo 'Cor' é obrigatório.";
+    String OLD_PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha Anterior' é obrigatório.";
+    String NEW_PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Nova Senha' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -43,7 +46,9 @@ public interface Constants {
     String INPUT_STREAM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do fluxo de entrada.";
     String INVALID_TOKEN_FORMAT_EXCEPTION_MESSAGE = "O formato do token fornecido é inválido.";
     String EXPIRED_TOKEN_EXCEPTION_MESSAGE = "O token fornecido expirou.";
-    String INVALIDATED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE = "O token de redefinição de senha foi invalidado.";
-    String USED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE = "O token de redefinição de senha já foi utilizado.";
-    String PASSWORD_RESET_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE = "Não foi possível localizar o token de redefinição de senha.";
+    String INVALID_PASSWORD_RECOVERY_TOKEN_EXCEPTION_MESSAGE = "O token de redefinição de senha foi invalidado.";
+    String USED_PASSWORD_RECOVERY_TOKEN_EXCEPTION_MESSAGE = "O token de redefinição de senha já foi utilizado.";
+    String PASSWORD_RECOVERY_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE = "Não foi possível localizar o token de redefinição de senha.";
+    String PASSWORD_MISMATCH_EXCEPTION_MESSAGE = "A senha fornecida não corresponde a senha registrada.";
+    String INVALID_USERNAME_FORMAT_EXCEPTION_MESSAGE = "O campo 'Username' não pode conter espaços em branco ou caracteres especiais.";
 }

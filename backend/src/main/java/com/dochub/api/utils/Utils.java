@@ -9,8 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Utils {
+    private static final Pattern SPECIAL_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9]");
+    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
+
     public static String encodePassword (String password) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -39,5 +43,23 @@ public class Utils {
         }
 
         throw new InvalidTokenFormatException();
+    }
+
+    public static Boolean containsSpecialCharacters(String input) {
+        if (input == null) {
+            return false;
+        }
+        return SPECIAL_CHARACTERS_PATTERN.matcher(input).find();
+    }
+
+    public static Boolean containsWhitespace(String input) {
+        if (input == null) {
+            return false;
+        }
+        return WHITESPACE_PATTERN.matcher(input).find();
+    }
+
+    public static Boolean containsSpacesOrSpecialCharacters(String input) {
+        return containsWhitespace(input) || containsSpecialCharacters(input);
     }
 }

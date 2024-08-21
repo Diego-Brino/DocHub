@@ -79,8 +79,8 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(EntityNotFoundByEmailException.class)
-    public ResponseEntity<ErrorDTO> handleEntityNotFoundByEmailException (EntityNotFoundByEmailException e) {
+    @ExceptionHandler(UserNotFoundByEmailException.class)
+    public ResponseEntity<ErrorDTO> handleEntityNotFoundByEmailException (UserNotFoundByEmailException e) {
         log.error(Constants.USER_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
@@ -127,27 +127,43 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(PasswordResetAuditTokenInvalidException.class)
-    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenInvalidException (PasswordResetAuditTokenInvalidException e) {
-        log.error(Constants.INVALIDATED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE, e);
+    @ExceptionHandler(InvalidPasswordRecoveryTokenException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenInvalidException (InvalidPasswordRecoveryTokenException e) {
+        log.error(Constants.INVALID_PASSWORD_RECOVERY_TOKEN_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(PasswordResetAuditTokenUsedException.class)
-    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenUsedException (PasswordResetAuditTokenUsedException e) {
-        log.error(Constants.USED_PASSWORD_RESET_TOKEN_EXCEPTION_MESSAGE, e);
+    @ExceptionHandler(UsedPasswordRecoveryTokenException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenUsedException (UsedPasswordRecoveryTokenException e) {
+        log.error(Constants.USED_PASSWORD_RECOVERY_TOKEN_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(PasswordResetAuditTokenNotFoundException.class)
-    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenNotFoundException (PasswordResetAuditTokenNotFoundException e) {
-        log.error(Constants.PASSWORD_RESET_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE, e);
+    @ExceptionHandler(PasswordRecoveryTokenNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordResetAuditTokenNotFoundException (PasswordRecoveryTokenNotFoundException e) {
+        log.error(Constants.PASSWORD_RECOVERY_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<ErrorDTO> handlePasswordMismatchException (PasswordMismatchException e) {
+        log.error(Constants.PASSWORD_MISMATCH_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(InvalidUsernameFormatException.class)
+    public ResponseEntity<ErrorDTO> handleInvalidUsernameFormatException (InvalidUsernameFormatException e) {
+        log.error(Constants.INVALID_USERNAME_FORMAT_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 }
