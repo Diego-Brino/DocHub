@@ -4,6 +4,7 @@ import {Separator} from "@/components/ui/separator.tsx";
 import {LoginForm} from "@/features/auth/components/login-form.tsx";
 import {RecoverPasswordDialog} from "@/features/auth/components/recover-password-dialog.tsx";
 import {RecoverPasswordDialogProvider} from "@/features/auth/providers/recover-password-dialog-provider.tsx";
+import {ThemeButton} from "@/features/theme";
 
 function LoginPage() {
   return (
@@ -33,10 +34,9 @@ function LoginPage() {
             </div>
             <div className='flex-1'>
               <CardHeader>
-                <CardTitle>
-                  <div className='flex justify-between items-center'>
-                    Login
-                  </div>
+                <CardTitle className='flex justify-between'>
+                  Login
+                  <ThemeButton/>
                 </CardTitle>
               </CardHeader>
               <LoginForm />
