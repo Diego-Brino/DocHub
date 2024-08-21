@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -80,7 +81,15 @@ public class ApplicationHandler {
 
     @ExceptionHandler(EntityNotFoundByEmailException.class)
     public ResponseEntity<ErrorDTO> handleEntityNotFoundByEmailException (EntityNotFoundByEmailException e) {
-        log.error(Constants.ENTITY_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);
+        log.error(Constants.USER_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorDTO> handleAuthenticationException (AuthenticationException e) {
+        log.error(Constants.USER_NOT_FOUND_BY_EMAIL_EXCEPTION_MESSAGE, e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
