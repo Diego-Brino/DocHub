@@ -1,5 +1,5 @@
 import React from "react";
-import {DarkModeProvider} from "@/features/dark-mode";
+import {ThemeProvider} from "@/features/theme";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {QueryClientProvider} from "react-query";
 import queryClient from "@/lib/react-query";
@@ -12,7 +12,7 @@ type AppProviderProps = {
 
 function AppProvider({children}: AppProviderProps) {
   return (
-    <DarkModeProvider>
+    <ThemeProvider>
       <TooltipProvider>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
@@ -21,7 +21,7 @@ function AppProvider({children}: AppProviderProps) {
           </AuthProvider>
         </QueryClientProvider>
       </TooltipProvider>
-    </DarkModeProvider>
+    </ThemeProvider>
   );
 }
 
