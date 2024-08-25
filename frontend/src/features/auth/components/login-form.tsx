@@ -54,7 +54,7 @@ function LoginForm() {
   const onSubmit = (values: z.infer<typeof schema>) => {
     mutateAsync(values).then(({token}) => {
       setToken(token);
-      navigate('/groups');
+      navigate('/groups', {replace: true});
     });
   }
 
