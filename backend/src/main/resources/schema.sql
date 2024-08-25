@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo` (
 
 -- dochub.auditoria_recuperacao_senha definition
 
-CREATE TABLE `auditoria_recuperacao_senha` (
+CREATE TABLE IF NOT EXISTS `dochub`.`auditoria_recuperacao_senha` (
                                                `TOKEN` varchar(256) NOT NULL,
                                                `ID_USUARIO` int NOT NULL,
                                                `DATA_EXPIRACAO` datetime NOT NULL,
