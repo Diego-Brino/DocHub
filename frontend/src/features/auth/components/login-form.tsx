@@ -1,7 +1,4 @@
 import {CardContent, CardFooter} from "@/components/ui/card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {EmailInput, PasswordInput} from "@/features/auth";
-import {InputValidation} from "@/components/custom/input-validation.tsx";
 import {Button} from "@/components/custom/button.tsx";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -9,14 +6,24 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Authentication} from "@/features/auth/types";
 import {usePostAuthenticate} from "@/features/auth/hooks/use-post-authenticate.ts";
 import {useRecoverPasswordDialogContext} from "@/features/auth/hooks/use-recover-password-dialog-context.ts";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form.tsx";
+import {Eye, EyeOff, LucideMail} from "lucide-react";
+import {Input} from "@/components/custom/input.tsx";
+import {useState} from "react";
 
 const schema = z.object({
-  email: z.string()
-    .min(1, "Email é obrigatório!")
-    .min(3, "Email inválido!")
-    .email("Email inválido!"),
-  password: z.string()
-    .min(1, "Senha é obrigatória!"),
+  email: z.string({required_error: "Email é obrigatório"})
+    .email("Email inválido"),
+  password: z.string({required_error: "Senha é obrigatória"})
+    .min(8, "Senha Inválida"),
 })
 
 function LoginForm() {
@@ -25,59 +32,86 @@ function LoginForm() {
 
   const {mutate, isLoading} = usePostAuthenticate();
 
-  const {
-    register,
-    handleSubmit,
-    formState: {errors}
-  } = useForm<Authentication>({
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onClickShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const form = useForm<Authentication>({
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (data: Authentication) => {
-    mutate(data);
+  const onSubmit = (values: z.infer<typeof schema>) => {
+    mutate(values);
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <CardContent className='space-y-4'>
-        <div className='space-y-2'>
-          <Label htmlFor='email'>Email</Label>
-          <EmailInput
-            {...register('email')}
-            id='email'
-            error={errors?.email?.toString()}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <CardContent className='space-y-4'>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  Email
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type='email'
+                    error={form.formState.errors.email?.message}
+                    endIcon={<LucideMail/>}
+                  />
+                </FormControl>
+                <FormDescription/>
+                <FormMessage/>
+              </FormItem>
+            )}
           />
-          <InputValidation error={errors?.email?.message?.toString()}/>
-        </div>
-        <div className='space-y-2'>
-          <div className="flex items-center justify-between gap-2">
-            <Label htmlFor="password">Senha</Label>
-            <Button
-              className='p-0 h-min underline text-current hover:text-primary'
-              variant='link'
-              onClick={open}
-              type='button'
-            >
-              Esqueci minha senha
-            </Button>
-          </div>
-          <PasswordInput
-            {...register('password')}
-            id='password'
-            error={errors?.password?.toString()}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel className='w-full h-[17px] inline-flex justify-between items-center'>
+                  Senha
+                  <Button
+                    className='h-min p-0'
+                    type='button'
+                    variant='link'
+                    onClick={open}
+                  >
+                    Esqueci a senha
+                  </Button>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    error={form.formState.errors.password?.message}
+                    type={showPassword ? 'text' : 'password'}
+                    endIcon={showPassword ? <Eye/> : <EyeOff/>}
+                    onClickEndIcon={onClickShowPassword}
+                  />
+                </FormControl>
+                <FormDescription/>
+                <FormMessage/>
+              </FormItem>
+            )}
           />
-          <InputValidation error={errors?.password?.message?.toString()}/>
-        </div>
-      </CardContent>
-      <CardFooter className='block space-y-2'>
-        <Button type='submit' loading={isLoading} disabled={isLoading} className='w-full'>
-          Entrar
-        </Button>
-      </CardFooter>
-    </form>
-  )
+        </CardContent>
+        <CardFooter className='block space-y-2'>
+          <Button type='submit' loading={isLoading} disabled={isLoading} className='w-full'>
+            Entrar
+          </Button>
+        </CardFooter>
+      </form>
+    </Form>
+)
 }
 
 LoginForm.displayName = "LoginForm"
 
-export {LoginForm};
+export {LoginForm}
