@@ -40,6 +40,10 @@ function LoginForm() {
 
   const form = useForm<Authentication>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: ''
+    },
   })
 
   const onSubmit = (values: z.infer<typeof schema>) => {
@@ -109,8 +113,7 @@ function LoginForm() {
         </CardFooter>
       </form>
     </Form>
-)
-}
+)}
 
 LoginForm.displayName = "LoginForm"
 
