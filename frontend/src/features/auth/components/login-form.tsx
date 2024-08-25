@@ -18,6 +18,8 @@ import {
 import {Eye, EyeOff, LucideMail} from "lucide-react";
 import {Input} from "@/components/custom/input.tsx";
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useAuthContext} from "@/features/auth/hooks/use-auth-context.ts";
 
 const schema = z.object({
   email: z.string({required_error: "Email é obrigatório"})
@@ -27,10 +29,13 @@ const schema = z.object({
 })
 
 function LoginForm() {
+  const navigate = useNavigate();
+
+  const {setToken} = useAuthContext();
 
   const {open} = useRecoverPasswordDialogContext();
 
-  const {mutate, isLoading} = usePostAuthenticate();
+  const {mutateAsync, isLoading} = usePostAuthenticate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -47,7 +52,10 @@ function LoginForm() {
   })
 
   const onSubmit = (values: z.infer<typeof schema>) => {
-    mutate(values);
+    mutateAsync(values).then(({token}) => {
+      setToken(token);
+      navigate('/groups');
+    });
   }
 
   return (
