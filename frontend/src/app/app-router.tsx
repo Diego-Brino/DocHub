@@ -3,6 +3,7 @@ import {LoginPage} from "../pages/login-page.tsx";
 import {GroupsPage} from "@/pages/groups-page.tsx";
 import {NotFoundPage} from "@/pages/not-found-page.tsx";
 import {Main} from "@/layouts/main";
+import {ResetPasswordPage} from "@/pages/reset-password-page.tsx";
 
 const AppBrowserRouter = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const AppBrowserRouter = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage/>
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage/>
       },
       {
         path: "/",
