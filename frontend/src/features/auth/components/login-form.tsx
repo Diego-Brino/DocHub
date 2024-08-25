@@ -13,6 +13,7 @@ import {useRecoverPasswordDialogContext} from "@/features/auth/hooks/use-recover
 const schema = z.object({
   email: z.string()
     .min(1, "Email é obrigatório!")
+    .min(3, "Email inválido!")
     .email("Email inválido!"),
   password: z.string()
     .min(1, "Senha é obrigatória!"),
