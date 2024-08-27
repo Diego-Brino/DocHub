@@ -1,6 +1,6 @@
 import {HeaderLogo} from "./header-logo.tsx";
-import {HeaderProfile} from "./header-profile.tsx";
 import {HeaderLinks} from "./header-links.tsx";
+import {UsersProfileButton} from "@/features/users";
 
 function Header() {
   return (
@@ -8,7 +8,7 @@ function Header() {
       <div className='md:container flex justify-between p-4 gap-4'>
         <HeaderLogo/>
         <HeaderLinks/>
-        <HeaderProfile/>
+        <UsersProfileButton/>
       </div>
     </div>
   )

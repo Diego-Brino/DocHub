@@ -1,4 +1,5 @@
-function HeaderProfile() {
+function UsersProfileButton() {
+
   return (
     <div className='flex md:flex-1 gap-4 items-center justify-end'>
       <div className='flex gap-2'>
@@ -12,6 +13,6 @@ function HeaderProfile() {
   )
 }
 
-HeaderProfile.displayName = "HeaderProfile"
+UsersProfileButton.displayName = 'UsersProfileButton'
 
-export {HeaderProfile}
+export {UsersProfileButton}
