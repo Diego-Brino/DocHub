@@ -1,7 +1,9 @@
 package com.dochub.api.controllers;
 
-import com.dochub.api.dtos.recover.RecoveryPasswordDTO;
+import com.dochub.api.dtos.recovery_password.RecoveryPasswordDTO;
+import com.dochub.api.entity.User;
 import com.dochub.api.services.PasswordRecoveryService;
+import com.dochub.api.services.UserService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/password-recovery")
 @RequiredArgsConstructor
 public class PasswordRecoveryController {
+    private final UserService userService;
     private final PasswordRecoveryService passwordRecoveryService;
 
     @PostMapping("/link")
     public ResponseEntity<Void> sendRecoveryMail (@RequestParam("email") @NonNull final String userEmail) {
-        passwordRecoveryService.sendRecoveryMail(userEmail);
+        final User user = userService.getByEmail(userEmail);
+
+        passwordRecoveryService.sendRecoveryMail(user);
 
         return ResponseEntity
             .status(HttpStatus.ACCEPTED)
@@ -26,7 +31,7 @@ public class PasswordRecoveryController {
 
     @PostMapping("/change")
     public ResponseEntity<Void> changePassword (@RequestBody @Valid final RecoveryPasswordDTO recoveryPasswordDTO) {
-        passwordRecoveryService.changePassword(recoveryPasswordDTO);
+        passwordRecoveryService.changePassword(recoveryPasswordDTO, userService::updatePasswordByRecoveryLink);
 
         return ResponseEntity
             .status(HttpStatus.OK)

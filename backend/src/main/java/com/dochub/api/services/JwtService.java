@@ -1,6 +1,7 @@
 package com.dochub.api.services;
 
 import com.dochub.api.utils.Constants;
+import com.dochub.api.utils.Utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -21,6 +22,10 @@ public class JwtService {
     private String SECRET_KEY;
 
     public String extractUserEmail (final String token) {
+        if (token.startsWith("Bearer ")) {
+            return _extractClaim(Utils.removeBearerPrefix(token), Claims::getSubject);
+        }
+
         return _extractClaim(token, Claims::getSubject);
     }
 

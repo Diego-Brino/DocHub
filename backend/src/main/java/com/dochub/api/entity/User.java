@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @Column(name = "DATA_ULTIMO_ACESSO")
     private Date lastAccess;
 
+    @OneToMany(mappedBy = "user")
+    private List<UserRole> userRoles;
+
     @Embedded
     private AuditRecord auditRecord;
 

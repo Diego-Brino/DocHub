@@ -1,34 +1,60 @@
 package com.dochub.api.services;
 
+import com.dochub.api.templates.EmailTemplateLoader;
+import com.dochub.api.utils.Constants;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Async
+@Slf4j
 public class EmailService {
     private final JavaMailSender mailSender;
+    private final EmailTemplateLoader emailTemplateLoader;
 
-    @Async
-    public void sendPasswordRecoveryMail (final String email, final String recoveryLink) {
-        String subject = "Solicitação de Recuperação de Senha";
-        String message = "Olá,\n\n" +
-                "Recebemos uma solicitação para redefinir a senha da sua conta. Se você solicitou essa alteração, por favor, clique no link abaixo para criar uma nova senha:\n\n" +
-                recoveryLink + "\n\n" +
-                "Por motivos de segurança, este link é válido por apenas 24 horas. Após esse período, será necessário solicitar um novo link de recuperação.\n\n" +
-                "Se você não fez essa solicitação, nenhuma ação é necessária. Sua conta permanece segura, e você pode continuar a usá-la normalmente.\n\n" +
-                "Caso tenha qualquer dúvida ou preocupação, entre em contato com nosso suporte ao cliente imediatamente.\n\n" +
-                "Atenciosamente,\n" +
-                "Equipe de Suporte";
+    public void sendPasswordRecoveryMail (final String name, final String email, final String recoveryLink) {
+        String content = emailTemplateLoader.loadResetPasswordTemplate(recoveryLink, name);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        _sendHtmlMail(email, Constants.PASSWORD_RECOVERY_TITLE_EMAIL, content);
+    }
 
-        mailMessage.setTo(email);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
+    private void _sendHtmlMail (String recipientEmail, String subject, String htmlContent) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, Constants.UTF_8);
 
-        mailSender.send(mailMessage);
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+
+            // Cria o multipart relacionado
+            MimeMultipart multipart = new MimeMultipart("related");
+
+            // Parte HTML
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(htmlContent, "text/html");
+            multipart.addBodyPart(messageBodyPart);
+
+            // Adiciona a imagem como parte inline, se necessário
+            // Neste caso, se você estiver apenas usando base64 no HTML, você pode pular esta parte.
+            // Se precisar de imagens adicionais inline, adicione-as aqui.
+
+            // Define o conteúdo do e-mail
+            message.setContent(multipart);
+
+            mailSender.send(message);
+
+            log.info("Email enviado com sucesso para {}", recipientEmail);
+        } catch (MessagingException e) {
+            log.warn("Falha ao enviar email para {}", recipientEmail);
+        }
     }
 }

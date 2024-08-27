@@ -1,4 +1,4 @@
-package com.dochub.api.dtos.recover;
+package com.dochub.api.dtos.recovery_password;
 
 import com.dochub.api.utils.Constants;
 import jakarta.validation.constraints.NotBlank;

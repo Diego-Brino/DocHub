@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -37,7 +38,7 @@ public class Utils {
         }
     }
 
-    public static String removeBearerPrefix(String token) {
+    public static String removeBearerPrefix (String token) {
         if (Objects.nonNull(token) && token.startsWith("Bearer ")) {
             return token.substring(7);
         }
@@ -45,21 +46,27 @@ public class Utils {
         throw new InvalidTokenFormatException();
     }
 
-    public static Boolean containsSpecialCharacters(String input) {
+    public static Boolean containsSpecialCharacters (String input) {
         if (input == null) {
             return false;
         }
         return SPECIAL_CHARACTERS_PATTERN.matcher(input).find();
     }
 
-    public static Boolean containsWhitespace(String input) {
+    public static Boolean containsWhitespace (String input) {
         if (input == null) {
             return false;
         }
         return WHITESPACE_PATTERN.matcher(input).find();
     }
 
-    public static Boolean containsSpacesOrSpecialCharacters(String input) {
+    public static Boolean containsSpacesOrSpecialCharacters (String input) {
         return containsWhitespace(input) || containsSpecialCharacters(input);
+    }
+
+    public static void updateFieldIfPresent(String fieldValue, Consumer<String> updateAction) {
+        if (Objects.nonNull(fieldValue) && !fieldValue.isBlank()) {
+            updateAction.accept(fieldValue);
+        }
     }
 }

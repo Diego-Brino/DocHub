@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -35,6 +36,12 @@ public class Role {
     @Column(name = "STATUS")
     @Convert(converter = RoleStatusConverter.class)
     private RoleStatus roleStatus;
+
+    @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
+    private List<SystemRolePermission> systemRolePermissions;
+
+    @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
+    private List<UserRole> userRoles;
 
     @Embedded
     private AuditRecord auditRecord;

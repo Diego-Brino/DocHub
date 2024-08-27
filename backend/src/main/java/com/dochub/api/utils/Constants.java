@@ -18,11 +18,23 @@ public interface Constants {
     String USER_ICON_PATH = "images/UserIcon.png";
 
     // URLs
-    String AVATAR_URL = "http://localhost:8080/user/%s/avatar";
-    String PASSWORD_RESET_LINK = "http://localhost:8085/reset-password?token=%s";
+    String AVATAR_URL = "http://localhost:8080/users/%s/avatar";
+    String PASSWORD_RECOVERY_LINK = "http://localhost:8085/password-recovery?token=%s";
 
     // Email Subjects
     String PASSWORD_RESET_INITIATOR_NAME = "DocHub - ResetLink";
+
+    // Permissions
+    String CREATE_ROLE_PERMISSION = "Criar Cargo";
+    String EDIT_ROLE_PERMISSION = "Editar Cargo";
+    String DELETE_ROLE_PERMISSION = "Deletar Cargo";
+
+    // Utilities
+    String UTF_8 = "UTF-8";
+    String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
+
+    // Templates
+    String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
 
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
@@ -51,4 +63,6 @@ public interface Constants {
     String PASSWORD_RECOVERY_TOKEN_NOT_FOUND_EXCEPTION_MESSAGE = "Não foi possível localizar o token de redefinição de senha.";
     String PASSWORD_MISMATCH_EXCEPTION_MESSAGE = "A senha fornecida não corresponde a senha registrada.";
     String INVALID_USERNAME_FORMAT_EXCEPTION_MESSAGE = "O campo 'Username' não pode conter espaços em branco ou caracteres especiais.";
+    String PERMISSION_DENIED_EXCEPTION_MESSAGE = "O usuário em questão não possui permissão para %s.";
+    String USER_MISMATCH_EXCEPTION_MESSAGE = "O usuário autenticado não corresponde ao usuário que foi passado como parâmetro.";
 }

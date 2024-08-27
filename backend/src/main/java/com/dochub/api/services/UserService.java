@@ -20,24 +20,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    public UserResponseDTO getByToken (final String token) {
-        final User user = _getUserByToken(token);
+    public UserResponseDTO getById (final Integer userId, final String userEmail) {
+        final User user = getByEmail(userEmail);
+
+        _validateUserIdentity(userId, user);
 
         return new UserResponseDTO(user);
     }
 
-    public User getByEmail (final String email) {
+    public User getByEmail (final String userEmail) {
         return userRepository
-            .findByEmail(email)
+            .findByEmail(userEmail)
             .orElseThrow(UserNotFoundByEmailException::new);
     }
 
@@ -50,9 +50,9 @@ public class UserService {
             .collect(Collectors.toList());
     }
 
-    public byte[] getAvatar (final Integer id) {
+    public byte[] getAvatar (final Integer userId) {
         final User user = userRepository
-            .findById(id)
+            .findById(userId)
             .orElseThrow(EntityNotFoundByIdException::new);
 
         if (Objects.nonNull(user.getAvatar())) {
@@ -62,25 +62,25 @@ public class UserService {
         return _getDefaultUserAvatar();
     }
 
-    public String create (final CreateUserDTO createUserDTO) {
+    public User create (final CreateUserDTO createUserDTO) {
         _validateUserCreation(createUserDTO);
 
         final User user = new User(createUserDTO);
 
-        userRepository.save(user);
-
-        return jwtService.generateToken(user);
+        return userRepository.save(user);
     }
 
-    public void update (final String token, final UpdateUserDTO updateUserDTO) {
-        final User user = _getUserByToken(token);
+    public void update (final Integer userId, final String userEmail, final UpdateUserDTO updateUserDTO) {
+        final User user = getByEmail(userEmail);
+
+        _validateUserIdentity(userId, user);
 
         _validateUserUpdate(user, updateUserDTO);
 
-        _updateFieldIfPresent(updateUserDTO.name(), user::setName);
-        _updateFieldIfPresent(updateUserDTO.password(), password -> user.setPassword(Utils.encodePassword(password)));
-        _updateFieldIfPresent(updateUserDTO.email(), user::setEmail);
-        _updateFieldIfPresent(updateUserDTO.username(), user::setUsername);
+        Utils.updateFieldIfPresent(updateUserDTO.name(), user::setName);
+        Utils.updateFieldIfPresent(updateUserDTO.password(), password -> user.setPassword(Utils.encodePassword(password)));
+        Utils.updateFieldIfPresent(updateUserDTO.email(), user::setEmail);
+        Utils.updateFieldIfPresent(updateUserDTO.username(), user::setUsername);
         _updateAvatarIfPresent(updateUserDTO.avatar(), user);
 
         _logAuditForChange(user, user.getUsername());
@@ -88,8 +88,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateAvatar (final String token, final MultipartFile avatar) {
-        final User user = _getUserByToken(token);
+    public void updateAvatar (final Integer userId, final String userEmail, final MultipartFile avatar) {
+        final User user = getByEmail(userEmail);
+
+        _validateUserIdentity(userId, user);
 
         user.setAvatar(Utils.readBytesFromMultipartFile(avatar));
 
@@ -98,12 +100,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updatePassword (final String token, final UpdatePasswordDTO updatePasswordDTO) {
-        final User user = _getUserByToken(token);
+    public void updatePassword (final Integer userId, final String userEmail, final UpdatePasswordDTO updatePasswordDTO) {
+        final User user = getByEmail(userEmail);
 
-        if (!_isPasswordMatching(updatePasswordDTO.oldPassword(), user.getPassword())) {
-            throw new PasswordMismatchException();
-        }
+        _validateUserIdentity(userId, user);
+
+        _validatePasswordMatching(updatePasswordDTO.oldPassword(), user.getPassword());
 
         user.setPassword(Utils.encodePassword(updatePasswordDTO.newPassword()));
 
@@ -120,20 +122,16 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private User _getUserByToken (final String token) {
-        final String formattedToken = Utils.removeBearerPrefix(token);
-
-        final String userEmail = jwtService.extractUserEmail(formattedToken);
-
-        return userRepository
-            .findByEmail(userEmail)
-            .orElseThrow(UserNotFoundByEmailException::new);
-    }
-
     private byte[] _getDefaultUserAvatar () {
         final ClassPathResource classPathResource = new ClassPathResource(Constants.USER_ICON_PATH);
 
         return Utils.readBytesFromResource(classPathResource);
+    }
+
+    private void _validateUserIdentity (final Integer userId, final User user) {
+        if (!Objects.equals(userId, user.getId())) {
+            throw new PermissionDeniedException(Constants.USER_MISMATCH_EXCEPTION_MESSAGE);
+        }
     }
 
     private void _validateUserCreation (final CreateUserDTO createUserDTO) {
@@ -178,22 +176,18 @@ public class UserService {
         return user.isPresent();
     }
 
-    private void _updateFieldIfPresent (String fieldValue, Consumer<String> updateAction) {
-        if (Objects.nonNull(fieldValue) && !fieldValue.isBlank()) {
-            updateAction.accept(fieldValue);
-        }
-    }
-
     private void _updateAvatarIfPresent (MultipartFile avatar, User user) {
         if (Objects.nonNull(avatar)) {
             user.setAvatar(Utils.readBytesFromMultipartFile(avatar));
         }
     }
 
-    private Boolean _isPasswordMatching (final String oldPassword, final String encodedUserPassword) {
+    private void _validatePasswordMatching (final String oldPassword, final String encodedUserPassword) {
         final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        return passwordEncoder.matches(oldPassword, encodedUserPassword);
+        if (!passwordEncoder.matches(oldPassword, encodedUserPassword)) {
+            throw new PasswordMismatchException();
+        }
     }
 
     private void _logAuditForChange (final User user, final String actor) {

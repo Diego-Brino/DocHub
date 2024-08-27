@@ -1,6 +1,6 @@
 package com.dochub.api.services;
 
-import com.dochub.api.dtos.recover.RecoveryPasswordDTO;
+import com.dochub.api.dtos.recovery_password.RecoveryPasswordDTO;
 import com.dochub.api.entity.PasswordRecoveryAudit;
 import com.dochub.api.entity.User;
 import com.dochub.api.enums.TokenStatus;
@@ -14,27 +14,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 @Service
 @RequiredArgsConstructor
 public class PasswordRecoveryService {
-    private final UserService userService;
     private final EmailService emailService;
 
     private final PasswordRecoveryAuditRepository passwordRecoveryAuditRepository;
 
-    public void sendRecoveryMail (final String userEmail) {
-        final User user = userService.getByEmail(userEmail);
-
+    public void sendRecoveryMail (final User user) {
         _invalidatePreviousPasswordRecoveryAudits(user);
 
         final String token  = _createPasswordRecoveryAudit(user);
         final String recoveryLink = _getLinkToRecoverPassword(token);
 
-        emailService.sendPasswordRecoveryMail(userEmail, recoveryLink);
+        emailService.sendPasswordRecoveryMail(user.getName(), user.getEmail(), recoveryLink);
     }
 
-    public void changePassword (final RecoveryPasswordDTO recoveryPasswordDTO) {
+    public void changePassword (final RecoveryPasswordDTO recoveryPasswordDTO, final BiConsumer<User, String> updatePasswordByRecoveryLink) {
         final PasswordRecoveryAudit passwordRecoveryAudit = passwordRecoveryAuditRepository
             .findByToken(recoveryPasswordDTO.token())
             .orElseThrow(PasswordRecoveryTokenNotFoundException::new);
@@ -42,7 +40,7 @@ public class PasswordRecoveryService {
         _validateTokenStatus(passwordRecoveryAudit.getStatus());
         _markPasswordRecoveryAuditsAsUsed(passwordRecoveryAudit);
 
-        userService.updatePasswordByRecoveryLink(passwordRecoveryAudit.getUser(), recoveryPasswordDTO.newPassword());
+        updatePasswordByRecoveryLink.accept(passwordRecoveryAudit.getUser(), recoveryPasswordDTO.newPassword());
     }
 
     private void _invalidatePreviousPasswordRecoveryAudits (final User user) {
@@ -62,7 +60,7 @@ public class PasswordRecoveryService {
     }
 
     private String _getLinkToRecoverPassword (final String token) {
-        return String.format(Constants.PASSWORD_RESET_LINK, token);
+        return String.format(Constants.PASSWORD_RECOVERY_LINK, token);
     }
 
     private void _validateTokenStatus (final TokenStatus tokenStatus) {
