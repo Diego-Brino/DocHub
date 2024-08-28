@@ -1,4 +1,13 @@
+import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
+import {useEffect} from "react";
+
 function UsersProfileButton() {
+
+  const {data} = useGetUser();
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <div className='flex md:flex-1 gap-4 items-center justify-end'>
