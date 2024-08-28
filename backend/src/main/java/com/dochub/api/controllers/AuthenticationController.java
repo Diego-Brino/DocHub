@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -24,7 +26,11 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDTO> register (@ModelAttribute @Valid final CreateUserDTO createUserDTO) {
         final User user = userService.create(createUserDTO);
-        final String token = jwtService.generateToken(user);
+
+        final HashMap<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id", user.getId());
+
+        final String token = jwtService.generateToken(extraClaims, user);
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
