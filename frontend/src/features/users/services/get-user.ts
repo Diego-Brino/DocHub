@@ -1,19 +1,12 @@
 import axiosClient from "@/lib/axios";
+import {User} from "@/features/auth/types";
 
-export type GetUserRequest = {
-  id: number
-}
-
-export type GetUserResponse = {
-  id: number,
-  name: string,
-  email: string,
-  username: string,
-  avatarUrl: string
-}
-
-async function getUser({id}: GetUserRequest): Promise<GetUserResponse> {
-  const response = await axiosClient.get(`/users/${id}`);
+async function getUser(token: string, id: number): Promise<User> {
+  const response = await axiosClient.get(`/users/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
   return response.data;
 }
 

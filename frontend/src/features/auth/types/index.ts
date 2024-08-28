@@ -15,10 +15,17 @@ type TokenPayload = {
   exp: number;
 };
 
+type User = {
+  id: number,
+  name: string,
+  email: string,
+  username: string,
+  avatarUrl: string
+}
 
 export type {
   Authentication,
-  Token
   Token,
   TokenPayload,
+  User
 }
