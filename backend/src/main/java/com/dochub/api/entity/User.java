@@ -80,9 +80,14 @@ public class User implements UserDetails {
         return List.of();
     }
 
+    // Retorna o email por conta do Spring Security, utilizar o getRealUsername para obter o username
     @Override
     public String getUsername () {
         return email;
+    }
+
+    public String getRealUsername () {
+        return username;
     }
 
     @Override
