@@ -1,27 +1,125 @@
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet.tsx";
-import {useUsersProfileSheetContext} from "@/features/users/hooks/use-users-profile-sheet-context.ts";
+import {Button} from "@/components/custom/button.tsx";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form.tsx";
+import {Input} from "@/components/custom/input.tsx";
+import {SheetFooter} from "@/components/ui/sheet.tsx";
+import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
 
-function UsersProfileSheet() {
-  const {isOpen, close} = useUsersProfileSheetContext()
+const schema = z.object({
+  name: z
+    .string({required_error: "Nome é obrigatório"})
+    .min(1, {message: "Nome deve ter no mínimo 1 caractere"})
+    .max(256, {message: "Nome deve ter no máximo 256 caracteres"}),
+  username: z
+    .string({required_error: "Username is required"})
+    .min(1, {message: "Usuário deve ter no mínimo 1 caractere"})
+    .max(256, {message: "Usuário deve ter no máximo 256 caracteres"}),
+  email: z
+    .string({required_error: "Email é obrigatório"})
+    .email("Email inválido")
+    .max(128, {message: "Email deve ter no máximo 128 caracteres"}),
+})
+
+function UsersProfileSheetForm() {
+  const {data, isLoading} = useGetUser();
+  //const {mutateAsync, isLoading} = usePostPasswordRecoveryChange();
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: data?.name || '',
+      email: data?.email || '',
+      username: data?.username || '',
+    },
+  })
+
+  const onSubmit = (values: Omit<z.infer<typeof schema>, "confirmPassword">) => {
+    console.log(values)
+  }
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && close()}>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Perfil</SheetTitle>
-          <SheetDescription>
-            Edite suas informações relacionadas a sua conta.
-          </SheetDescription>
-        </SheetHeader>
-
-        <SheetFooter>
-
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='grid gap-4 py-4'>
+        <div className='space-y-4'>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  Nome
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    error={form.formState.errors.name?.message}
+                  />
+                </FormControl>
+                <FormDescription/>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="username"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  Usuário
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    error={form.formState.errors.username?.message}
+                  />
+                </FormControl>
+                <FormDescription/>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>
+                  Email
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type='email'
+                    error={form.formState.errors.email?.message}
+                  />
+                </FormControl>
+                <FormDescription/>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+        </div>
+        <SheetFooter className='flex justify-end'>
+          <Button type='submit' loading={isLoading} disabled={isLoading}>
+            Salvar
+          </Button>
         </SheetFooter>
-      </SheetContent>
-    </Sheet>
+      </form>
+    </Form>
   )
 }
 
-UsersProfileSheet.displayName = 'UsersProfileSheet'
+UsersProfileSheetForm.displayName = "UsersProfileSheetForm"
 
-export {UsersProfileSheet}
+export {UsersProfileSheetForm}
