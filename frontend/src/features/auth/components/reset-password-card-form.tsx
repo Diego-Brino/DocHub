@@ -90,7 +90,7 @@ function ResetPasswordCardForm() {
             render={({field}) => (
               <FormItem>
                 <FormLabel className='w-full h-[17px] inline-flex justify-between items-center'>
-                  Senha
+                  Confirmar Senha
                 </FormLabel>
                 <FormControl>
                   <Input
