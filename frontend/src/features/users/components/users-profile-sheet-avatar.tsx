@@ -1,48 +1,31 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Label} from "@/components/ui/label.tsx";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import {UploadIcon} from "lucide-react";
-import {useGetUserAvatar} from "@/features/users/hooks/use-get-user-avatar.ts";
+import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
+import {usePatchUserAvatar} from "@/features/users/hooks/use-patch-user-avatar.ts";
 
 function UsersProfileSheetAvatar() {
-  const {data, isLoading} = useGetUserAvatar();
-  const [avatar, setAvatar] = useState<File | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const {data, isLoading} = useGetUser();
+  const {mutate} = usePatchUserAvatar();
 
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const newAvatar = event.target.files[0];
-      setAvatar(newAvatar);
+  const [avatarVersion, setAvatarVersion] = useState(0);
 
-      if (avatarUrl) {
-        URL.revokeObjectURL(avatarUrl);
-      }
-      
-      const newAvatarUrl = URL.createObjectURL(newAvatar);
-      setAvatarUrl(newAvatarUrl);
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file){
+      return;
     }
+
+    mutate(file, {
+      onSuccess: () => {
+        setAvatarVersion(prevVersion => prevVersion + 1);
+      },
+    });
   };
 
-  useEffect(() => {
-    if (!isLoading && data) {
-      setAvatar(data);
-      
-      if (avatarUrl) {
-        URL.revokeObjectURL(avatarUrl);
-      }
-      
-      const newAvatarUrl = URL.createObjectURL(data);
-      setAvatarUrl(newAvatarUrl);
-    }
-  }, [data, isLoading]);
-
-  useEffect(() => {
-    return () => {
-      if (avatarUrl) {
-        URL.revokeObjectURL(avatarUrl);
-      }
-    };
-  }, [avatarUrl]);
+  console.log(`${data?.avatarUrl}?v=${avatarVersion}`)
 
   return (
     <div className="flex flex-col items-center space-y-4 pt-4">
@@ -50,9 +33,9 @@ function UsersProfileSheetAvatar() {
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
           <UploadIcon className="text-white w-8 h-8"/>
         </div>
-        {avatar ? (
+        {!isLoading && data ? (
           <img
-            src={avatarUrl as string}
+            src={`${data.avatarUrl}?v=${avatarVersion}`}
             alt="Avatar"
             className="w-32 h-32 rounded-full object-cover"
           />
