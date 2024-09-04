@@ -16,7 +16,7 @@ public record UserResponseDTO (
             user.getName(),
             user.getEmail(),
             user.getRealUsername(),
-            String.format(Constants.AVATAR_URL, user.getId())
+            String.format(Constants.AVATAR_URL + "?v=" + System.currentTimeMillis(), user.getId())
         );
     }
 }
