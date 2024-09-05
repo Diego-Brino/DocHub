@@ -10,8 +10,7 @@ function usePatchUserAvatar(){
     mutationKey: ['user', 'avatar'],
     mutationFn: (avatar: File) => patchUserAvatar(token, tokenPayload?.id as number, avatar),
     onSuccess: () => {
-      queryClient.invalidateQueries(['user', 'avatar']);
-      queryClient.removeQueries(['user']);
+      queryClient.removeQueries(['user', 'avatar']);
     }
   });
 }
