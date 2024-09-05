@@ -155,7 +155,7 @@ public class UserService {
         }
 
         if (Objects.nonNull(updateUserDTO.username()) &&
-                (!Objects.equals(user.getUsername(), updateUserDTO.username()) && _isUsernameAlreadyRegister(updateUserDTO.username()))) {
+                (!Objects.equals(user.getRealUsername(), updateUserDTO.username()) && _isUsernameAlreadyRegister(updateUserDTO.username()))) {
             throw new UsernameAlreadyRegisterException();
         }
 
