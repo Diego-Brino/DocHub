@@ -14,6 +14,7 @@ import {
 import {Input} from "@/components/custom/input.tsx";
 import {SheetFooter} from "@/components/ui/sheet.tsx";
 import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
+import {usePutUser} from "@/features/users/hooks/use-put-user.ts";
 
 const schema = z.object({
   name: z
@@ -31,8 +32,8 @@ const schema = z.object({
 })
 
 function UsersProfileSheetForm() {
-  const {data, isLoading} = useGetUser();
-  //const {mutateAsync, isLoading} = usePostPasswordRecoveryChange();
+  const { data, isLoading: isGetUserLoading } = useGetUser();
+  const { mutate, isLoading: isPutUserLoading } = usePutUser();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -43,8 +44,8 @@ function UsersProfileSheetForm() {
     },
   })
 
-  const onSubmit = (values: Omit<z.infer<typeof schema>, "confirmPassword">) => {
-    console.log(values)
+  const onSubmit = (values: z.infer<typeof schema>) => {
+    mutate(values)
   }
 
   return (
@@ -111,7 +112,7 @@ function UsersProfileSheetForm() {
           />
         </div>
         <SheetFooter className='flex justify-end'>
-          <Button type='submit' loading={isLoading} disabled={isLoading}>
+          <Button type='submit' loading={isGetUserLoading || isPutUserLoading} disabled={isGetUserLoading || isPutUserLoading}>
             Salvar
           </Button>
         </SheetFooter>
