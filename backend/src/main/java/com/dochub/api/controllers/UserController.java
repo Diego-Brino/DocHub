@@ -50,7 +50,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                         @PathVariable("id") @NonNull final Integer id,
-                                        @ModelAttribute @NonNull @Valid final UpdateUserDTO updateUserDTO) {
+                                        @RequestBody(required = false) @NonNull @Valid final UpdateUserDTO updateUserDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
 
         userService.update(id, userEmail, updateUserDTO);
