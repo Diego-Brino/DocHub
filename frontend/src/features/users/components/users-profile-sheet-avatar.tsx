@@ -19,8 +19,6 @@ function UsersProfileSheetAvatar() {
     mutate(file);
   };
 
-  console.log(`${data?.avatarUrl}`);
-
   return (
     <div className="flex flex-col items-center space-y-4 pt-4">
       <Label htmlFor="avatar" className="relative cursor-pointer group">
