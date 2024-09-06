@@ -1,9 +1,6 @@
 package com.dochub.api.services;
 
-import com.dochub.api.dtos.user.CreateUserDTO;
-import com.dochub.api.dtos.user.UpdatePasswordDTO;
-import com.dochub.api.dtos.user.UpdateUserDTO;
-import com.dochub.api.dtos.user.UserResponseDTO;
+import com.dochub.api.dtos.user.*;
 import com.dochub.api.entity.User;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.UserRepository;
@@ -16,10 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,7 +65,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void update (final Integer userId, final String userEmail, final UpdateUserDTO updateUserDTO) {
+    public User update (final Integer userId, final String userEmail, final UpdateUserDTO updateUserDTO) {
         final User user = getByEmail(userEmail);
 
         _validateUserIdentity(userId, user);
@@ -85,7 +80,7 @@ public class UserService {
 
         _logAuditForChange(user, user.getUsername());
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public void updateAvatar (final Integer userId, final String userEmail, final MultipartFile avatar) {
@@ -100,7 +95,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updatePassword (final Integer userId, final String userEmail, final UpdatePasswordDTO updatePasswordDTO) {
+    public User updatePassword (final Integer userId, final String userEmail, final UpdatePasswordDTO updatePasswordDTO) {
         final User user = getByEmail(userEmail);
 
         _validateUserIdentity(userId, user);
@@ -111,7 +106,7 @@ public class UserService {
 
         _logAuditForChange(user, user.getUsername());
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public void updatePasswordByRecoveryLink (final User user, final String newPassword) {
@@ -120,6 +115,13 @@ public class UserService {
         _logAuditForPasswordRecovery(user);
 
         userRepository.save(user);
+    }
+
+    public UpdateUserResponseDTO generateNewToken (final User user, final BiFunction<Map<String, Object>, User, String> generateToken) {
+        final HashMap<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("id", user.getId());
+
+        return new UpdateUserResponseDTO(generateToken.apply(extraClaims, user));
     }
 
     private byte[] _getDefaultUserAvatar () {

@@ -2,7 +2,9 @@ package com.dochub.api.controllers;
 
 import com.dochub.api.dtos.user.UpdatePasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
+import com.dochub.api.dtos.user.UpdateUserResponseDTO;
 import com.dochub.api.dtos.user.UserResponseDTO;
+import com.dochub.api.entity.User;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;
@@ -48,14 +50,16 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                        @PathVariable("id") @NonNull final Integer id,
-                                        @RequestBody(required = false) @NonNull @Valid final UpdateUserDTO updateUserDTO) {
+    public ResponseEntity<UpdateUserResponseDTO> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                                         @PathVariable("id") @NonNull final Integer id,
+                                                         @ModelAttribute @NonNull @Valid  final UpdateUserDTO updateUserDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
 
-        userService.update(id, userEmail, updateUserDTO);
+        final User user = userService.update(id, userEmail, updateUserDTO);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+            .ok()
+            .body(userService.generateNewToken(user, jwtService::generateToken));
     }
 
     @PatchMapping("/{id}/avatar")
@@ -70,13 +74,15 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/password")
-    public ResponseEntity<Void> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+    public ResponseEntity<UpdateUserResponseDTO> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                                 @PathVariable("id") @NonNull final Integer id,
                                                 @RequestBody @NonNull @Valid final UpdatePasswordDTO updatePasswordDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
 
-        userService.updatePassword(id, userEmail, updatePasswordDTO);
+        final User user = userService.updatePassword(id, userEmail, updatePasswordDTO);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+            .ok()
+            .body(userService.generateNewToken(user, jwtService::generateToken));
     }
 }
