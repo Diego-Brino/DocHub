@@ -1,11 +1,11 @@
-import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider, useNavigate} from "react-router-dom";
 import {LoginPage} from "../pages/login-page.tsx";
 import {GroupsPage} from "@/pages/groups-page.tsx";
 import {NotFoundPage} from "@/pages/not-found-page.tsx";
 import {Main} from "@/layouts/main";
 import {ResetPasswordPage} from "@/pages/reset-password-page.tsx";
 import {useAuthContext} from "@/features/auth/hooks/use-auth-context.ts";
-import {ReactNode} from "react";
+import {ReactNode, useEffect} from "react";
 
 const AuthenticatedRoute = ({children}: {children: ReactNode}) => {
   const {token} = useAuthContext()
@@ -14,7 +14,15 @@ const AuthenticatedRoute = ({children}: {children: ReactNode}) => {
 
 const UnauthenticatedRoute = ({children}: {children: ReactNode}) => {
   const {token} = useAuthContext()
-  return !token ? children : <Navigate to="/groups"/>
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (token) {
+      navigate(-1)
+    }
+  }, [navigate, token]);
+
+  return !token ? children : null
 }
 
 const AppBrowserRouter = createBrowserRouter([
