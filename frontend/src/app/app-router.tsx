@@ -39,7 +39,11 @@ const AppBrowserRouter = createBrowserRouter([
       },
       {
         path: "/reset-password",
-        element: <ResetPasswordPage/>
+        element: (
+          <UnauthenticatedRoute>
+            <ResetPasswordPage/>
+          </UnauthenticatedRoute>
+        )
       },
       {
         path: "/",
