@@ -1,5 +1,5 @@
-import {UsersProfileButton} from "@/features/users/components/users-profile-button.tsx";
+import {UsersProfile} from "@/features/users/components/users-profile.tsx";
 
 export {
-  UsersProfileButton
+  UsersProfile
 }

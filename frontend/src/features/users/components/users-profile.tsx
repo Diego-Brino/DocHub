@@ -1,5 +1,5 @@
 import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
-import {UsersProfileButtonSkeleton} from "@/features/users/components/users-profile-button-skeleton.tsx";
+import {UsersProfileSkeleton} from "@/features/users/components/users-profile-skeleton.tsx";
 import {motion} from "framer-motion";
 import {useState} from "react";
 import {ChevronRight} from "lucide-react";
@@ -7,7 +7,7 @@ import {Button} from "@/components/custom/button.tsx";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 import {useUsersProfileSheetContext} from "@/features/users/hooks/use-users-profile-sheet-context.ts";
 
-function UsersProfileButton() {
+function UsersProfile() {
   const {data, isLoading} = useGetUser();
 
   const {isOpen, open} = useUsersProfileSheetContext()
@@ -49,10 +49,10 @@ function UsersProfileButton() {
       </motion.div>
     </div>
   ) : (
-    <UsersProfileButtonSkeleton/>
+    <UsersProfileSkeleton/>
   )
 }
 
-UsersProfileButton.displayName = 'UsersProfileButton'
+UsersProfile.displayName = 'UsersProfile'
 
-export {UsersProfileButton}
+export {UsersProfile}

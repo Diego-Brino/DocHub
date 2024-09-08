@@ -1,6 +1,6 @@
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 
-function UsersProfileButtonSkeleton() {
+function UsersProfileSkeleton() {
   return (
     <div className='flex md:flex-1 gap-4 items-center justify-end'>
       <div className='flex gap-2'>
@@ -14,6 +14,6 @@ function UsersProfileButtonSkeleton() {
   )
 }
 
-UsersProfileButtonSkeleton.displayName = 'UsersProfileButtonSkeleton'
+UsersProfileSkeleton.displayName = 'UsersProfileSkeleton'
 
-export {UsersProfileButtonSkeleton}
+export {UsersProfileSkeleton}
