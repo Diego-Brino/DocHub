@@ -16,7 +16,7 @@ function UsersProfile() {
 
   return !isLoading && data ? (
     <div
-      className='flex md:flex-1 items-center justify-end'
+      className='flex md:flex-1 items-center justify-end overflow-hidden'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -24,12 +24,12 @@ function UsersProfile() {
         initial={{x: 32}}
         animate={{x: isHovered || isOpen ? -12 : 32}}
         transition={{type: 'spring', stiffness: 260, damping: 20}}
-        className='flex gap-2'
+        className='flex gap-2 overflow-hidden pl-8'
        >
         <img src={data.avatarUrl} alt='avatar' className='rounded-full size-10'/>
-        <div className='hidden md:flex flex-col'>
-          <h2 className='text-sm'>{data.name}</h2>
-          <p className='text-sm text-muted-foreground'>{data.email}</p>
+        <div className='hidden md:flex flex-col overflow-hidden'>
+          <h2 className='text-sm overflow-ellipsis overflow-hidden'>{data.name}</h2>
+          <p className='text-sm text-muted-foreground overflow-ellipsis overflow-hidden'>{data.email}</p>
         </div>
       </motion.div>
       <motion.div
