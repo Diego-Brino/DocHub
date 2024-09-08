@@ -6,7 +6,7 @@ function useGetUser(){
   const {token, tokenPayload} = useAuthContext();
 
   return useQuery({
-    queryKey: ['user'],
+    queryKey: ['user', token],
     queryFn: () => getUser(token, tokenPayload?.id as number)
   });
 }

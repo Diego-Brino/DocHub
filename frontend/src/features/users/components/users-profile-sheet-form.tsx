@@ -33,19 +33,18 @@ const schema = z.object({
 
 function UsersProfileSheetForm() {
   const { data, isLoading: isGetUserLoading } = useGetUser();
-  const { mutate, isLoading: isPutUserLoading } = usePutUser();
+  const { mutateAsync, isLoading: isPutUserLoading } = usePutUser();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      name: data?.name || '',
-      email: data?.email || '',
-      username: data?.username || '',
-    },
-  })
+    defaultValues: data,
+  });
 
   const onSubmit = (values: z.infer<typeof schema>) => {
-    mutate(values)
+    mutateAsync(values)
+      .then(() => {
+        form.reset(values)
+      });
   }
 
   return (
@@ -112,7 +111,7 @@ function UsersProfileSheetForm() {
           />
         </div>
         <SheetFooter className='flex justify-end'>
-          <Button type='submit' loading={isGetUserLoading || isPutUserLoading} disabled={isGetUserLoading || isPutUserLoading}>
+          <Button type='submit' loading={isGetUserLoading || isPutUserLoading} disabled={isGetUserLoading || isPutUserLoading || !form.formState.isDirty}>
             Salvar
           </Button>
         </SheetFooter>
