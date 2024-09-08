@@ -15,6 +15,10 @@ import {Input} from "@/components/custom/input.tsx";
 import {SheetFooter} from "@/components/ui/sheet.tsx";
 import {useGetUser} from "@/features/users/hooks/use-get-user.ts";
 import {usePutUser} from "@/features/users/hooks/use-put-user.ts";
+import {KeyRound} from "lucide-react";
+import {
+  useUsersProfileSheetAlterPasswordDialogContext
+} from "@/features/users/hooks/use-users-profile-sheet-recover-password-dialog-context.ts";
 
 const schema = z.object({
   name: z
@@ -34,6 +38,8 @@ const schema = z.object({
 function UsersProfileSheetForm() {
   const { data, isLoading: isGetUserLoading } = useGetUser();
   const { mutateAsync, isLoading: isPutUserLoading } = usePutUser();
+
+  const {open} = useUsersProfileSheetAlterPasswordDialogContext();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -110,7 +116,11 @@ function UsersProfileSheetForm() {
             )}
           />
         </div>
-        <SheetFooter className='flex justify-end'>
+        <SheetFooter className='flex sm:justify-between justify-between items-center'>
+          <Button type='button' variant='secondary' onClick={open}>
+            <KeyRound className='w-4 h-4 mr-2'/>
+            Alterar senha
+          </Button>
           <Button type='submit' loading={isGetUserLoading || isPutUserLoading} disabled={isGetUserLoading || isPutUserLoading || !form.formState.isDirty}>
             Salvar
           </Button>
