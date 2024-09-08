@@ -11,8 +11,7 @@ function usePutUser(){
     mutationKey: ['user'],
     mutationFn: (user: PutUserRequest) => putUser(token, tokenPayload?.id as number, user),
     onSuccess: () => {
-      queryClient.removeQueries(['user']);
-
+      queryClient.invalidateQueries(['user']);
       toast.success('Perfil atualizado com sucesso');
     }
   });
