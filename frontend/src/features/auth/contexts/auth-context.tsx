@@ -7,10 +7,10 @@ type AuthContext = {
   tokenPayload?: TokenPayload,
 }
 
-const GroupsFilterContext = createContext<AuthContext>({
+const AuthContext = createContext<AuthContext>({
   token: '',
   setToken: () => {},
   tokenPayload: undefined
 });
 
-export default GroupsFilterContext;
+export default AuthContext;
