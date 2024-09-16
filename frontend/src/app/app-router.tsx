@@ -1,11 +1,11 @@
 import {createBrowserRouter, Navigate, RouterProvider, useNavigate} from "react-router-dom";
-import {LoginPage} from "../pages/login-page.tsx";
-import {GroupsPage} from "@/pages/groups-page.tsx";
-import {NotFoundPage} from "@/pages/not-found-page.tsx";
+import {Login} from "../pages/login.tsx";
+import {Groups} from "@/pages/groups.tsx";
+import {NotFound} from "@/pages/not-found.tsx";
 import {Main} from "@/layouts/main";
-import {ResetPasswordPage} from "@/pages/reset-password-page.tsx";
-import {useAuthContext} from "@/features/auth/hooks/use-auth-context.ts";
+import {ResetPassword} from "@/pages/reset-password.tsx";
 import {ReactNode, useEffect} from "react";
+import {useAuthContext} from "@/contexts/auth";
 
 const AuthenticatedRoute = ({children}: {children: ReactNode}) => {
   const {token} = useAuthContext()
@@ -33,7 +33,7 @@ const AppBrowserRouter = createBrowserRouter([
         path: "/",
         element: (
           <UnauthenticatedRoute>
-            <LoginPage/>
+            <Login/>
           </UnauthenticatedRoute>
         )
       },
@@ -41,7 +41,7 @@ const AppBrowserRouter = createBrowserRouter([
         path: "/login",
         element: (
           <UnauthenticatedRoute>
-            <LoginPage/>
+            <Login/>
           </UnauthenticatedRoute>
         )
       },
@@ -49,7 +49,7 @@ const AppBrowserRouter = createBrowserRouter([
         path: "/reset-password",
         element: (
           <UnauthenticatedRoute>
-            <ResetPasswordPage/>
+            <ResetPassword/>
           </UnauthenticatedRoute>
         )
       },
@@ -65,7 +65,7 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/groups",
             element: (
               <AuthenticatedRoute>
-                <GroupsPage/>
+                <Groups/>
               </AuthenticatedRoute>
             )
           },
@@ -73,7 +73,7 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/users",
             element: (
               <AuthenticatedRoute>
-                <GroupsPage/>
+                <Groups/>
               </AuthenticatedRoute>
             )
           },
@@ -81,7 +81,7 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/roles",
             element: (
               <AuthenticatedRoute>
-                <GroupsPage/>
+                <Groups/>
               </AuthenticatedRoute>
             )
           }
@@ -89,7 +89,7 @@ const AppBrowserRouter = createBrowserRouter([
       },
       {
         path: "*",
-        element: <NotFoundPage/>
+        element: <NotFound/>
       },
     ]
   }

@@ -1,10 +1,5 @@
-import {Authentication} from "@/features/auth/types";
-import {LoginForm} from "@/features/auth/components/login-form.tsx";
-import {extractTokenPayload} from "@/features/auth/utils";
+import {LoginCard} from "@/features/auth/login-card/login-card.tsx";
 
 export {
-  LoginForm,
-  extractTokenPayload
+  LoginCard,
 };
-
-export type { Authentication };

@@ -1,10 +1,10 @@
 import React from "react";
-import {ThemeProvider} from "@/features/theme";
+import {ThemeProvider} from "@/contexts/theme";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
 import {QueryClientProvider} from "react-query";
 import queryClient from "@/lib/react-query";
 import {Toaster} from "@/components/ui/sonner.tsx";
-import {AuthProvider} from "@/features/auth/providers/auth-provider.tsx";
+import {AuthProvider} from "@/contexts/auth";
 
 type AppProviderProps = {
   children: React.ReactNode
