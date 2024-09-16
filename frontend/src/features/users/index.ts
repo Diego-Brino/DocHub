@@ -1,5 +1,5 @@
-import {UsersProfile} from "@/features/users/components/users-profile.tsx";
+import {UserProfileInfo} from "@/features/users/user-profile-info";
 
 export {
-  UsersProfile
+  UserProfileInfo
 }

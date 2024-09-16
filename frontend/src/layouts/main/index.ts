@@ -1,4 +1,4 @@
-import {Main} from "./components/main"
+import {Main} from "@/layouts/main/main/main.tsx"
 
 export {
   Main
