@@ -28,8 +28,8 @@ function UserProfileInfo() {
        >
         <img src={data.avatarUrl} alt='avatar' className='rounded-full size-10'/>
         <div className='hidden md:flex flex-col overflow-hidden'>
-          <h2 className='text-sm overflow-ellipsis overflow-hidden'>{data.name}</h2>
-          <p className='text-sm text-muted-foreground overflow-ellipsis overflow-hidden'>{data.email}</p>
+          <h2 className='text-sm overflow-ellipsis overflow-hidden text-nowrap'>{data.name}</h2>
+          <p className='text-sm text-muted-foreground overflow-ellipsis overflow-hidden text-nowrap'>{data.email}</p>
         </div>
       </motion.div>
       <motion.div
