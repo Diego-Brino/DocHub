@@ -1,4 +1,4 @@
-package com.dochub.api.entity;
+package com.dochub.api.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

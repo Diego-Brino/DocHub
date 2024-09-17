@@ -4,7 +4,7 @@ import com.dochub.api.dtos.user.UpdatePasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user.UpdateUserResponseDTO;
 import com.dochub.api.dtos.user.UserResponseDTO;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;

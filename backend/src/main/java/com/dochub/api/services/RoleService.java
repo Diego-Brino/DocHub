@@ -4,10 +4,10 @@ import com.dochub.api.dtos.role.CreateRoleDTO;
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.role.UpdateRoleDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entity.Role;
+import com.dochub.api.entities.Role;
 import com.dochub.api.enums.RoleStatus;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
-import com.dochub.api.exceptions.PermissionDeniedException;
+import com.dochub.api.exceptions.RoleCannotBeDeletedException;
 import com.dochub.api.repositories.RoleRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +41,7 @@ public class RoleService {
     }
 
     public Integer create (final UserRoleResponseDTO userRoles, final CreateRoleDTO createRoleDTO) {
-        _checkPermission(userRoles, Constants.CREATE_ROLE_PERMISSION);
+        Utils.checkSystemPermission(userRoles, Constants.CREATE_ROLE_PERMISSION);
 
         final Role role = new Role(createRoleDTO, userRoles.user().username());
 
@@ -48,7 +49,7 @@ public class RoleService {
     }
 
     public void update (final UserRoleResponseDTO userRoles, final Integer roleId, final UpdateRoleDTO updateRoleDTO) {
-        _checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
+        Utils.checkSystemPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
         final Role role = _getById(roleId);
 
@@ -63,7 +64,7 @@ public class RoleService {
     }
 
     public void updateStatus (final UserRoleResponseDTO userRoles, final Integer roleId, final RoleStatus roleStatus) {
-        _checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
+        Utils.checkSystemPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
         final Role role = _getById(roleId);
 
@@ -74,10 +75,14 @@ public class RoleService {
         roleRepository.save(role);
     }
 
-    public void delete (final UserRoleResponseDTO userRoles, final Integer id) {
-        _checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
-
+    public void delete (final Function<Role, Boolean> hasUsersAssignedToRoleFunc,
+                        final UserRoleResponseDTO userRoles, final Integer id) {
         final Role role = _getById(id);
+        final Boolean hasUsersAssignedToRole = hasUsersAssignedToRoleFunc.apply(role);
+
+        if (hasUsersAssignedToRole) throw new RoleCannotBeDeletedException();
+
+        Utils.checkSystemPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
 
         roleRepository.delete(role);
     }
@@ -86,21 +91,6 @@ public class RoleService {
         return roleRepository
             .findById(id)
             .orElseThrow(EntityNotFoundByIdException::new);
-    }
-
-    private void _checkPermission (final UserRoleResponseDTO userRoles, final String permission) {
-        final boolean hasPermission = userRoles
-            .roles()
-            .stream()
-            .anyMatch(role ->
-                role.systemPermissions()
-                    .stream()
-                    .anyMatch(sp -> Objects.equals(sp.description(), permission))
-            );
-
-        if (!hasPermission) {
-            throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
-        }
     }
 
     private void _updateRoleStatusIfPresent (final RoleStatus roleStatus, final Role role) {

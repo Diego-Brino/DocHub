@@ -4,7 +4,7 @@ import com.dochub.api.dtos.role.CreateRoleDTO;
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.role.UpdateRoleDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import com.dochub.api.enums.RoleStatus;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.RoleService;
@@ -74,7 +74,7 @@ public class RoleController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                               @PathVariable("id") @NonNull final Integer id,
-                                              @RequestBody @NonNull final RoleStatus roleStatus) {
+                                              @RequestParam("roleStatus") @NonNull final RoleStatus roleStatus) {
         final String userEmail = jwtService.extractUserEmail(Utils.removeBearerPrefix(token));
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
@@ -93,7 +93,7 @@ public class RoleController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        roleService.delete(userRoles, id);
+        roleService.delete(userRoleService::hasUsersAssignedToRole, userRoles, id);
 
         return ResponseEntity
             .noContent()

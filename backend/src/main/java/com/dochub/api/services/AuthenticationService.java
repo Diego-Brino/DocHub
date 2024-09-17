@@ -2,7 +2,7 @@ package com.dochub.api.services;
 
 import com.dochub.api.dtos.auth.AuthenticationRequestDTO;
 import com.dochub.api.dtos.auth.AuthenticationResponseDTO;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

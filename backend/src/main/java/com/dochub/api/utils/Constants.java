@@ -24,14 +24,23 @@ public interface Constants {
     // Email Subjects
     String PASSWORD_RESET_INITIATOR_NAME = "DocHub - ResetLink";
 
-    // Permissions
+    // RoleService Permissions
     String CREATE_ROLE_PERMISSION = "Criar Cargo";
     String EDIT_ROLE_PERMISSION = "Editar Cargo";
     String DELETE_ROLE_PERMISSION = "Deletar Cargo";
 
+    // UserRoleService Permissions
+    String CREATE_USER_ROLE_PERMISSION = "Vincular Usuário á Cargo";
+    String DELETE_USER_ROLE_PERMISSION = "Desvincular Usuário de Cargo";
+
+    // SystemRolePermissionService Permissions
+    String CREATE_SYSTEM_ROLE_PERMISSION = "Vincular permissão de sistema á Cargo";
+    String DELETE_SYSTEM_ROLE_PERMISSION = "Desvincular permissão de sistema de Cargo";
+
     // Utilities
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
+    String ACTIVE = "Ativo";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
@@ -46,6 +55,9 @@ public interface Constants {
     String COLOR_IS_REQUIRED_MESSAGE = "O campo 'Cor' é obrigatório.";
     String OLD_PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha Anterior' é obrigatório.";
     String NEW_PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Nova Senha' é obrigatório.";
+    String ID_USER_IS_REQUIRED_MESSAGE = "O campo 'Id Usuário' é obrigatório.";
+    String ID_ROLE_IS_REQUIRED_MESSAGE = "O campo 'Id Cargo' é obrigatório.";
+    String ID_SYSTEM_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Sistema' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -65,4 +77,5 @@ public interface Constants {
     String INVALID_USERNAME_FORMAT_EXCEPTION_MESSAGE = "O campo 'Username' não pode conter espaços em branco ou caracteres especiais.";
     String PERMISSION_DENIED_EXCEPTION_MESSAGE = "O usuário em questão não possui permissão para %s.";
     String USER_MISMATCH_EXCEPTION_MESSAGE = "O usuário autenticado não corresponde ao usuário que foi passado como parâmetro.";
+    String ROLE_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O cargo não pode ser excluído porque existem usuários vinculados a ele.";
 }

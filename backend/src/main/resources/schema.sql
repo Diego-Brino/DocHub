@@ -130,16 +130,16 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario` (
 
 -- dochub.cargo_permissao_grupo definition
 
-CREATE TABLE IF NOT EXISTS `dochub`.`cargo_permissao_grupo` (
+CREATE TABLE IF NOT EXISTS`cargo_permissao_grupo` (
                                          `ID_CARGO` int NOT NULL,
                                          `ID_PERMISSAO_GRUPO` int NOT NULL,
+                                         `ID_GRUPO` int NOT NULL,
                                          `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                                          `DATA_INSERCAO` datetime NOT NULL,
                                          `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                                          `DATA_ALTERACAO` datetime DEFAULT NULL,
-                                         `ID_GRUPO` int NOT NULL,
-                                         PRIMARY KEY (`ID_CARGO`,`ID_PERMISSAO_GRUPO`),
-                                         KEY `cargo_permissao_grupo_permissao_grupo_FK` (`ID_PERMISSAO_GRUPO`),
+                                         PRIMARY KEY (`ID_PERMISSAO_GRUPO`,`ID_CARGO`,`ID_GRUPO`),
+                                         KEY `cargo_permissao_grupo_cargo_FK` (`ID_CARGO`),
                                          KEY `cargo_permissao_grupo_grupo_FK` (`ID_GRUPO`),
                                          CONSTRAINT `cargo_permissao_grupo_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
                                          CONSTRAINT `cargo_permissao_grupo_grupo_FK` FOREIGN KEY (`ID_GRUPO`) REFERENCES `grupo` (`ID_GRUPO`),
@@ -234,18 +234,16 @@ CREATE TABLE IF NOT EXISTS `dochub`.`auditoria_recuperacao_senha` (
 
 -- dochub.cargo_permissao_recurso definition
 
-CREATE TABLE IF NOT EXISTS `dochub`.`cargo_permissao_recurso` (
-                                           `ID_CARGO_PERMISSAO_RECURSO` int NOT NULL AUTO_INCREMENT,
-                                           `ID_PERMISSAO_RECURSO` int NOT NULL,
+CREATE TABLE IF NOT EXISTS `cargo_permissao_recurso` (
                                            `ID_CARGO` int NOT NULL,
+                                           `ID_PERMISSAO_RECURSO` int NOT NULL,
                                            `ID_RECURSO` int NOT NULL,
                                            `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                                            `DATA_INSERCAO` datetime NOT NULL,
                                            `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                                            `DATA_ALTERACAO` datetime DEFAULT NULL,
-                                           PRIMARY KEY (`ID_CARGO_PERMISSAO_RECURSO`),
+                                           PRIMARY KEY (`ID_CARGO`,`ID_PERMISSAO_RECURSO`,`ID_RECURSO`),
                                            KEY `cargo_permissao_recurso_permissao_recurso_FK` (`ID_PERMISSAO_RECURSO`),
-                                           KEY `cargo_permissao_recurso_cargo_FK` (`ID_CARGO`),
                                            KEY `cargo_permissao_recurso_recurso_FK` (`ID_RECURSO`),
                                            CONSTRAINT `cargo_permissao_recurso_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
                                            CONSTRAINT `cargo_permissao_recurso_permissao_recurso_FK` FOREIGN KEY (`ID_PERMISSAO_RECURSO`) REFERENCES `permissao_recurso` (`ID_PERMISSAO_RECURSO`),

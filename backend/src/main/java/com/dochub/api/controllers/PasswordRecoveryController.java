@@ -1,7 +1,7 @@
 package com.dochub.api.controllers;
 
 import com.dochub.api.dtos.recovery_password.RecoveryPasswordDTO;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import com.dochub.api.services.PasswordRecoveryService;
 import com.dochub.api.services.UserService;
 import jakarta.validation.Valid;

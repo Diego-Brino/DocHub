@@ -1,17 +1,15 @@
 package com.dochub.api.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum RoleStatus {
     ACTIVE("Ativo"),
     INACTIVE("Inativo");
 
     private final String code;
-
-    RoleStatus(String code) {
-        this.code = code;
-    }
 
     @Override
     public String toString () {

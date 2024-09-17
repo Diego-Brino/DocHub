@@ -1,6 +1,6 @@
 package com.dochub.api.repositories;
 
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

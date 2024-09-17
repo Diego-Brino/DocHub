@@ -1,10 +1,12 @@
-package com.dochub.api.entity;
+package com.dochub.api.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -26,4 +28,13 @@ public class UserRole {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public UserRole (final Integer idUser, final Integer idRole, final String initiatorUsername) {
+        this.id = new UserRolePK(idUser, idRole);
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }
