@@ -3,7 +3,7 @@ package com.dochub.api.controllers;
 import com.dochub.api.dtos.auth.AuthenticationRequestDTO;
 import com.dochub.api.dtos.auth.AuthenticationResponseDTO;
 import com.dochub.api.dtos.user.CreateUserDTO;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import com.dochub.api.services.AuthenticationService;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.UserService;

@@ -1,8 +1,8 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.recovery_password.RecoveryPasswordDTO;
-import com.dochub.api.entity.PasswordRecoveryAudit;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.PasswordRecoveryAudit;
+import com.dochub.api.entities.User;
 import com.dochub.api.enums.TokenStatus;
 import com.dochub.api.exceptions.InvalidPasswordRecoveryTokenException;
 import com.dochub.api.exceptions.PasswordRecoveryTokenNotFoundException;

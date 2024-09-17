@@ -1,7 +1,7 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.user.*;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.User;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.UserRepository;
 import com.dochub.api.utils.Constants;
@@ -21,6 +21,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
+    public UserResponseDTO getById (final Integer userId) {
+        final User user = userRepository
+            .findById(userId)
+            .orElseThrow(EntityNotFoundByIdException::new);
+
+        return new UserResponseDTO(user);
+    }
 
     public UserResponseDTO getById (final Integer userId, final String userEmail) {
         final User user = getByEmail(userEmail);

@@ -1,12 +1,14 @@
 package com.dochub.api.dtos.system_permission;
 
-import com.dochub.api.entity.SystemPermission;
+import com.dochub.api.entities.SystemPermission;
 
 public record SystemPermissionResponseDTO (
+    Integer id,
     String description
 ) {
-    public SystemPermissionResponseDTO (SystemPermission systemPermission) {
+    public SystemPermissionResponseDTO (final SystemPermission systemPermission) {
         this (
+            systemPermission.getId(),
             systemPermission.getDescription()
         );
     }

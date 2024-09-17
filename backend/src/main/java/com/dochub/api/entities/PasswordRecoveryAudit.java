@@ -1,4 +1,4 @@
-package com.dochub.api.entity;
+package com.dochub.api.entities;
 
 import com.dochub.api.converters.TokenStatusConverter;
 import com.dochub.api.enums.TokenStatus;

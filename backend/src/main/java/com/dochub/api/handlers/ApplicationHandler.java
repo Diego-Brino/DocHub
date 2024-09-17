@@ -1,4 +1,4 @@
-package com.dochub.api.handler;
+package com.dochub.api.handlers;
 
 import com.dochub.api.dtos.ErrorDTO;
 import com.dochub.api.exceptions.*;
@@ -173,5 +173,13 @@ public class ApplicationHandler {
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDTO);
+    }
+
+    @ExceptionHandler(RoleCannotBeDeletedException.class)
+    public ResponseEntity<ErrorDTO> handleRoleCannotBeDeletedException (RoleCannotBeDeletedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 }

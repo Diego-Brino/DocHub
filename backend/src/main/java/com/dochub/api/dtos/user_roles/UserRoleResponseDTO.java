@@ -2,8 +2,8 @@ package com.dochub.api.dtos.user_roles;
 
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.user.UserResponseDTO;
-import com.dochub.api.entity.Role;
-import com.dochub.api.entity.User;
+import com.dochub.api.entities.Role;
+import com.dochub.api.entities.User;
 
 import java.util.List;
 

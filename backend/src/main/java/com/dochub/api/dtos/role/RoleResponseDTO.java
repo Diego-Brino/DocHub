@@ -1,19 +1,19 @@
 package com.dochub.api.dtos.role;
 
 import com.dochub.api.dtos.system_permission.SystemPermissionResponseDTO;
-import com.dochub.api.entity.Role;
-import com.dochub.api.entity.SystemRolePermission;
+import com.dochub.api.entities.Role;
+import com.dochub.api.entities.SystemRolePermission;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public record RoleResponseDTO (
-        Integer id,
-        String name,
-        String description,
-        String color,
-        String status,
-        List<SystemPermissionResponseDTO> systemPermissions) {
+    Integer id,
+    String name,
+    String description,
+    String color,
+    String status,
+    List<SystemPermissionResponseDTO> systemPermissions) {
 
     public RoleResponseDTO (final Role role) {
         this(

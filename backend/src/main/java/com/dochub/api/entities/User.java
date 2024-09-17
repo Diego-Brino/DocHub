@@ -1,4 +1,4 @@
-package com.dochub.api.entity;
+package com.dochub.api.entities;
 
 import com.dochub.api.dtos.user.CreateUserDTO;
 import com.dochub.api.utils.Constants;

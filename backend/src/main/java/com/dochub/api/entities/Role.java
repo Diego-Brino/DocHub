@@ -1,4 +1,4 @@
-package com.dochub.api.entity;
+package com.dochub.api.entities;
 
 import com.dochub.api.converters.RoleStatusConverter;
 import com.dochub.api.dtos.role.CreateRoleDTO;
@@ -37,11 +37,11 @@ public class Role {
     @Convert(converter = RoleStatusConverter.class)
     private RoleStatus roleStatus;
 
-    @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
-    private List<SystemRolePermission> systemRolePermissions;
+    @OneToMany(mappedBy = "role")
+    private List<UserRole> userRoles;
 
     @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
-    private List<UserRole> userRoles;
+    private List<SystemRolePermission> systemRolePermissions;
 
     @Embedded
     private AuditRecord auditRecord;
