@@ -1,3 +1,3 @@
-import {LoginCard} from "@/features/auth";
+import { LoginCard } from "@/features/auth";
 
-export {LoginCard}
+export { LoginCard };

@@ -1,3 +1,3 @@
-import {ThemeSwitch} from "./theme-switch.tsx";
+import { ThemeSwitch } from "./theme-switch.tsx";
 
-export {ThemeSwitch}
+export { ThemeSwitch };

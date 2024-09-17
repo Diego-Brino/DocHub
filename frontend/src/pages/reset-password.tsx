@@ -1,13 +1,13 @@
-import {ResetPasswordCard} from "@/features/auth/reset-password-card/reset-password-card.tsx";
+import { ResetPasswordCard } from "@/features/auth/reset-password-card/reset-password-card.tsx";
 
 function ResetPassword() {
   return (
-    <div className='container h-screen flex flex-col gap-6 justify-center items-center'>
-      <ResetPasswordCard/>
+    <div className="container h-screen flex flex-col gap-6 justify-center items-center">
+      <ResetPasswordCard />
     </div>
-  )
+  );
 }
 
-ResetPassword.displayName = "ResetPassword"
+ResetPassword.displayName = "ResetPassword";
 
-export {ResetPassword};
+export { ResetPassword };

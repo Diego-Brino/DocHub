@@ -1,3 +1,3 @@
-import {Header} from "./header.tsx";
+import { Header } from "./header.tsx";
 
-export {Header};
+export { Header };

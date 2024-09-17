@@ -1,4 +1,4 @@
-import {createContext, ReactNode, useContext, useMemo, useState} from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 export type TokenPayload = {
   id: number;
@@ -9,42 +9,44 @@ export type TokenPayload = {
 };
 
 type AuthContext = {
-  token: string
-  setToken: (value: string) => void,
-  tokenPayload?: TokenPayload,
-}
+  token: string;
+  setToken: (value: string) => void;
+  tokenPayload?: TokenPayload;
+};
 
 const AuthContext = createContext<AuthContext>({
-  token: '',
+  token: "",
   setToken: () => {},
-  tokenPayload: undefined
+  tokenPayload: undefined,
 });
 
 type AuthProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 function extractTokenPayload(token: string): TokenPayload {
-  const encodedTokenPayload = token.split('.')[1];
+  const encodedTokenPayload = token.split(".")[1];
   const decodedTokenPayload = window.atob(encodedTokenPayload);
   return JSON.parse(decodedTokenPayload);
 }
 
-function AuthProvider({children}: AuthProviderProps){
+function AuthProvider({ children }: AuthProviderProps) {
+  const [token, setToken] = useState<string>("");
 
-  const [token, setToken] = useState<string>('');
-
-  const tokenPayload = useMemo(() => token ? extractTokenPayload(token) : undefined, [token]);
+  const tokenPayload = useMemo(
+    () => (token ? extractTokenPayload(token) : undefined),
+    [token],
+  );
 
   return (
     <AuthContext.Provider value={{ token, setToken, tokenPayload }}>
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
-function useAuthContext(){
-  const context = useContext(AuthContext)
+function useAuthContext() {
+  const context = useContext(AuthContext);
 
   if (!context) {
     throw new Error("useAuthContext must be used within a AuthProvider");
@@ -53,7 +55,4 @@ function useAuthContext(){
   return context;
 }
 
-export {
-  AuthProvider,
-  useAuthContext
-};
+export { AuthProvider, useAuthContext };

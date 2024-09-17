@@ -1,11 +1,9 @@
-import {GroupsContent} from "@/features/groups";
+import { GroupsContent } from "@/features/groups";
 
 function Groups() {
-  return (
-    <GroupsContent/>
-  )
+  return <GroupsContent />;
 }
 
-Groups.displayName = "Groups"
+Groups.displayName = "Groups";
 
-export {Groups};
+export { Groups };

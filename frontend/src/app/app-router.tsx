@@ -1,29 +1,34 @@
-import {createBrowserRouter, Navigate, RouterProvider, useNavigate} from "react-router-dom";
-import {Login} from "../pages/login.tsx";
-import {Groups} from "@/pages/groups.tsx";
-import {NotFound} from "@/pages/not-found.tsx";
-import {Main} from "@/layouts/main";
-import {ResetPassword} from "@/pages/reset-password.tsx";
-import {ReactNode, useEffect} from "react";
-import {useAuthContext} from "@/contexts/auth";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
+import { Login } from "../pages/login.tsx";
+import { Groups } from "@/pages/groups.tsx";
+import { NotFound } from "@/pages/not-found.tsx";
+import { Main } from "@/layouts/main";
+import { ResetPassword } from "@/pages/reset-password.tsx";
+import { ReactNode, useEffect } from "react";
+import { useAuthContext } from "@/contexts/auth";
 
-const AuthenticatedRoute = ({children}: {children: ReactNode}) => {
-  const {token} = useAuthContext()
-  return token ? children : <Navigate to="/login"/>
-}
+const AuthenticatedRoute = ({ children }: { children: ReactNode }) => {
+  const { token } = useAuthContext();
+  return token ? children : <Navigate to="/login" />;
+};
 
-const UnauthenticatedRoute = ({children}: {children: ReactNode}) => {
-  const {token} = useAuthContext()
-  const navigate = useNavigate()
+const UnauthenticatedRoute = ({ children }: { children: ReactNode }) => {
+  const { token } = useAuthContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
-      navigate(-1)
+      navigate(-1);
     }
   }, [navigate, token]);
 
-  return !token ? children : null
-}
+  return !token ? children : null;
+};
 
 const AppBrowserRouter = createBrowserRouter([
   {
@@ -33,31 +38,31 @@ const AppBrowserRouter = createBrowserRouter([
         path: "/",
         element: (
           <UnauthenticatedRoute>
-            <Login/>
+            <Login />
           </UnauthenticatedRoute>
-        )
+        ),
       },
       {
         path: "/login",
         element: (
           <UnauthenticatedRoute>
-            <Login/>
+            <Login />
           </UnauthenticatedRoute>
-        )
+        ),
       },
       {
         path: "/reset-password",
         element: (
           <UnauthenticatedRoute>
-            <ResetPassword/>
+            <ResetPassword />
           </UnauthenticatedRoute>
-        )
+        ),
       },
       {
         path: "/",
         element: (
           <AuthenticatedRoute>
-            <Main/>
+            <Main />
           </AuthenticatedRoute>
         ),
         children: [
@@ -65,40 +70,38 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/groups",
             element: (
               <AuthenticatedRoute>
-                <Groups/>
+                <Groups />
               </AuthenticatedRoute>
-            )
+            ),
           },
           {
             path: "/users",
             element: (
               <AuthenticatedRoute>
-                <Groups/>
+                <Groups />
               </AuthenticatedRoute>
-            )
+            ),
           },
           {
             path: "/roles",
             element: (
               <AuthenticatedRoute>
-                <Groups/>
+                <Groups />
               </AuthenticatedRoute>
-            )
-          }
-        ]
+            ),
+          },
+        ],
       },
       {
         path: "*",
-        element: <NotFound/>
+        element: <NotFound />,
       },
-    ]
-  }
-])
+    ],
+  },
+]);
 
-function AppRouter(){
-  return (
-    <RouterProvider router={AppBrowserRouter}/>
-  )
+function AppRouter() {
+  return <RouterProvider router={AppBrowserRouter} />;
 }
 
-export default AppRouter
+export default AppRouter;

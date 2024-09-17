@@ -1,17 +1,19 @@
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/components/ui/sheet.tsx";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet.tsx";
 
-import {UserProfileSheetForm} from "@/features/users/user-profile-sheet/user-profile-sheet-form.tsx";
-import {UserProfileSheetAvatar} from "@/features/users/user-profile-sheet/user-profile-sheet-avatar.tsx";
-import {
-  AlterPasswordDialog
-} from "@/features/users/alter-password-dialog/alter-password-dialog.tsx";
-import {
-  useUserProfileSheetContext
-} from "@/features/users/user-profile-sheet/user-profile-sheet-context.tsx";
-import {AlterPasswordDialogProvider} from "@/features/users/alter-password-dialog";
+import { UserProfileSheetForm } from "@/features/users/user-profile-sheet/user-profile-sheet-form.tsx";
+import { UserProfileSheetAvatar } from "@/features/users/user-profile-sheet/user-profile-sheet-avatar.tsx";
+import { AlterPasswordDialog } from "@/features/users/alter-password-dialog/alter-password-dialog.tsx";
+import { useUserProfileSheetContext } from "@/features/users/user-profile-sheet/user-profile-sheet-context.tsx";
+import { AlterPasswordDialogProvider } from "@/features/users/alter-password-dialog";
 
 function UserProfileSheet() {
-  const {isOpen, close} = useUserProfileSheetContext()
+  const { isOpen, close } = useUserProfileSheetContext();
 
   return (
     <AlterPasswordDialogProvider>
@@ -23,15 +25,15 @@ function UserProfileSheet() {
               Edite suas informações relacionadas a sua conta.
             </SheetDescription>
           </SheetHeader>
-          <UserProfileSheetAvatar/>
-          <UserProfileSheetForm/>
+          <UserProfileSheetAvatar />
+          <UserProfileSheetForm />
         </SheetContent>
       </Sheet>
-      <AlterPasswordDialog/>
+      <AlterPasswordDialog />
     </AlterPasswordDialogProvider>
-  )
+  );
 }
 
-UserProfileSheet.displayName = 'UserProfileSheet'
+UserProfileSheet.displayName = "UserProfileSheet";
 
-export {UserProfileSheet}
+export { UserProfileSheet };

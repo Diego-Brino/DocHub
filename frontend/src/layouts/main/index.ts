@@ -1,5 +1,3 @@
-import {Main} from "@/layouts/main/main/main.tsx"
+import { Main } from "@/layouts/main/main/main.tsx";
 
-export {
-  Main
-};
+export { Main };

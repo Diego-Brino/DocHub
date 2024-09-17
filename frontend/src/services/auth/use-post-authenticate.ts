@@ -1,26 +1,27 @@
-import {useMutation} from "react-query";
+import { useMutation } from "react-query";
 import axiosClient from "@/lib/axios";
 
 export type PostAuthenticateRequest = {
-  email: string,
-  password: string
-}
+  email: string;
+  password: string;
+};
 
 export type PostAuthenticateResponse = {
-  token: string
-}
+  token: string;
+};
 
-
-async function postAuthenticate(data: PostAuthenticateRequest): Promise<PostAuthenticateResponse>{
-  const response = await axiosClient.post('/auth/authenticate', data);
+async function postAuthenticate(
+  data: PostAuthenticateRequest,
+): Promise<PostAuthenticateResponse> {
+  const response = await axiosClient.post("/auth/authenticate", data);
   return response.data;
 }
 
-function usePostAuthenticate(){
+function usePostAuthenticate() {
   return useMutation({
-    mutationKey: ['authenticate'],
+    mutationKey: ["authenticate"],
     mutationFn: postAuthenticate,
   });
 }
 
-export {usePostAuthenticate}
+export { usePostAuthenticate };

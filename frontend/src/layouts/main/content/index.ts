@@ -1,3 +1,3 @@
-import {Content} from "./content.tsx";
+import { Content } from "./content.tsx";
 
-export {Content};
+export { Content };

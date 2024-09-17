@@ -4,9 +4,9 @@ import AppProvider from "@/app/app-provider.tsx";
 function App() {
   return (
     <AppProvider>
-      <AppRouter/>
+      <AppRouter />
     </AppProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,21 +1,23 @@
-import {useMutation} from "react-query";
-import {toast} from "sonner";
+import { useMutation } from "react-query";
+import { toast } from "sonner";
 import axiosClient from "@/lib/axios";
 
 export type PostPasswordRecoveryChangeRequest = {
-  token: string,
-  newPassword: string
+  token: string;
+  newPassword: string;
+};
+
+export type PostPasswordRecoveryChangeResponse = void;
+
+async function postPasswordRecoveryChange(
+  data: PostPasswordRecoveryChangeRequest,
+): Promise<PostPasswordRecoveryChangeResponse> {
+  await axiosClient.post("/password-recovery/change", data);
 }
 
-export type PostPasswordRecoveryChangeResponse = void
-
-async function postPasswordRecoveryChange(data: PostPasswordRecoveryChangeRequest): Promise<PostPasswordRecoveryChangeResponse> {
-  await axiosClient.post('/password-recovery/change', data);
-}
-
-function usePostPasswordRecoveryChange(){
+function usePostPasswordRecoveryChange() {
   return useMutation({
-    mutationKey: ['password-recovery', 'change'],
+    mutationKey: ["password-recovery", "change"],
     mutationFn: postPasswordRecoveryChange,
     onSuccess: () => {
       toast.success("Senha alterada com sucesso");
@@ -23,4 +25,4 @@ function usePostPasswordRecoveryChange(){
   });
 }
 
-export {usePostPasswordRecoveryChange}
+export { usePostPasswordRecoveryChange };

@@ -1,11 +1,11 @@
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import getGroups from "@/features/groups/services/get-groups.ts";
 
-function useGetGroups(){
+function useGetGroups() {
   return useQuery({
-    queryKey: ['groups'],
+    queryKey: ["groups"],
     queryFn: getGroups,
   });
 }
 
-export {useGetGroups}
+export { useGetGroups };

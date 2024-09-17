@@ -1,3 +1,3 @@
-import {Main} from "./main.tsx";
+import { Main } from "./main.tsx";
 
-export {Main};
+export { Main };

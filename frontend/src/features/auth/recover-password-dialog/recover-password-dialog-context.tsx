@@ -1,23 +1,25 @@
-import {createContext, ReactNode, useContext, useState} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 type RecoverPasswordDialogContext = {
-  isOpen: boolean,
-  open: () => void,
-  close: () => void
-}
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+};
 
-const RecoverPasswordDialogContext = createContext<RecoverPasswordDialogContext>({
-  isOpen: false,
-  open: () => {},
-  close: () => {}
-});
+const RecoverPasswordDialogContext =
+  createContext<RecoverPasswordDialogContext>({
+    isOpen: false,
+    open: () => {},
+    close: () => {},
+  });
 
 type RecoverPasswordDialogProviderProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
-function RecoverPasswordDialogProvider({children}: RecoverPasswordDialogProviderProps){
-
+function RecoverPasswordDialogProvider({
+  children,
+}: RecoverPasswordDialogProviderProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const open = () => setIsOpen(true);
@@ -28,21 +30,19 @@ function RecoverPasswordDialogProvider({children}: RecoverPasswordDialogProvider
     <RecoverPasswordDialogContext.Provider value={{ isOpen, open, close }}>
       {children}
     </RecoverPasswordDialogContext.Provider>
-  )
+  );
 }
 
-function useRecoverPasswordDialogContext(){
-  const context = useContext(RecoverPasswordDialogContext)
+function useRecoverPasswordDialogContext() {
+  const context = useContext(RecoverPasswordDialogContext);
 
   if (!context) {
-    throw new Error("useRecoverPasswordDialogContext must be used within a RecoverPasswordDialogProvider");
+    throw new Error(
+      "useRecoverPasswordDialogContext must be used within a RecoverPasswordDialogProvider",
+    );
   }
 
   return context;
 }
 
-
-export {
-  RecoverPasswordDialogProvider,
-  useRecoverPasswordDialogContext
-};
+export { RecoverPasswordDialogProvider, useRecoverPasswordDialogContext };

@@ -1,3 +1,3 @@
-import {ThemeButton} from './theme-button.tsx'
+import { ThemeButton } from "./theme-button.tsx";
 
-export {ThemeButton}
+export { ThemeButton };

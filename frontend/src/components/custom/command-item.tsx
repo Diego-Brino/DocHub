@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Command as CommandPrimitive} from "cmdk";
-import {cn} from "@/lib/utils.ts";
+import { Command as CommandPrimitive } from "cmdk";
+import { cn } from "@/lib/utils.ts";
 
 const CommandItem = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Item>,
@@ -10,10 +10,10 @@ const CommandItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      className
+      className,
     )}
     {...props}
   />
 ));
 
-export {CommandItem}
+export { CommandItem };
