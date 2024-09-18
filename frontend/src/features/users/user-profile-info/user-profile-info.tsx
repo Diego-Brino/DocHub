@@ -36,10 +36,10 @@ function UserProfileInfo() {
           className="rounded-full size-10"
         />
         <div className="hidden md:flex flex-col overflow-hidden">
-          <h2 className="text-sm overflow-ellipsis overflow-hidden text-nowrap">
+          <h2 className="text-sm overflow-ellipsis overflow-hidden whitespace-nowrap">
             {data.name}
           </h2>
-          <p className="text-sm text-muted-foreground overflow-ellipsis overflow-hidden text-nowrap">
+          <p className="text-sm text-muted-foreground overflow-ellipsis overflow-hidden whitespace-nowrap">
             {data.email}
           </p>
         </div>
