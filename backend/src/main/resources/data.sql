@@ -1,9 +1,32 @@
-DELETE FROM auditoria_recuperacao_senha;
-DELETE FROM usuario;
-DELETE FROM permissao_sistema;
-DELETE FROM cargo;
-DELETE FROM cargo_permissao_sistema;
-DELETE FROM usuario_cargo;
+
+SET foreign_key_checks = 0;
+
+TRUNCATE TABLE `dochub`.`resposta`;
+TRUNCATE TABLE `dochub`.`servico`;
+TRUNCATE TABLE `dochub`.`permissao_recurso`;
+TRUNCATE TABLE `dochub`.`permissao_sistema`;
+TRUNCATE TABLE `dochub`.`permissao_grupo`;
+TRUNCATE TABLE `dochub`.`atividade`;
+TRUNCATE TABLE `dochub`.`cargo`;
+TRUNCATE TABLE `dochub`.`grupo`;
+TRUNCATE TABLE `dochub`.`cargo_permissao_grupo`;
+TRUNCATE TABLE `dochub`.`cargo_permissao_sistema`;
+TRUNCATE TABLE `dochub`.`atividade`;
+TRUNCATE TABLE `dochub`.`usuario`;
+TRUNCATE TABLE `dochub`.`processo`;
+TRUNCATE TABLE `dochub`.`recurso`;
+TRUNCATE TABLE `dochub`.`usuario_cargo`;
+TRUNCATE TABLE `dochub`.`auditoria_recuperacao_senha`;
+TRUNCATE TABLE `dochub`.`cargo_permissao_recurso`;
+TRUNCATE TABLE `dochub`.`fluxo`;
+TRUNCATE TABLE `dochub`.`fluxo_resposta`;
+TRUNCATE TABLE `dochub`.`historico`;
+TRUNCATE TABLE `dochub`.`pasta`;
+TRUNCATE TABLE `dochub`.`usuario_cargo_fluxo`;
+TRUNCATE TABLE `dochub`.`arquivo`;
+TRUNCATE TABLE `dochub`.`processo_recurso`;
+
+SET foreign_key_checks = 1;
 
 INSERT INTO usuario (NOME, SENHA, EMAIL, USERNAME, AVATAR, DATA_ULTIMO_ACESSO, USUARIO_INSERCAO, DATA_INSERCAO, USUARIO_ALTERACAO, DATA_ALTERACAO)
 VALUES

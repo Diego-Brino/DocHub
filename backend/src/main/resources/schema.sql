@@ -1,3 +1,4 @@
+
 -- dochub.atividade definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`atividade` (
