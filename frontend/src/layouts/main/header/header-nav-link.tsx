@@ -2,14 +2,11 @@ import { Link, LinkProps } from "react-router-dom";
 import { Button } from "@/components/custom/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
-interface HeaderLinksDesktopLinkProps extends LinkProps {
+interface HeaderNavLinkProps extends LinkProps {
   selected: boolean;
 }
 
-function HeaderLinksDesktopLink({
-  selected,
-  ...props
-}: HeaderLinksDesktopLinkProps) {
+function HeaderNavLink({ selected, ...props }: HeaderNavLinkProps) {
   return (
     <Button
       variant="link"
@@ -23,6 +20,6 @@ function HeaderLinksDesktopLink({
   );
 }
 
-HeaderLinksDesktopLink.displayName = "HeaderLinksDesktopLink";
+HeaderNavLink.displayName = "HeaderNavLink";
 
-export { HeaderLinksDesktopLink };
+export { HeaderNavLink };
