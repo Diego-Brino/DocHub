@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RoleStatus {
-    ACTIVE("Ativo"),
-    INACTIVE("Inativo");
+    ACTIVE("ATIVO"),
+    INACTIVE("INATIVO");
 
     private final String code;
 
