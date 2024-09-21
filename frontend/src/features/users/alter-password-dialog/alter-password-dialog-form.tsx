@@ -1,4 +1,3 @@
-import { CardContent, CardFooter } from "@/components/ui/card.tsx";
 import { Button } from "@/components/custom/button.tsx";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -17,6 +16,7 @@ import { Input } from "@/components/custom/input.tsx";
 import { useState } from "react";
 import { usePatchUserPassword } from "@/services/users/use-patch-user-password.ts";
 import { useAlterPasswordDialogContext } from "@/features/users/alter-password-dialog/alter-password-dialog-context.tsx";
+import { DialogFooter } from "@/components/ui/dialog.tsx";
 
 const schema = z
   .object({
@@ -67,7 +67,7 @@ function AlterPasswordDialogForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CardContent className="space-y-4">
+        <div className="grid gap-4 py-4">
           <FormField
             control={form.control}
             name="oldPassword"
@@ -132,12 +132,12 @@ function AlterPasswordDialogForm() {
               </FormItem>
             )}
           />
-        </CardContent>
-        <CardFooter className="flex justify-end">
+        </div>
+        <DialogFooter className="flex justify-end">
           <Button type="submit" loading={isLoading} disabled={isLoading}>
             Confirmar
           </Button>
-        </CardFooter>
+        </DialogFooter>
       </form>
     </Form>
   );
