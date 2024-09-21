@@ -107,7 +107,7 @@ function UserProfileSheetForm() {
             )}
           />
         </div>
-        <SheetFooter className="flex sm:justify-between justify-between items-center">
+        <SheetFooter className="flex sm:justify-between justify-between items-center gap-4 flex-col">
           <Button type="button" variant="secondary" onClick={open}>
             <KeyRound className="w-4 h-4 mr-2" />
             Alterar senha
