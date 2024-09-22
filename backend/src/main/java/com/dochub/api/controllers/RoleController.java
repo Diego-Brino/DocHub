@@ -74,10 +74,12 @@ public class RoleController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                               @PathVariable("id") @NonNull final Integer id,
-                                              @RequestParam("roleStatus") @NonNull final RoleStatus roleStatus) {
+                                              @RequestParam("roleStatus") @NonNull final String roleStatusString) {
         final String userEmail = jwtService.extractUserEmail(Utils.removeBearerPrefix(token));
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
+
+        RoleStatus roleStatus = RoleStatus.fromCode(roleStatusString);
 
         roleService.updateStatus(userRoles, id, roleStatus);
 
