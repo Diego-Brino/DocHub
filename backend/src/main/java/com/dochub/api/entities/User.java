@@ -1,6 +1,7 @@
 package com.dochub.api.entities;
 
 import com.dochub.api.dtos.user.CreateUserDTO;
+import com.dochub.api.entities.user_role.UserRole;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import jakarta.persistence.*;

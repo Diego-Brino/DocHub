@@ -7,7 +7,6 @@ import com.dochub.api.repositories.UserRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,7 +61,7 @@ public class UserService {
             return user.getAvatar();
         }
 
-        return _getDefaultUserAvatar();
+        return Utils.getImageFromClasspath(Constants.USER_ICON_PATH);
     }
 
     public User create (final CreateUserDTO createUserDTO) {
@@ -86,7 +85,7 @@ public class UserService {
         Utils.updateFieldIfPresent(updateUserDTO.username(), user::setUsername);
         _updateAvatarIfPresent(updateUserDTO.avatar(), user);
 
-        _logAuditForChange(user, user.getUsername());
+        _logAuditForChange(user, user.getRealUsername());
 
         return userRepository.save(user);
     }
@@ -98,7 +97,7 @@ public class UserService {
 
         user.setAvatar(Utils.readBytesFromMultipartFile(avatar));
 
-        _logAuditForChange(user, user.getUsername());
+        _logAuditForChange(user, user.getRealUsername());
 
         userRepository.save(user);
     }
@@ -112,7 +111,7 @@ public class UserService {
 
         user.setPassword(Utils.encodePassword(updatePasswordDTO.newPassword()));
 
-        _logAuditForChange(user, user.getUsername());
+        _logAuditForChange(user, user.getRealUsername());
 
         return userRepository.save(user);
     }
@@ -130,12 +129,6 @@ public class UserService {
         extraClaims.put("id", user.getId());
 
         return new UpdateUserResponseDTO(generateToken.apply(extraClaims, user));
-    }
-
-    private byte[] _getDefaultUserAvatar () {
-        final ClassPathResource classPathResource = new ClassPathResource(Constants.USER_ICON_PATH);
-
-        return Utils.readBytesFromResource(classPathResource);
     }
 
     private void _validateUserIdentity (final Integer userId, final User user) {
@@ -186,7 +179,7 @@ public class UserService {
         return user.isPresent();
     }
 
-    private void _updateAvatarIfPresent (MultipartFile avatar, User user) {
+    private void _updateAvatarIfPresent (final MultipartFile avatar, final User user) {
         if (Objects.nonNull(avatar)) {
             user.setAvatar(Utils.readBytesFromMultipartFile(avatar));
         }

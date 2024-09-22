@@ -4,7 +4,7 @@ import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.system_permission.SystemPermissionResponseDTO;
 import com.dochub.api.dtos.system_role_permission.CreateSystemRolePermissionDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entities.SystemRolePermissionPK;
+import com.dochub.api.entities.system_role_permission.SystemRolePermissionPK;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.*;
 import com.dochub.api.utils.Constants;

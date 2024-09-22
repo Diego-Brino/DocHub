@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 public class RoleService {
     private final RoleRepository roleRepository;
 
-    public RoleResponseDTO getById (final Integer id) {
-        final Role role = _getById(id);
+    public RoleResponseDTO getById (final Integer roleId) {
+        final Role role = _getById(roleId);
 
         return new RoleResponseDTO(role);
     }
@@ -41,7 +41,7 @@ public class RoleService {
     }
 
     public Integer create (final UserRoleResponseDTO userRoles, final CreateRoleDTO createRoleDTO) {
-        Utils.checkSystemPermission(userRoles, Constants.CREATE_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.CREATE_ROLE_PERMISSION);
 
         final Role role = new Role(createRoleDTO, userRoles.user().username());
 
@@ -49,7 +49,7 @@ public class RoleService {
     }
 
     public void update (final UserRoleResponseDTO userRoles, final Integer roleId, final UpdateRoleDTO updateRoleDTO) {
-        Utils.checkSystemPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
         final Role role = _getById(roleId);
 
@@ -64,7 +64,7 @@ public class RoleService {
     }
 
     public void updateStatus (final UserRoleResponseDTO userRoles, final Integer roleId, final RoleStatus roleStatus) {
-        Utils.checkSystemPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
         final Role role = _getById(roleId);
 
@@ -76,20 +76,20 @@ public class RoleService {
     }
 
     public void delete (final Function<Role, Boolean> hasUsersAssignedToRoleFunc,
-                        final UserRoleResponseDTO userRoles, final Integer id) {
-        final Role role = _getById(id);
+                        final UserRoleResponseDTO userRoles, final Integer roleId) {
+        final Role role = _getById(roleId);
         final Boolean hasUsersAssignedToRole = hasUsersAssignedToRoleFunc.apply(role);
 
         if (hasUsersAssignedToRole) throw new RoleCannotBeDeletedException();
 
-        Utils.checkSystemPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
 
         roleRepository.delete(role);
     }
 
-    private Role _getById (final Integer id) {
+    private Role _getById (final Integer roleId) {
         return roleRepository
-            .findById(id)
+            .findById(roleId)
             .orElseThrow(EntityNotFoundByIdException::new);
     }
 

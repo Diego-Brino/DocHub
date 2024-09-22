@@ -2,6 +2,9 @@ package com.dochub.api.entities;
 
 import com.dochub.api.converters.RoleStatusConverter;
 import com.dochub.api.dtos.role.CreateRoleDTO;
+import com.dochub.api.entities.group_role_permission.GroupRolePermission;
+import com.dochub.api.entities.system_role_permission.SystemRolePermission;
+import com.dochub.api.entities.user_role.UserRole;
 import com.dochub.api.enums.RoleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,8 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Builder
@@ -43,6 +45,9 @@ public class Role {
     @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
     private List<SystemRolePermission> systemRolePermissions;
 
+    @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
+    private List<GroupRolePermission> groupRolePermissions;
+
     @Embedded
     private AuditRecord auditRecord;
 
@@ -56,5 +61,19 @@ public class Role {
             .insertionUser(initiatorUsername)
             .insertionDate(new Date())
             .build();
+    }
+
+    public Map<Group, List<GroupPermission>> getGroupPermissionsGroupedByGroup () {
+        if (!groupRolePermissions.isEmpty()) {
+            final Map<Group, List<GroupPermission>> map = new HashMap<>();
+
+            groupRolePermissions.forEach(
+                    grp -> map.computeIfAbsent(grp.getGroup(), gp -> new ArrayList<>()).add(grp.getGroupPermission())
+            );
+
+            return map;
+        }
+
+        return Collections.emptyMap();
     }
 }

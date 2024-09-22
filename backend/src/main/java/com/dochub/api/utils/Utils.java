@@ -32,14 +32,6 @@ public class Utils {
         }
     }
 
-    public static byte[] readBytesFromResource (final ClassPathResource classPathResource) {
-        try {
-            return classPathResource.getInputStream().readAllBytes();
-        } catch (Exception e) {
-            throw new InputStreamFileReadException();
-        }
-    }
-
     public static String removeBearerPrefix (final String token) {
         if (Objects.nonNull(token) && token.startsWith("Bearer ")) {
             return token.substring(7);
@@ -48,22 +40,22 @@ public class Utils {
         throw new InvalidTokenFormatException();
     }
 
-    public static Boolean containsSpecialCharacters (final String input) {
+    public static Boolean containsSpacesOrSpecialCharacters (final String input) {
+        return containsWhitespace(input) || containsSpecialCharacters(input);
+    }
+
+    private static Boolean containsSpecialCharacters (final String input) {
         if (input == null) {
             return false;
         }
         return SPECIAL_CHARACTERS_PATTERN.matcher(input).find();
     }
 
-    public static Boolean containsWhitespace (final String input) {
+    private static Boolean containsWhitespace (final String input) {
         if (input == null) {
             return false;
         }
         return WHITESPACE_PATTERN.matcher(input).find();
-    }
-
-    public static Boolean containsSpacesOrSpecialCharacters (final String input) {
-        return containsWhitespace(input) || containsSpecialCharacters(input);
     }
 
     public static void updateFieldIfPresent(final String fieldValue, final Consumer<String> updateAction) {
@@ -72,8 +64,24 @@ public class Utils {
         }
     }
 
-    public static void checkSystemPermission (final UserRoleResponseDTO userRoles, final String permission) {
-        final boolean hasPermission = userRoles
+    public static void checkPermission (final UserRoleResponseDTO userRoles, final String permission) {
+        final boolean hasPermission = checkSystemPermission(userRoles, permission);
+
+        if (!hasPermission) {
+            throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
+        }
+    }
+
+    public static void checkPermission (final UserRoleResponseDTO userRoles, final Integer groupId, final String permission) {
+        final boolean hasPermission = checkSystemPermission(userRoles, permission) || checkGroupPermission(userRoles, groupId, permission);
+
+        if (!hasPermission) {
+            throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
+        }
+    }
+
+    private static boolean checkSystemPermission (final UserRoleResponseDTO userRoles, final String permission) {
+        return userRoles
             .roles()
             .stream()
             .anyMatch(role ->
@@ -82,9 +90,36 @@ public class Utils {
                     .stream()
                     .anyMatch(sp -> Objects.equals(sp.description(), permission))
             );
+    }
 
-        if (!hasPermission) {
-            throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
+    private static boolean checkGroupPermission (final UserRoleResponseDTO userRoles, final Integer groupId, final String permission) {
+        return userRoles
+            .roles()
+            .stream()
+            .anyMatch(role ->
+                Objects.equals(Constants.ACTIVE, role.status()) &&
+                role.groupPermissions()
+                    .stream()
+                    .anyMatch(gp ->
+                        Objects.equals(gp.group().id(), groupId) &&
+                        gp.permissions()
+                          .stream()
+                          .anyMatch(p -> Objects.equals(p.description(), permission))
+                    )
+            );
+    }
+
+    public static byte[] getImageFromClasspath (final String path) {
+        final ClassPathResource classPathResource = new ClassPathResource(path);
+
+        return _readBytesFromResource(classPathResource);
+    }
+
+    private static byte[] _readBytesFromResource (final ClassPathResource classPathResource) {
+        try {
+            return classPathResource.getInputStream().readAllBytes();
+        } catch (Exception e) {
+            throw new InputStreamFileReadException();
         }
     }
 }

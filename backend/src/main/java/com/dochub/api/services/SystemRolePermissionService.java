@@ -1,8 +1,8 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entities.SystemRolePermission;
-import com.dochub.api.entities.SystemRolePermissionPK;
+import com.dochub.api.entities.system_role_permission.SystemRolePermission;
+import com.dochub.api.entities.system_role_permission.SystemRolePermissionPK;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.repositories.SystemRolePermissionRepository;
 import com.dochub.api.utils.Constants;
@@ -16,7 +16,7 @@ public class SystemRolePermissionService {
     private final SystemRolePermissionRepository systemRolePermissionRepository;
 
     public SystemRolePermissionPK create (final UserRoleResponseDTO userRoles, final Integer idRole, final Integer idSystemPermission) {
-        Utils.checkSystemPermission(userRoles, Constants.CREATE_SYSTEM_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.CREATE_SYSTEM_ROLE_PERMISSION);
 
         final SystemRolePermission systemRolePermission = new SystemRolePermission(idRole, idSystemPermission, userRoles.user().username());
 
@@ -24,7 +24,7 @@ public class SystemRolePermissionService {
     }
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer idRole, final Integer idSystemPermission) {
-        Utils.checkSystemPermission(userRoles, Constants.DELETE_SYSTEM_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.DELETE_SYSTEM_ROLE_PERMISSION);
 
         final SystemRolePermissionPK systemRolePermissionPK = new SystemRolePermissionPK(idRole, idSystemPermission);
         final SystemRolePermission systemRolePermission = _getById(systemRolePermissionPK);

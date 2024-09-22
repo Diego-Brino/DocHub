@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RoleStatus {
+public enum ProcessStatus {
     ACTIVE("Ativo"),
     INACTIVE("Inativo");
 

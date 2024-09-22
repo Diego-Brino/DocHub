@@ -1,4 +1,4 @@
-package com.dochub.api.entities;
+package com.dochub.api.entities.system_role_permission;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

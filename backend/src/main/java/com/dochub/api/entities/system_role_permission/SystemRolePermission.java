@@ -1,5 +1,8 @@
-package com.dochub.api.entities;
+package com.dochub.api.entities.system_role_permission;
 
+import com.dochub.api.entities.AuditRecord;
+import com.dochub.api.entities.Role;
+import com.dochub.api.entities.SystemPermission;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

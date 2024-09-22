@@ -182,4 +182,12 @@ public class ApplicationHandler {
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
+
+    @ExceptionHandler(GroupCannontBeDeletedException.class)
+    public ResponseEntity<ErrorDTO> handleGroupCannontBeDeletedException (GroupCannontBeDeletedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
 }

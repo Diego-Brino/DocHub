@@ -3,8 +3,8 @@ package com.dochub.api.services;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Role;
 import com.dochub.api.entities.User;
-import com.dochub.api.entities.UserRole;
-import com.dochub.api.entities.UserRolePK;
+import com.dochub.api.entities.user_role.UserRole;
+import com.dochub.api.entities.user_role.UserRolePK;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.repositories.UserRoleRepository;
 import com.dochub.api.utils.Constants;
@@ -49,7 +49,7 @@ public class UserRoleService {
     public UserRolePK create (final User user, final Integer idUser, final Integer idRole) {
         final UserRoleResponseDTO userRoles = getUserRolesByUser(user);
 
-        Utils.checkSystemPermission(userRoles, Constants.CREATE_USER_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.CREATE_USER_ROLE_PERMISSION);
 
         final UserRole userRole = new UserRole(idUser, idRole, user.getUsername());
 
@@ -59,7 +59,7 @@ public class UserRoleService {
     public void delete (final User user, final Integer idUser, final Integer idRole) {
         final UserRoleResponseDTO userRoles = getUserRolesByUser(user);
 
-        Utils.checkSystemPermission(userRoles, Constants.DELETE_USER_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, Constants.DELETE_USER_ROLE_PERMISSION);
 
         final UserRolePK userRolePK = new UserRolePK(idUser, idRole);
         final UserRole userRole = _getById(userRolePK);

@@ -16,9 +16,11 @@ public interface Constants {
 
     // File Paths
     String USER_ICON_PATH = "images/UserIcon.png";
+    String GROUP_ICON_PATH = "images/GroupIcon.png";
 
     // URLs
     String AVATAR_URL = "http://localhost:8080/users/%s/avatar";
+    String GROUP_URL = "http://localhost:8080/groups/%s/avatar";
     String PASSWORD_RECOVERY_LINK = "http://localhost:8085/password-recovery?token=%s";
 
     // Email Subjects
@@ -37,10 +39,19 @@ public interface Constants {
     String CREATE_SYSTEM_ROLE_PERMISSION = "Vincular permissão de sistema á Cargo";
     String DELETE_SYSTEM_ROLE_PERMISSION = "Desvincular permissão de sistema de Cargo";
 
+    // GroupRolePermissionService Permissions
+    String CREATE_GROUP_ROLE_PERMISSION = "Vincular permissão de grupo á Cargo";
+    String DELETE_GROUP_ROLE_PERMISSION = "Desvincular permissão de grupo de Cargo";
+
+    // GroupService Permissions
+    String CREATE_GROUP_PERMISSION = "Criar Grupo";
+    String EDIT_GROUP_PERMISSION = "Editar Grupo";
+    String DELETE_GROUP_PERMISSION = "Deletar Grupo";
+
     // Utilities
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
-    String ACTIVE = "ATIVO";
+    String ACTIVE = "Ativo";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
@@ -58,6 +69,8 @@ public interface Constants {
     String ID_USER_IS_REQUIRED_MESSAGE = "O campo 'Id Usuário' é obrigatório.";
     String ID_ROLE_IS_REQUIRED_MESSAGE = "O campo 'Id Cargo' é obrigatório.";
     String ID_SYSTEM_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Sistema' é obrigatório.";
+    String ID_GROUP_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Grupo' é obrigatório.";
+    String ID_GROUP_IS_REQUIRED_MESSAGE = "O campo 'Id Grupo' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -78,4 +91,5 @@ public interface Constants {
     String PERMISSION_DENIED_EXCEPTION_MESSAGE = "O usuário em questão não possui permissão para %s.";
     String USER_MISMATCH_EXCEPTION_MESSAGE = "O usuário autenticado não corresponde ao usuário que foi passado como parâmetro.";
     String ROLE_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O cargo não pode ser excluído porque existem usuários vinculados a ele.";
+    String GROUP_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O grupo não pode ser excluído porque existem processos, recursos ou permissões de grupo vinculados a ele.";
 }

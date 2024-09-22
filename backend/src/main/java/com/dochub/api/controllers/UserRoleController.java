@@ -5,7 +5,7 @@ import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.dtos.user_roles.CreateUserRoleDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.User;
-import com.dochub.api.entities.UserRolePK;
+import com.dochub.api.entities.user_role.UserRolePK;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.RoleService;
 import com.dochub.api.services.UserRoleService;
