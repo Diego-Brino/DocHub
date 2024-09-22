@@ -1,4 +1,3 @@
-
 SET foreign_key_checks = 0;
 
 TRUNCATE TABLE `dochub`.`resposta`;
@@ -42,7 +41,16 @@ VALUES
    ('Vincular Usuário á Cargo', 'DocHub', CURRENT_DATE),
    ('Desvincular Usuário de Cargo', 'DocHub', CURRENT_DATE),
    ('Vincular permissão de sistema á Cargo', 'DocHub', CURRENT_DATE),
-   ('Desvincular permissão de sistema de Cargo', 'DocHub', CURRENT_DATE);
+   ('Desvincular permissão de sistema de Cargo', 'DocHub', CURRENT_DATE),
+   ('Criar Grupo', 'DocHub', CURRENT_DATE),
+   ('Deletar Grupo', 'DocHub', CURRENT_DATE),
+   ('Vincular permissão de grupo á Cargo', 'DocHub', CURRENT_DATE),
+   ('Desvincular permissão de grupo de Cargo', 'DocHub', CURRENT_DATE);
+
+INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    ('Editar Grupo', 'DocHub', CURRENT_DATE),
+    ('Deletar Grupo', 'DocHub', CURRENT_DATE);
 
 INSERT INTO cargo (NOME, DESCRICAO, COR, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -60,7 +68,11 @@ VALUES
     (1, 4, 'DocHub', CURRENT_DATE),
     (1, 5, 'DocHub', CURRENT_DATE),
     (1, 6, 'DocHub', CURRENT_DATE),
-    (1, 7, 'DocHub', CURRENT_DATE);
+    (1, 7, 'DocHub', CURRENT_DATE),
+    (1, 8, 'DocHub', CURRENT_DATE),
+    (1, 9, 'DocHub', CURRENT_DATE),
+    (1, 10, 'DocHub', CURRENT_DATE),
+    (1, 11, 'DocHub', CURRENT_DATE);
 
 INSERT INTO usuario_cargo (ID_USUARIO, ID_CARGO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
