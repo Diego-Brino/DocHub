@@ -1,5 +1,6 @@
 package com.dochub.api.services;
 
+import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Role;
 import com.dochub.api.entities.User;
@@ -34,6 +35,17 @@ public class UserRoleService {
         final List<Role> roles = _getRolesFromUserRoles(userRoles);
 
         return new UserRoleResponseDTO(user, roles);
+    }
+
+    public List<UserResponseDTO> getUsersByRole (final Role role) {
+        final List<UserRole> userRoles = userRoleRepository
+            .findByRole(role)
+            .orElse(Collections.emptyList());
+
+        return userRoles
+            .stream()
+            .map(UserResponseDTO::new)
+            .collect(Collectors.toList());
     }
 
     public Boolean hasUsersAssignedToRole (final Role role) {

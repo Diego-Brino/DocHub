@@ -45,7 +45,7 @@ public class UserRoleController {
        final User user = userService.getByEmail(userEmail);
 
        final UserResponseDTO targetUser = userService.getById(createUserRoleDTO.idUser());
-       final RoleResponseDTO targetRole = roleService.getById(createUserRoleDTO.idRole());
+       final RoleResponseDTO targetRole = roleService.getDtoById(createUserRoleDTO.idRole());
 
        return ResponseEntity
            .status(HttpStatus.CREATED)

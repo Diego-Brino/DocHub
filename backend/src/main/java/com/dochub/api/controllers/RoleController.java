@@ -3,7 +3,9 @@ package com.dochub.api.controllers;
 import com.dochub.api.dtos.role.CreateRoleDTO;
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.role.UpdateRoleDTO;
+import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
+import com.dochub.api.entities.Role;
 import com.dochub.api.entities.User;
 import com.dochub.api.enums.RoleStatus;
 import com.dochub.api.services.JwtService;
@@ -41,7 +43,16 @@ public class RoleController {
     public ResponseEntity<RoleResponseDTO> getOne (@PathVariable("id") @NonNull final Integer id) {
         return ResponseEntity
             .ok()
-            .body(roleService.getById(id));
+            .body(roleService.getDtoById(id));
+    }
+
+    @GetMapping("/{id}/users")
+    public ResponseEntity<List<UserResponseDTO>> getUsersByRole (@PathVariable("id") @NonNull final Integer id) {
+        final Role role = roleService.getById(id);
+
+        return ResponseEntity
+            .ok()
+            .body(userRoleService.getUsersByRole(role));
     }
 
     @PostMapping

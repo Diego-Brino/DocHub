@@ -33,7 +33,7 @@ public class SystemRolePermissionController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        final RoleResponseDTO role = roleService.getById(createSystemRolePermissionDTO.idRole());
+        final RoleResponseDTO role = roleService.getDtoById(createSystemRolePermissionDTO.idRole());
         final SystemPermissionResponseDTO systemPermission = systemPermissionService.getById(createSystemRolePermissionDTO.idSystemPermission());
 
         return ResponseEntity

@@ -35,7 +35,7 @@ public class GroupRolePermissionController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        final RoleResponseDTO role = roleService.getById(createGroupRolePermissionDTO.idRole());
+        final RoleResponseDTO role = roleService.getDtoById(createGroupRolePermissionDTO.idRole());
         final GroupPermissionResponseDTO groupPermission = groupPermissionService.getById(createGroupRolePermissionDTO.idGroupPermission());
         final GroupResponseDTO group = groupService.getById(createGroupRolePermissionDTO.idGroup());
 

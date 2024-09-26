@@ -25,8 +25,14 @@ import java.util.stream.Collectors;
 public class RoleService {
     private final RoleRepository roleRepository;
 
-    public RoleResponseDTO getById (final Integer roleId) {
-        final Role role = _getById(roleId);
+    public Role getById (final Integer roleId) {
+        return roleRepository
+            .findById(roleId)
+            .orElseThrow(EntityNotFoundByIdException::new);
+    }
+
+    public RoleResponseDTO getDtoById (final Integer roleId) {
+        final Role role = getById(roleId);
 
         return new RoleResponseDTO(role);
     }
@@ -51,7 +57,7 @@ public class RoleService {
     public void update (final UserRoleResponseDTO userRoles, final Integer roleId, final UpdateRoleDTO updateRoleDTO) {
         Utils.checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
-        final Role role = _getById(roleId);
+        final Role role = getById(roleId);
 
         Utils.updateFieldIfPresent(updateRoleDTO.name(), role::setName);
         Utils.updateFieldIfPresent(updateRoleDTO.description(), role::setDescription);
@@ -66,7 +72,7 @@ public class RoleService {
     public void updateStatus (final UserRoleResponseDTO userRoles, final Integer roleId, final RoleStatus roleStatus) {
         Utils.checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
-        final Role role = _getById(roleId);
+        final Role role = getById(roleId);
 
         role.setRoleStatus(roleStatus);
 
@@ -77,7 +83,7 @@ public class RoleService {
 
     public void delete (final Function<Role, Boolean> hasUsersAssignedToRoleFunc,
                         final UserRoleResponseDTO userRoles, final Integer roleId) {
-        final Role role = _getById(roleId);
+        final Role role = getById(roleId);
         final Boolean hasUsersAssignedToRole = hasUsersAssignedToRoleFunc.apply(role);
 
         if (hasUsersAssignedToRole) throw new RoleCannotBeDeletedException();
@@ -85,12 +91,6 @@ public class RoleService {
         Utils.checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
 
         roleRepository.delete(role);
-    }
-
-    private Role _getById (final Integer roleId) {
-        return roleRepository
-            .findById(roleId)
-            .orElseThrow(EntityNotFoundByIdException::new);
     }
 
     private void _updateRoleStatusIfPresent (final RoleStatus roleStatus, final Role role) {
