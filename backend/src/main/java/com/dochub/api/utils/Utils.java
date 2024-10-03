@@ -1,6 +1,7 @@
 package com.dochub.api.utils;
 
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
+import com.dochub.api.enums.RoleStatus;
 import com.dochub.api.exceptions.InputStreamFileReadException;
 import com.dochub.api.exceptions.InvalidTokenFormatException;
 import com.dochub.api.exceptions.MultipartFileReadException;
@@ -97,7 +98,7 @@ public class Utils {
             .roles()
             .stream()
             .anyMatch(role ->
-                Objects.equals(Constants.ACTIVE, role.status()) &&
+                RoleStatus.ACTIVE.getCode().equals(role.status()) &&
                 role.groupPermissions()
                     .stream()
                     .anyMatch(gp ->

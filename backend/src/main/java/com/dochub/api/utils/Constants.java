@@ -51,7 +51,8 @@ public interface Constants {
     // Utilities
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
-    String ACTIVE = "Ativo";
+    String ACTIVE = "ATIVO";
+    String INACTIVE = "INATIVO";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";

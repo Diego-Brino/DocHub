@@ -11,6 +11,7 @@ import { Main } from "@/layouts/main";
 import { ResetPassword } from "@/pages/reset-password.tsx";
 import { ReactNode, useEffect } from "react";
 import { useAuthContext } from "@/contexts/auth";
+import { Roles } from "@/pages/roles.tsx";
 
 const AuthenticatedRoute = ({ children }: { children: ReactNode }) => {
   const { token } = useAuthContext();
@@ -86,7 +87,7 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/roles",
             element: (
               <AuthenticatedRoute>
-                <Groups />
+                <Roles />
               </AuthenticatedRoute>
             ),
           },

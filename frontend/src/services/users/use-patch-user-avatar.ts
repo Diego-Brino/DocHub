@@ -28,7 +28,7 @@ function usePatchUserAvatar() {
     mutationFn: (avatar: File) =>
       patchUserAvatar(token, tokenPayload?.id as number, avatar),
     onSuccess: () => {
-      queryClient.invalidateQueries(["user"]);
+      queryClient.invalidateQueries(["user", "roles"]);
       toast.success("Avatar atualizado com sucesso");
     },
   });
