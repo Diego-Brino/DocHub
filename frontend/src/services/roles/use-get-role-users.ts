@@ -31,7 +31,7 @@ function useGetRoleUsers({ roleId }: Omit<GetRoleUsersRequest, "token">) {
   const { token } = useAuthContext();
 
   return useQuery({
-    queryKey: ["roles", roleId, "users"],
+    queryKey: ["roles-users", roleId],
     queryFn: () => getRoleUsers({ token, roleId }),
   });
 }

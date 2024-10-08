@@ -22,6 +22,7 @@ import {
   RoleDeleteConfirmationAlert,
   useRoleDeleteConfirmationAlertContext,
 } from "@/features/roles/role-delete-confirmation-alert/role-delete-confirmation-alert.tsx";
+import { motion } from "framer-motion";
 
 type RoleCardProps = {
   role: {
@@ -55,72 +56,79 @@ function RoleCard({
 
   return (
     <>
-      <Card
-        className="h-[167px]"
-        style={{
-          borderLeft: `16px solid ${color}`,
-        }}
+      <motion.div
+        layout
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+        exit={{ opacity: 0 }}
       >
-        <CardHeader className="flex flex-row justify-between">
-          <div className="flex flex-col gap-2">
-            <CardTitle>{name}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </div>
-          <Badge
-            variant="outline"
-            className="cursor-pointer h-min px-2 py-1 hover:bg-accent"
-            onClick={toggleStatus}
-          >
-            {status}
-            <div
-              className={cn(
-                "w-2 h-2 rounded-full ml-2",
-                status === "ATIVO" ? "bg-green-500" : "bg-red-500",
-              )}
-            />
-          </Badge>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center">
-            <div className="flex -space-x-3">
-              {!isLoading &&
-                data &&
-                data.map((user) => (
-                  <Tooltip key={user.id}>
-                    <TooltipTrigger>
-                      <Avatar>
-                        <AvatarImage src={user.avatarUrl} alt={user.name} />
-                      </Avatar>
-                    </TooltipTrigger>
-                    <TooltipContent>{user.name}</TooltipContent>
-                  </Tooltip>
-                ))}
+        <Card
+          className="h-[167px]"
+          style={{
+            borderLeft: `16px solid ${color}`,
+          }}
+        >
+          <CardHeader className="flex flex-row justify-between">
+            <div className="flex flex-col gap-2">
+              <CardTitle>{name}</CardTitle>
+              <CardDescription>{description}</CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <EditIcon className="size-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Editar</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => open(handleDelete)}
-                  >
-                    <TrashIcon className="size-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Excluir</TooltipContent>
-              </Tooltip>
+            <Badge
+              variant="outline"
+              className="cursor-pointer h-min px-2 py-1 hover:bg-accent"
+              onClick={toggleStatus}
+            >
+              {status}
+              <div
+                className={cn(
+                  "w-2 h-2 rounded-full ml-2",
+                  status === "ATIVO" ? "bg-green-500" : "bg-red-500",
+                )}
+              />
+            </Badge>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <div className="flex -space-x-3">
+                {!isLoading &&
+                  data &&
+                  data.map((user) => (
+                    <Tooltip key={user.id}>
+                      <TooltipTrigger>
+                        <Avatar>
+                          <AvatarImage src={user.avatarUrl} alt={user.name} />
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent>{user.name}</TooltipContent>
+                    </Tooltip>
+                  ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <EditIcon className="size-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Editar</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => open(handleDelete)}
+                    >
+                      <TrashIcon className="size-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Excluir</TooltipContent>
+                </Tooltip>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
       <RoleDeleteConfirmationAlert />
     </>
   );
