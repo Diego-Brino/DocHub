@@ -23,6 +23,7 @@ import {
   useRoleDeleteConfirmationAlertContext,
 } from "@/features/roles/role-delete-confirmation-alert/role-delete-confirmation-alert.tsx";
 import { motion } from "framer-motion";
+import { useRoleSheetContext } from "@/features/roles/role-sheet/role-sheet.tsx";
 
 type RoleCardProps = {
   role: {
@@ -43,6 +44,7 @@ function RoleCard({
   const { data, isLoading } = useGetRoleUsers({ roleId: id });
 
   const { open } = useRoleDeleteConfirmationAlertContext();
+  const { open: openRoleSheet } = useRoleSheetContext();
 
   const toggleStatus = () => {
     mutatePatchStatus({
@@ -106,7 +108,11 @@ function RoleCard({
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => openRoleSheet(id)}
+                    >
                       <EditIcon className="size-5" />
                     </Button>
                   </TooltipTrigger>

@@ -2,6 +2,7 @@ import { Input } from "@/components/custom/input.tsx";
 import { Button } from "@/components/custom/button.tsx";
 import { Plus, Search } from "lucide-react";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { useRoleSheetContext } from "@/features/roles/role-sheet/role-sheet.tsx";
 
 type RolesToolbarContext = {
   filter: string;
@@ -52,6 +53,7 @@ function useRolesToolbarContext() {
 
 function RolesToolbar() {
   const { filter, setFilter, applyFilter } = useRolesToolbarContext();
+  const { open } = useRoleSheetContext();
 
   return (
     <div className="flex justify-between items-center mb-4 bg-muted/60 p-4 rounded-lg border">
@@ -67,7 +69,7 @@ function RolesToolbar() {
           }
         }}
       />
-      <Button className="gap-2">
+      <Button className="gap-2" onClick={() => open(null)}>
         <Plus />
         Novo Cargo
       </Button>
