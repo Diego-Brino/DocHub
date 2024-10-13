@@ -8,7 +8,7 @@ import {
 import { usePatchRoleStatus } from "@/services/roles/use-patch-role-status.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import { cn } from "@/lib/utils.ts";
-import { EditIcon, TrashIcon } from "lucide-react";
+import { EditIcon, TrashIcon, Users } from "lucide-react";
 import { Button } from "@/components/custom/button.tsx";
 import { useGetRoleUsers } from "@/services/roles/use-get-role-users.ts";
 import { Avatar, AvatarImage } from "@/components/ui/avatar.tsx";
@@ -24,6 +24,7 @@ import {
 } from "@/features/roles/role-delete-confirmation-alert/role-delete-confirmation-alert.tsx";
 import { motion } from "framer-motion";
 import { useRoleSheetContext } from "@/features/roles/role-sheet/role-sheet.tsx";
+import { useRoleUsersDialogContext } from "@/features/roles/role-users-dialog/role-users-dialog.tsx";
 
 type RoleCardProps = {
   role: {
@@ -45,6 +46,7 @@ function RoleCard({
 
   const { open } = useRoleDeleteConfirmationAlertContext();
   const { open: openRoleSheet } = useRoleSheetContext();
+  const { open: openRoleUsersDialog } = useRoleUsersDialogContext();
 
   const toggleStatus = () => {
     mutatePatchStatus({
@@ -106,6 +108,18 @@ function RoleCard({
                   ))}
               </div>
               <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => openRoleUsersDialog(id)}
+                    >
+                      <Users className="size-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Usuários</TooltipContent>
+                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button

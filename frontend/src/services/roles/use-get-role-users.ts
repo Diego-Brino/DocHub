@@ -3,7 +3,7 @@ import { useAuthContext } from "@/contexts/auth";
 import { useQuery } from "react-query";
 
 export type GetRoleUsersRequest = {
-  roleId: number;
+  roleId: number | null;
   token: string;
 };
 
@@ -31,8 +31,9 @@ function useGetRoleUsers({ roleId }: Omit<GetRoleUsersRequest, "token">) {
   const { token } = useAuthContext();
 
   return useQuery({
-    queryKey: ["roles-users", roleId],
+    queryKey: ["role-users", roleId],
     queryFn: () => getRoleUsers({ token, roleId }),
+    enabled: !!roleId,
   });
 }
 

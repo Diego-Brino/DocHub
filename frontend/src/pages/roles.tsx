@@ -5,16 +5,23 @@ import {
   RoleSheet,
   RoleSheetProvider,
 } from "@/features/roles/role-sheet/role-sheet.tsx";
+import {
+  RoleUsersDialog,
+  RoleUsersDialogProvider,
+} from "@/features/roles/role-users-dialog/role-users-dialog.tsx";
 
 function Roles() {
   return (
     <div className="flex flex-col w-full h-[calc(100vh_-_73px)] md:h-[calc(100vh_-_73px-4rem)]">
       <RoleSheetProvider>
-        <RolesToolbarProvider>
-          <RolesToolbar />
-          <RolesList />
-        </RolesToolbarProvider>
-        <RoleSheet />
+        <RoleUsersDialogProvider>
+          <RolesToolbarProvider>
+            <RolesToolbar />
+            <RolesList />
+          </RolesToolbarProvider>
+          <RoleSheet />
+          <RoleUsersDialog />
+        </RoleUsersDialogProvider>
       </RoleSheetProvider>
     </div>
   );
