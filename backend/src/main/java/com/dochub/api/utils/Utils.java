@@ -111,7 +111,7 @@ public class Utils {
             .roles()
             .stream()
             .anyMatch(role ->
-                Objects.equals(Constants.ACTIVE, role.status()) &&
+                RoleStatus.ACTIVE.getCode().equals(role.status()) &&
                 role.systemPermissions()
                     .stream()
                     .anyMatch(sp -> Objects.equals(sp.description(), permission))
@@ -143,7 +143,7 @@ public class Utils {
             .roles()
             .stream()
             .anyMatch(role ->
-                Objects.equals(Constants.ACTIVE, role.status()) &&
+                RoleStatus.ACTIVE.getCode().equals(role.status()) &&
                     role.resourcePermissions()
                         .stream()
                         .anyMatch(rp ->
