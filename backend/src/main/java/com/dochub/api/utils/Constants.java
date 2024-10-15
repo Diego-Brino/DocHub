@@ -44,7 +44,6 @@ public interface Constants {
     String DELETE_GROUP_ROLE_PERMISSION = "Desvincular permissão de grupo de Cargo";
 
     // GroupService Permissions
-    String VIEW_GROUP_PERMISSION = "Visualizar Grupo";
     String CREATE_GROUP_PERMISSION = "Criar Grupo";
     String EDIT_GROUP_PERMISSION = "Editar Grupo";
     String DELETE_GROUP_PERMISSION = "Deletar Grupo";
@@ -66,11 +65,12 @@ public interface Constants {
     // ResourceService Permissions
     String CANNOT_VIEW_RESOURCE_PERMISSION = "Não visualizar Recurso";
 
+    // Profile Permissions
+    String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
+
     // Utilities
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
-    String ACTIVE = "ATIVO";
-    String INACTIVE = "INATIVO";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
