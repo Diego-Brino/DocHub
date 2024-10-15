@@ -44,9 +44,27 @@ public interface Constants {
     String DELETE_GROUP_ROLE_PERMISSION = "Desvincular permissão de grupo de Cargo";
 
     // GroupService Permissions
+    String VIEW_GROUP_PERMISSION = "Visualizar Grupo";
     String CREATE_GROUP_PERMISSION = "Criar Grupo";
     String EDIT_GROUP_PERMISSION = "Editar Grupo";
     String DELETE_GROUP_PERMISSION = "Deletar Grupo";
+
+    // ResourceRolePermissionService Permissions
+    String CREATE_RESOURCE_ROLE_PERMISSION = "Vincular permissão de recurso á Cargo";
+    String DELETE_RESOURCE_ROLE_PERMISSION = "Desvincular permissão de recurso de Cargo";
+
+    // ArchiveService Permissions
+    String CREATE_ARCHIVE_PERMISSION = "Criar Arquivo";
+    String EDIT_ARCHIVE_PERMISSION = "Editar Arquivo";
+    String DELETE_ARCHIVE_PERMISSION = "Deletar Arquivo";
+
+    // FolderService Permissions
+    String CREATE_FOLDER_PERMISSION = "Criar Pasta";
+    String EDIT_FOLDER_PERMISSION = "Editar Pasta";
+    String DELETE_FOLDER_PERMISSION = "Deletar Pasta";
+
+    // ResourceService Permissions
+    String CANNOT_VIEW_RESOURCE_PERMISSION = "Não visualizar Recurso";
 
     // Utilities
     String UTF_8 = "UTF-8";
@@ -72,6 +90,8 @@ public interface Constants {
     String ID_SYSTEM_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Sistema' é obrigatório.";
     String ID_GROUP_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Grupo' é obrigatório.";
     String ID_GROUP_IS_REQUIRED_MESSAGE = "O campo 'Id Grupo' é obrigatório.";
+    String ID_RESOURCE_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Recurso' é obrigatório.";
+    String ID_RESOURCE_IS_REQUIRED_MESSAGE = "O campo 'Id Recurso' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";

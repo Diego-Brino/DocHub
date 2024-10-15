@@ -83,12 +83,12 @@ public class RoleService {
 
     public void delete (final Function<Role, Boolean> hasUsersAssignedToRoleFunc,
                         final UserRoleResponseDTO userRoles, final Integer roleId) {
+        Utils.checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
+
         final Role role = getById(roleId);
         final Boolean hasUsersAssignedToRole = hasUsersAssignedToRoleFunc.apply(role);
 
         if (hasUsersAssignedToRole) throw new RoleCannotBeDeletedException();
-
-        Utils.checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
 
         roleRepository.delete(role);
     }

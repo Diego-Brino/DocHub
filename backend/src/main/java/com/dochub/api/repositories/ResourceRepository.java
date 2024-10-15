@@ -10,5 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface ResourceRepository extends JpaRepository<Resource, Integer> {
-    Optional<List<Resource>> findByGroup (Group group);
+    Integer countResourceByGroup (Group group);
+    Optional<List<Resource>> findByGroupAndArchive_FolderIsNullAndFolder_ParentFolderIsNull (Group group);
 }

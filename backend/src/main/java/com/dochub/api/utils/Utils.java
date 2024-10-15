@@ -73,12 +73,37 @@ public class Utils {
         }
     }
 
-    public static void checkPermission (final UserRoleResponseDTO userRoles, final Integer groupId, final String permission) {
-        final boolean hasPermission = checkSystemPermission(userRoles, permission) || checkGroupPermission(userRoles, groupId, permission);
+    public static void checkPermission (final UserRoleResponseDTO userRoles, final Integer groupId,
+                                        final String permission) {
+        final boolean hasPermission =
+            checkSystemPermission(userRoles, permission) ||
+            checkGroupPermission(userRoles, groupId, permission);
 
         if (!hasPermission) {
             throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
         }
+    }
+
+    public static void checkPermission (final UserRoleResponseDTO userRoles,
+                                        final Integer groupId, final Integer resourceId,
+                                        final String permission) {
+        final boolean hasPermission =
+            checkSystemPermission(userRoles, permission) ||
+            checkGroupPermission(userRoles, groupId, permission) ||
+            checkResourcePermission(userRoles, groupId, resourceId, permission);
+
+        if (!hasPermission) {
+            throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
+        }
+    }
+
+    public static boolean isAuthorizedToViewResource (final UserRoleResponseDTO userRoles,
+                                                        final Integer groupId, final Integer resourceId) {
+        return (
+            !checkSystemPermission(userRoles, Constants.CANNOT_VIEW_RESOURCE_PERMISSION) &&
+            !checkGroupPermission(userRoles, groupId, Constants.CANNOT_VIEW_RESOURCE_PERMISSION) &&
+            !checkResourcePermission(userRoles, groupId, resourceId, Constants.CANNOT_VIEW_RESOURCE_PERMISSION)
+        );
     }
 
     private static boolean checkSystemPermission (final UserRoleResponseDTO userRoles, final String permission) {
@@ -93,7 +118,8 @@ public class Utils {
             );
     }
 
-    private static boolean checkGroupPermission (final UserRoleResponseDTO userRoles, final Integer groupId, final String permission) {
+    private static boolean checkGroupPermission (final UserRoleResponseDTO userRoles, final Integer groupId,
+                                                 final String permission) {
         return userRoles
             .roles()
             .stream()
@@ -107,6 +133,26 @@ public class Utils {
                           .stream()
                           .anyMatch(p -> Objects.equals(p.description(), permission))
                     )
+            );
+    }
+
+    private static boolean checkResourcePermission (final UserRoleResponseDTO userRoles,
+                                                    final Integer groupId, final Integer resourceId,
+                                                    final String permission) {
+        return userRoles
+            .roles()
+            .stream()
+            .anyMatch(role ->
+                Objects.equals(Constants.ACTIVE, role.status()) &&
+                    role.resourcePermissions()
+                        .stream()
+                        .anyMatch(rp ->
+                            Objects.equals(rp.resource().group().id(), groupId) &&
+                            Objects.equals(rp.resource().id(), resourceId) &&
+                            rp.permissions()
+                                .stream()
+                                .anyMatch(p -> Objects.equals(p.description(), permission))
+                            )
             );
     }
 

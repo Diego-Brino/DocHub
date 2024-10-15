@@ -3,6 +3,7 @@ package com.dochub.api.entities;
 import com.dochub.api.converters.RoleStatusConverter;
 import com.dochub.api.dtos.role.CreateRoleDTO;
 import com.dochub.api.entities.group_role_permission.GroupRolePermission;
+import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
 import com.dochub.api.entities.system_role_permission.SystemRolePermission;
 import com.dochub.api.entities.user_role.UserRole;
 import com.dochub.api.enums.RoleStatus;
@@ -48,6 +49,9 @@ public class Role {
     @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
     private List<GroupRolePermission> groupRolePermissions;
 
+    @OneToMany(mappedBy = "role", cascade = { CascadeType.REMOVE })
+    private List<ResourceRolePermission> resourceRolePermissions;
+
     @Embedded
     private AuditRecord auditRecord;
 
@@ -68,7 +72,21 @@ public class Role {
             final Map<Group, List<GroupPermission>> map = new HashMap<>();
 
             groupRolePermissions.forEach(
-                    grp -> map.computeIfAbsent(grp.getGroup(), gp -> new ArrayList<>()).add(grp.getGroupPermission())
+                grp -> map.computeIfAbsent(grp.getGroup(), gp -> new ArrayList<>()).add(grp.getGroupPermission())
+            );
+
+            return map;
+        }
+
+        return Collections.emptyMap();
+    }
+
+    public Map<Resource, List<ResourcePermission>> getResourcePermissionsGroupedByResource () {
+        if (!resourceRolePermissions.isEmpty()) {
+            final Map<Resource, List<ResourcePermission>> map = new HashMap<>();
+
+            resourceRolePermissions.forEach(
+                rsp -> map.computeIfAbsent(rsp.getResource(), r -> new ArrayList<>()).add(rsp.getResourcePermission())
             );
 
             return map;
