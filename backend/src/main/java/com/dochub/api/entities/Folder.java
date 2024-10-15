@@ -1,6 +1,5 @@
 package com.dochub.api.entities;
 
-import com.dochub.api.dtos.archive.CreateArchiveDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,5 +48,18 @@ public class Folder {
             .insertionUser(initiatorUsername)
             .insertionDate(new Date())
             .build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Folder folder = (Folder) o;
+        return Objects.equals(id, folder.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

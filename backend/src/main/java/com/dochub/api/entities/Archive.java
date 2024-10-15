@@ -55,4 +55,17 @@ public class Archive {
             .insertionDate(new Date())
             .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Archive archive = (Archive) o;
+        return Objects.equals(id, archive.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
