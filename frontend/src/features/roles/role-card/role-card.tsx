@@ -8,7 +8,7 @@ import {
 import { usePatchRoleStatus } from "@/services/roles/use-patch-role-status.ts";
 import { Badge } from "@/components/ui/badge.tsx";
 import { cn } from "@/lib/utils.ts";
-import { EditIcon, TrashIcon, Users } from "lucide-react";
+import { EditIcon, Shield, TrashIcon, Users } from "lucide-react";
 import { Button } from "@/components/custom/button.tsx";
 import { useGetRoleUsers } from "@/services/roles/use-get-role-users.ts";
 import { Avatar, AvatarImage } from "@/components/ui/avatar.tsx";
@@ -25,6 +25,7 @@ import {
 import { motion } from "framer-motion";
 import { useRoleSheetContext } from "@/features/roles/role-sheet/role-sheet.tsx";
 import { useRoleUsersDialogContext } from "@/features/roles/role-users-dialog/role-users-dialog.tsx";
+import { useRolePermissionsDialogContext } from "@/features/roles/role-permissions-dialog/role-permissions-dialog.tsx";
 
 type RoleCardProps = {
   role: {
@@ -45,8 +46,10 @@ function RoleCard({
   const { data, isLoading } = useGetRoleUsers({ roleId: id });
 
   const { open } = useRoleDeleteConfirmationAlertContext();
+
   const { open: openRoleSheet } = useRoleSheetContext();
   const { open: openRoleUsersDialog } = useRoleUsersDialogContext();
+  const { open: openRolePermissionsDialog } = useRolePermissionsDialogContext();
 
   const toggleStatus = () => {
     mutatePatchStatus({
@@ -108,6 +111,18 @@ function RoleCard({
                   ))}
               </div>
               <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => openRolePermissionsDialog(id)}
+                    >
+                      <Shield className="size-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Permissões</TooltipContent>
+                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
