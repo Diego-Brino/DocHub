@@ -16,7 +16,8 @@ public record GroupRolePermissionResponseDTO (
             new GroupResponseDTO(group),
             groupPermissions
                 .stream()
-                .map(GroupPermissionResponseDTO::new).toList()
+                .map(GroupPermissionResponseDTO::new)
+                .toList()
         );
     }
 }

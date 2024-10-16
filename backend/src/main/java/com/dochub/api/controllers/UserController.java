@@ -39,7 +39,7 @@ public class UserController {
 
         return ResponseEntity
             .ok()
-            .body(userService.getById(id, userEmail));
+            .body(userService.getDtoById(id, userEmail));
     }
 
     @GetMapping(path = "/{id}/avatar", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
@@ -52,7 +52,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UpdateUserResponseDTO> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                                          @PathVariable("id") @NonNull final Integer id,
-                                                         @ModelAttribute @NonNull @Valid  final UpdateUserDTO updateUserDTO) {
+                                                         @ModelAttribute @NonNull @Valid final UpdateUserDTO updateUserDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
 
         final User user = userService.update(id, userEmail, updateUserDTO);

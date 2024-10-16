@@ -44,7 +44,7 @@ public class UserRoleController {
        final String userEmail = jwtService.extractUserEmail(token);
        final User user = userService.getByEmail(userEmail);
 
-       final UserResponseDTO targetUser = userService.getById(createUserRoleDTO.idUser());
+       final UserResponseDTO targetUser = userService.getDtoById(createUserRoleDTO.idUser());
        final RoleResponseDTO targetRole = roleService.getDtoById(createUserRoleDTO.idRole());
 
        return ResponseEntity

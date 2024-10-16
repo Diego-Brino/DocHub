@@ -1,7 +1,14 @@
 package com.dochub.api.entities;
 
+import com.dochub.api.dtos.archive.CreateArchiveDTO;
+import com.dochub.api.dtos.folder.CreateFolderDTO;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -22,9 +29,37 @@ public class Resource {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "ID_GRUPO", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "ID_GRUPO", nullable = false)
     private Group group;
+
+    @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Archive archive;
+
+    @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Folder folder;
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Resource (final CreateArchiveDTO createArchiveDTO, final Group group, final String initiatorUsername) {
+        this.name = createArchiveDTO.name();
+        this.description = createArchiveDTO.description();
+        this.group = group;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
+
+    public Resource (final CreateFolderDTO createFolderDTO, final Group group, final String initiatorUsername) {
+        this.name = createFolderDTO.name();
+        this.description = createFolderDTO.description();
+        this.group = group;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

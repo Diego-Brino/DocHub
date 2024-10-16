@@ -1,4 +1,3 @@
-
 -- dochub.atividade definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`atividade` (
@@ -126,7 +125,20 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario` (
                            PRIMARY KEY (`ID_USUARIO`),
                            UNIQUE KEY `usuario_email_unique` (`EMAIL`),
                            UNIQUE KEY `usuario_username_unique` (`USERNAME`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- dochub.auditoria_recuperacao_senha definition
+
+CREATE TABLE `auditoria_recuperacao_senha` (
+                                               `TOKEN` varchar(256) NOT NULL,
+                                               `ID_USUARIO` int NOT NULL,
+                                               `DATA_EXPIRACAO` datetime NOT NULL,
+                                               `STATUS` enum('Inválido','Não Utilizado','Utilizado') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                               PRIMARY KEY (`TOKEN`),
+                                               KEY `auditoria_redifinicao_senha_usuario_FK` (`ID_USUARIO`),
+                                               CONSTRAINT `auditoria_redifinicao_senha_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- dochub.cargo_permissao_grupo definition
@@ -151,18 +163,16 @@ CREATE TABLE IF NOT EXISTS`cargo_permissao_grupo` (
 -- dochub.cargo_permissao_sistema definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`cargo_permissao_sistema` (
-                                           `ID_CARGO_PERMISSAO_SISTEMA` int NOT NULL AUTO_INCREMENT,
-                                           `ID_PERMISSAO_SISTEMA` int NOT NULL,
                                            `ID_CARGO` int NOT NULL,
+                                           `ID_PERMISSAO_SISTEMA` int NOT NULL,
                                            `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                                            `DATA_INSERCAO` datetime NOT NULL,
                                            `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                                            `DATA_ALTERACAO` datetime DEFAULT NULL,
-                                           PRIMARY KEY (`ID_CARGO_PERMISSAO_SISTEMA`),
-                                           KEY `cargo_permissao_recurso_cargo_FK` (`ID_CARGO`) USING BTREE,
-                                           KEY `cargo_permissao_recurso_permissao_recurso_FK` (`ID_PERMISSAO_SISTEMA`) USING BTREE,
-                                           CONSTRAINT `cargo_permissao_sistema_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
-                                           CONSTRAINT `cargo_permissao_sistema_permissao_sistema_FK` FOREIGN KEY (`ID_PERMISSAO_SISTEMA`) REFERENCES `permissao_sistema` (`ID_PERMISSAO_SISTEMA`)
+                                           PRIMARY KEY (`ID_CARGO`,`ID_PERMISSAO_SISTEMA`),
+                                           KEY `CARGO_PERMISSAO_SISTEMA_permissao_sistema_FK` (`ID_PERMISSAO_SISTEMA`),
+                                           CONSTRAINT `CARGO_PERMISSAO_SISTEMA_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
+                                           CONSTRAINT `CARGO_PERMISSAO_SISTEMA_permissao_sistema_FK` FOREIGN KEY (`ID_PERMISSAO_SISTEMA`) REFERENCES `permissao_sistema` (`ID_PERMISSAO_SISTEMA`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -217,19 +227,6 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo` (
                                  KEY `usuario_cargo_cargo_FK` (`ID_CARGO`),
                                  CONSTRAINT `usuario_cargo_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
                                  CONSTRAINT `usuario_cargo_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
--- dochub.auditoria_recuperacao_senha definition
-
-CREATE TABLE IF NOT EXISTS `dochub`.`auditoria_recuperacao_senha` (
-                                               `TOKEN` varchar(256) NOT NULL,
-                                               `ID_USUARIO` int NOT NULL,
-                                               `DATA_EXPIRACAO` datetime NOT NULL,
-                                               `STATUS` enum('Inválido','Não Utilizado','Utilizado') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                                               PRIMARY KEY (`TOKEN`),
-                                               KEY `auditoria_redifinicao_senha_usuario_FK` (`ID_USUARIO`),
-                                               CONSTRAINT `auditoria_redifinicao_senha_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -312,18 +309,16 @@ CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
 -- dochub.pasta definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`pasta` (
-                         `ID_PASTA` int NOT NULL AUTO_INCREMENT,
-                         `ID_RECURSO` int NOT NULL,
+                         `ID_PASTA` int NOT NULL,
                          `ID_PASTA_PAI` int DEFAULT NULL,
                          `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                          `DATA_INSERCAO` datetime NOT NULL,
                          `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                          `DATA_ALTERACAO` datetime DEFAULT NULL,
                          PRIMARY KEY (`ID_PASTA`),
-                         KEY `PASTA_recurso_FK` (`ID_RECURSO`),
-                         KEY `pasta_pasta_FK` (`ID_PASTA_PAI`),
-                         CONSTRAINT `pasta_pasta_FK` FOREIGN KEY (`ID_PASTA_PAI`) REFERENCES `pasta` (`ID_PASTA`),
-                         CONSTRAINT `PASTA_recurso_FK` FOREIGN KEY (`ID_RECURSO`) REFERENCES `recurso` (`ID_RECURSO`)
+                         KEY `pasta_pai_recurso_FK` (`ID_PASTA_PAI`),
+                         CONSTRAINT `pasta_pai_recurso_FK` FOREIGN KEY (`ID_PASTA_PAI`) REFERENCES `recurso` (`ID_RECURSO`) ON DELETE CASCADE ON UPDATE RESTRICT,
+                         CONSTRAINT `pasta_recurso_FK` FOREIGN KEY (`ID_PASTA`) REFERENCES `recurso` (`ID_RECURSO`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -349,42 +344,17 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo_fluxo` (
 -- dochub.arquivo definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`arquivo` (
-                           `ID_ARQUIVO` int NOT NULL AUTO_INCREMENT,
-                           `HASH_S3` varchar(256) DEFAULT NULL,
-                           `TIPO` varchar(64) NOT NULL,
-                           `TAMANHO` int NOT NULL,
+                           `ID_ARQUIVO` int NOT NULL,
+                           `HASH_S3` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                           `TIPO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                           `TAMANHO` bigint NOT NULL,
                            `ID_PASTA` int DEFAULT NULL,
-                           `ID_RECURSO` int NOT NULL,
-                           `USUARIO_INSERCAO` varchar(100) NOT NULL,
+                           `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `DATA_INSERCAO` datetime NOT NULL,
-                           `USUARIO_ALTERACAO` varchar(100) DEFAULT NULL,
+                           `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                            `DATA_ALTERACAO` datetime DEFAULT NULL,
                            PRIMARY KEY (`ID_ARQUIVO`),
-                           KEY `ARQUIVO_pasta_FK` (`ID_PASTA`),
-                           KEY `ARQUIVO_recurso_FK` (`ID_RECURSO`),
-                           CONSTRAINT `ARQUIVO_pasta_FK` FOREIGN KEY (`ID_PASTA`) REFERENCES `pasta` (`ID_PASTA`),
-                           CONSTRAINT `ARQUIVO_recurso_FK` FOREIGN KEY (`ID_RECURSO`) REFERENCES `recurso` (`ID_RECURSO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
--- dochub.processo_recurso definition
-
-CREATE TABLE IF NOT EXISTS `dochub`.`processo_recurso` (
-                                    `ID_PROCESSO_RECURSO` int NOT NULL AUTO_INCREMENT,
-                                    `DESCRICAO` varchar(256) DEFAULT NULL,
-                                    `NOME` varchar(256) NOT NULL,
-                                    `ID_PASTA` int DEFAULT NULL,
-                                    `ID_ARQUIVO` int NOT NULL,
-                                    `USUARIO_INSERCAO` varchar(100) NOT NULL,
-                                    `DATA_INSERCAO` datetime NOT NULL,
-                                    `USUARIO_ALTERACAO` varchar(100) DEFAULT NULL,
-                                    `DATA_ALTERACAO` datetime DEFAULT NULL,
-                                    `ID_PROCESSO` int NOT NULL,
-                                    PRIMARY KEY (`ID_PROCESSO_RECURSO`),
-                                    KEY `processo_recurso_pasta_FK` (`ID_PASTA`),
-                                    KEY `processo_recurso_arquivo_FK` (`ID_ARQUIVO`),
-                                    KEY `processo_recurso_processo_FK` (`ID_PROCESSO`),
-                                    CONSTRAINT `processo_recurso_arquivo_FK` FOREIGN KEY (`ID_ARQUIVO`) REFERENCES `arquivo` (`ID_ARQUIVO`),
-                                    CONSTRAINT `processo_recurso_pasta_FK` FOREIGN KEY (`ID_PASTA`) REFERENCES `pasta` (`ID_PASTA`),
-                                    CONSTRAINT `processo_recurso_processo_FK` FOREIGN KEY (`ID_PROCESSO`) REFERENCES `processo` (`ID_PROCESSO`)
+                           KEY `arquivo_pasta_FK` (`ID_PASTA`),
+                           CONSTRAINT `arquivo_pasta_FK` FOREIGN KEY (`ID_PASTA`) REFERENCES `pasta` (`ID_PASTA`) ON DELETE CASCADE ON UPDATE RESTRICT,
+                           CONSTRAINT `arquivo_recurso_FK` FOREIGN KEY (`ID_ARQUIVO`) REFERENCES `recurso` (`ID_RECURSO`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

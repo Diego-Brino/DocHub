@@ -21,15 +21,19 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponseDTO getById (final Integer userId) {
-        final User user = userRepository
+    public User getById (final Integer userId) {
+        return userRepository
             .findById(userId)
             .orElseThrow(EntityNotFoundByIdException::new);
+    }
+
+    public UserResponseDTO getDtoById (final Integer userId) {
+        final User user = getById(userId);
 
         return new UserResponseDTO(user);
     }
 
-    public UserResponseDTO getById (final Integer userId, final String userEmail) {
+    public UserResponseDTO getDtoById (final Integer userId, final String userEmail) {
         final User user = getByEmail(userEmail);
 
         _validateUserIdentity(userId, user);
@@ -77,7 +81,7 @@ public class UserService {
 
         _validateUserIdentity(userId, user);
 
-        _validateUserUpdate(user, updateUserDTO);
+        validateUserUpdate(user, updateUserDTO);
 
         Utils.updateFieldIfPresent(updateUserDTO.name(), user::setName);
         Utils.updateFieldIfPresent(updateUserDTO.password(), password -> user.setPassword(Utils.encodePassword(password)));
@@ -131,6 +135,22 @@ public class UserService {
         return new UpdateUserResponseDTO(generateToken.apply(extraClaims, user));
     }
 
+    public void validateUserUpdate (final User user, final UpdateUserDTO updateUserDTO) {
+        if (Objects.nonNull(updateUserDTO.email()) &&
+                (!Objects.equals(user.getEmail(), updateUserDTO.email()) && _isEmailAlreadyRegister(updateUserDTO.email()))) {
+            throw new EmailAlreadyRegisterException();
+        }
+
+        if (Objects.nonNull(updateUserDTO.username()) &&
+                (!Objects.equals(user.getRealUsername(), updateUserDTO.username()) && _isUsernameAlreadyRegister(updateUserDTO.username()))) {
+            throw new UsernameAlreadyRegisterException();
+        }
+
+        if (Objects.nonNull(updateUserDTO.username()) && Utils.containsSpacesOrSpecialCharacters(updateUserDTO.username())) {
+            throw new InvalidUsernameFormatException();
+        }
+    }
+
     private void _validateUserIdentity (final Integer userId, final User user) {
         if (!Objects.equals(userId, user.getId())) {
             throw new PermissionDeniedException(Constants.USER_MISMATCH_EXCEPTION_MESSAGE);
@@ -147,22 +167,6 @@ public class UserService {
         }
 
         if (Utils.containsSpacesOrSpecialCharacters(createUserDTO.username())) {
-            throw new InvalidUsernameFormatException();
-        }
-    }
-
-    private void _validateUserUpdate (final User user, final UpdateUserDTO updateUserDTO) {
-        if (Objects.nonNull(updateUserDTO.email()) &&
-                (!Objects.equals(user.getEmail(), updateUserDTO.email()) && _isEmailAlreadyRegister(updateUserDTO.email()))) {
-            throw new EmailAlreadyRegisterException();
-        }
-
-        if (Objects.nonNull(updateUserDTO.username()) &&
-                (!Objects.equals(user.getRealUsername(), updateUserDTO.username()) && _isUsernameAlreadyRegister(updateUserDTO.username()))) {
-            throw new UsernameAlreadyRegisterException();
-        }
-
-        if (Objects.nonNull(updateUserDTO.username()) && Utils.containsSpacesOrSpecialCharacters(updateUserDTO.username())) {
             throw new InvalidUsernameFormatException();
         }
     }

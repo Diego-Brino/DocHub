@@ -37,7 +37,7 @@ public class GroupRolePermissionController {
 
         final RoleResponseDTO role = roleService.getDtoById(createGroupRolePermissionDTO.idRole());
         final GroupPermissionResponseDTO groupPermission = groupPermissionService.getById(createGroupRolePermissionDTO.idGroupPermission());
-        final GroupResponseDTO group = groupService.getById(createGroupRolePermissionDTO.idGroup());
+        final GroupResponseDTO group = groupService.getDtoById(createGroupRolePermissionDTO.idGroup());
 
         return ResponseEntity
             .status(HttpStatus.CREATED)

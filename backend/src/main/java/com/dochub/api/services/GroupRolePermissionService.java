@@ -2,7 +2,6 @@ package com.dochub.api.services;
 
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
-import com.dochub.api.entities.Process;
 import com.dochub.api.entities.group_role_permission.GroupRolePermission;
 import com.dochub.api.entities.group_role_permission.GroupRolePermissionPK;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
@@ -31,7 +30,7 @@ public class GroupRolePermissionService {
     }
 
     public GroupRolePermissionPK create (final UserRoleResponseDTO userRoles, final Integer idRole, final Integer idGroupPermission, final Integer idGroup) {
-        Utils.checkPermission(userRoles, Constants.CREATE_GROUP_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, idGroup, Constants.CREATE_GROUP_ROLE_PERMISSION);
 
         final GroupRolePermission groupRolePermission = new GroupRolePermission(idRole, idGroupPermission, idGroup, userRoles.user().username());
 
@@ -39,7 +38,7 @@ public class GroupRolePermissionService {
     }
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer idRole, final Integer idGroupPermission, final Integer idGroup) {
-        Utils.checkPermission(userRoles, Constants.DELETE_GROUP_ROLE_PERMISSION);
+        Utils.checkPermission(userRoles, idGroup, Constants.DELETE_GROUP_ROLE_PERMISSION);
 
         final GroupRolePermissionPK groupRolePermissionPK = new GroupRolePermissionPK(idRole, idGroupPermission, idGroup);
         final GroupRolePermission groupRolePermission = _getById(groupRolePermissionPK);

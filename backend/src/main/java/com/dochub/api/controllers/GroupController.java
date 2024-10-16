@@ -1,9 +1,13 @@
 package com.dochub.api.controllers;
 
+import com.dochub.api.dtos.folder.FolderContentsResponseDTO;
 import com.dochub.api.dtos.group.CreateGroupDTO;
 import com.dochub.api.dtos.group.GroupResponseDTO;
 import com.dochub.api.dtos.group.UpdateGroupDTO;
+import com.dochub.api.dtos.resource.RootGroupResourcesResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
+import com.dochub.api.entities.Folder;
+import com.dochub.api.entities.Group;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.*;
 import com.dochub.api.utils.Constants;
@@ -27,21 +31,26 @@ public class GroupController {
     private final UserService userService;
     private final UserRoleService userRoleService;
     private final GroupRolePermissionService groupRolePermissionService;
+    private final ArchiveService archiveService;
+    private final FolderService folderService;
     private final ResourceService resourceService;
     private final ProcessService processService;
 
     @GetMapping
-    public ResponseEntity<List<GroupResponseDTO>> getAll () {
+    public ResponseEntity<List<GroupResponseDTO>> getAll (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+
         return ResponseEntity
             .ok()
-            .body(groupService.getAll());
+            .body(groupService.getGroupsByUserWithViewPermission(user));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GroupResponseDTO> getOne (@PathVariable("id") @NonNull final Integer groupId) {
         return ResponseEntity
             .ok()
-            .body(groupService.getById(groupId));
+            .body(groupService.getDtoById(groupId));
     }
 
     @GetMapping(path = "/{id}/avatar", produces = { MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
@@ -49,6 +58,46 @@ public class GroupController {
         return ResponseEntity
             .ok()
             .body(groupService.getGroupAvatar(groupId));
+    }
+
+    @GetMapping("/{id}/root-resources")
+    public ResponseEntity<RootGroupResourcesResponseDTO> getGroupRootResources (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                                                                @PathVariable("id") @NonNull final Integer groupId) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+        final Group group = groupService.getById(groupId);
+
+        return ResponseEntity
+            .ok()
+            .body(
+                resourceService.getRootGroupResources(
+                    user,
+                    group,
+                    archiveService::getGroupArchivesByFolder,
+                    folderService::getGroupFoldersByParentFolder
+                )
+            );
+    }
+
+    @GetMapping("/{groupId}/folder/{folderId}/contents")
+    public ResponseEntity<FolderContentsResponseDTO> getFolderContents (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                                                        @PathVariable("groupId") @NonNull final Integer groupId,
+                                                                        @PathVariable("folderId") @NonNull final Integer folderId) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+        final Group group = groupService.getById(groupId);
+        final Folder folder = folderService.getById(folderId);
+
+        return ResponseEntity
+            .ok()
+            .body(
+                folderService.getFolderContents(
+                    group,
+                    folder,
+                    user,
+                    archiveService::getGroupArchivesByFolder
+                )
+            );
     }
 
     @PostMapping
