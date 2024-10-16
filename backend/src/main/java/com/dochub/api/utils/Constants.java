@@ -69,6 +69,7 @@ public interface Constants {
     // Profile Permissions
     String CREATE_USER_PERMISSION = "Criar Usuário";
     String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
+    String DELETE_USER_PERMISSION = "Deletar Usuário";
 
     // Utilities
     String UTF_8 = "UTF-8";
@@ -117,4 +118,5 @@ public interface Constants {
     String USER_MISMATCH_EXCEPTION_MESSAGE = "O usuário autenticado não corresponde ao usuário que foi passado como parâmetro.";
     String ROLE_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O cargo não pode ser excluído porque existem usuários vinculados a ele.";
     String GROUP_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O grupo não pode ser excluído porque existem processos, recursos ou permissões de grupo vinculados a ele.";
+    String CANNOT_DELETE_OWN_USER_EXCEPTION  = "Não é permitido deletar o próprio usuário.";
 }

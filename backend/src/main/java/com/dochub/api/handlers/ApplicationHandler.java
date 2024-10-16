@@ -190,4 +190,12 @@ public class ApplicationHandler {
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
+
+    @ExceptionHandler(CannotDeleteOwnUserException.class)
+    public ResponseEntity<ErrorDTO> handleCannotDeleteOwnUserException (CannotDeleteOwnUserException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
 }

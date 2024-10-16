@@ -68,6 +68,13 @@ public class ProfileService {
         userRepository.save(targetUser);
     }
 
+    public void delete (final UserRoleResponseDTO userRoles, final Integer userId,
+                        final BiConsumer<UserRoleResponseDTO, Integer> deleteUserFunc) {
+        Utils.checkPermission(userRoles, Constants.DELETE_USER_PERMISSION);
+
+        deleteUserFunc.accept(userRoles, userId);
+    }
+
     private void _updateAvatarIfPresent (final MultipartFile avatar, final User user) {
         if (Objects.nonNull(avatar)) {
             user.setAvatar(Utils.readBytesFromMultipartFile(avatar));

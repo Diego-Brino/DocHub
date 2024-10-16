@@ -1,6 +1,7 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.user.*;
+import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.User;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.UserRepository;
@@ -164,6 +165,16 @@ public class UserService {
         if (Objects.nonNull(updateUserDTO.username()) && Utils.containsSpacesOrSpecialCharacters(updateUserDTO.username())) {
             throw new InvalidUsernameFormatException();
         }
+    }
+
+    public void delete (final UserRoleResponseDTO userRoles, final Integer userId) {
+        final User user = getById(userId);
+
+        if (userRoles.user().id().equals(userId)) {
+            throw new CannotDeleteOwnUserException();
+        }
+
+        userRepository.delete(user);
     }
 
     private void _validateUserIdentity (final Integer userId, final User user) {

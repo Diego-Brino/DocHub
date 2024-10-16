@@ -90,4 +90,18 @@ public class ProfileController {
             .ok()
             .build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                        @PathVariable("id") @NonNull final Integer userId) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+        final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
+
+        profileService.delete(userRoles, userId, userService::delete);
+
+        return ResponseEntity
+            .noContent()
+            .build();
+    }
 }
