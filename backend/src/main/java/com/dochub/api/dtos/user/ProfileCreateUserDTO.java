@@ -6,14 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
-public record CreateUserDTO (
+public record ProfileCreateUserDTO (
     @NotBlank(message = Constants.NAME_IS_REQUIRED_MESSAGE)
     @Length(max = 256)
     String name,
-
-    @NotBlank(message = Constants.PASSWORD_IS_REQUIRED_MESSAGE)
-    @Length(max = 256)
-    String password,
 
     @NotBlank(message = Constants.EMAIL_IS_REQUIRED_MESSAGE)
     @Email(message = Constants.INVALID_EMAIL_MESSAGE)
@@ -24,5 +20,6 @@ public record CreateUserDTO (
     @Length(max = 256)
     String username,
 
-    MultipartFile avatar) {
+    MultipartFile avatar
+) {
 }

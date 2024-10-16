@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private final EmailService emailService;
+
     private final UserRepository userRepository;
 
     public User getById (final Integer userId) {
@@ -74,6 +76,19 @@ public class UserService {
         final User user = new User(createUserDTO);
 
         return userRepository.save(user);
+    }
+
+    public Integer create (final ProfileCreateUserDTO profileCreateUserDTO, final String initiatorUsername) {
+        _validateUserCreation(profileCreateUserDTO);
+
+        final String randomPassword = Utils.generateRandomPassword();
+        final User user = new User(profileCreateUserDTO, randomPassword, initiatorUsername);
+
+        final Integer userId = userRepository.save(user).getId();
+
+        emailService.sendAccountCreationMail(user.getName(), user.getEmail(), randomPassword);
+
+        return userId;
     }
 
     public User update (final Integer userId, final String userEmail, final UpdateUserDTO updateUserDTO) {
@@ -167,6 +182,20 @@ public class UserService {
         }
 
         if (Utils.containsSpacesOrSpecialCharacters(createUserDTO.username())) {
+            throw new InvalidUsernameFormatException();
+        }
+    }
+
+    private void _validateUserCreation (final ProfileCreateUserDTO profileCreateUserDTO) {
+        if (_isEmailAlreadyRegister(profileCreateUserDTO.email())) {
+            throw new EmailAlreadyRegisterException();
+        }
+
+        if (_isUsernameAlreadyRegister(profileCreateUserDTO.username())) {
+            throw new UsernameAlreadyRegisterException();
+        }
+
+        if (Utils.containsSpacesOrSpecialCharacters(profileCreateUserDTO.username())) {
             throw new InvalidUsernameFormatException();
         }
     }

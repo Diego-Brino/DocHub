@@ -1,5 +1,6 @@
 package com.dochub.api.services;
 
+import com.dochub.api.dtos.user.ProfileCreateUserDTO;
 import com.dochub.api.dtos.user.ProfileUpdateUserPasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
@@ -14,11 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
     private final UserRepository userRepository;
+
+    public Integer create (final UserRoleResponseDTO userRoles,
+                           final ProfileCreateUserDTO profileCreateUserDTO,
+                           final BiFunction<ProfileCreateUserDTO, String, Integer> createUserFunc) {
+        Utils.checkPermission(userRoles, Constants.CREATE_USER_PERMISSION);
+
+        return createUserFunc.apply(profileCreateUserDTO, userRoles.user().username());
+    }
 
     public void update (final UserRoleResponseDTO editorUserRoles,
                         final BiConsumer<User, UpdateUserDTO> validateUserUpdateFunc,

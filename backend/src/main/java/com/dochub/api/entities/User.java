@@ -1,6 +1,7 @@
 package com.dochub.api.entities;
 
 import com.dochub.api.dtos.user.CreateUserDTO;
+import com.dochub.api.dtos.user.ProfileCreateUserDTO;
 import com.dochub.api.entities.user_role.UserRole;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -68,6 +69,22 @@ public class User implements UserDetails {
 
         this.auditRecord = AuditRecord.builder()
             .insertionUser(Constants.SYSTEM_NAME)
+            .insertionDate(new Date())
+            .build();
+    }
+
+    public User (final ProfileCreateUserDTO profileCreateUserDTO, final String password, final String initiatorUsername) {
+        this.name = profileCreateUserDTO.name();
+        this.email = profileCreateUserDTO.email();
+        this.username = profileCreateUserDTO.username();
+        this.password = Utils.encodePassword(password);
+
+        if (Objects.nonNull(profileCreateUserDTO.avatar())) {
+            this.avatar = Utils.readBytesFromMultipartFile(profileCreateUserDTO.avatar());
+        }
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
             .insertionDate(new Date())
             .build();
     }

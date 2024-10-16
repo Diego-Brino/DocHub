@@ -22,24 +22,30 @@ public class EmailService {
     private final EmailTemplateLoader emailTemplateLoader;
 
     public void sendPasswordRecoveryMail (final String name, final String email, final String recoveryLink) {
-        String content = emailTemplateLoader.loadResetPasswordTemplate(recoveryLink, name);
+        final String content = emailTemplateLoader.loadResetPasswordTemplate(recoveryLink, name);
 
         _sendHtmlMail(email, Constants.PASSWORD_RECOVERY_TITLE_EMAIL, content);
     }
 
+    public void sendAccountCreationMail (final String name, final String email, final String password) {
+        final String content = emailTemplateLoader.loadAccountCreationTemplate(name, email, password);
+
+        _sendHtmlMail(email, Constants.ACCOUNT_CREATION_TITLE_EMAIL, content);
+    }
+
     private void _sendHtmlMail (String recipientEmail, String subject, String htmlContent) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, Constants.UTF_8);
+            final MimeMessage message = mailSender.createMimeMessage();
+            final MimeMessageHelper helper = new MimeMessageHelper(message, true, Constants.UTF_8);
 
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
 
             // Cria o multipart relacionado
-            MimeMultipart multipart = new MimeMultipart("related");
+            final MimeMultipart multipart = new MimeMultipart("related");
 
             // Parte HTML
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            final MimeBodyPart messageBodyPart = new MimeBodyPart();
             messageBodyPart.setContent(htmlContent, "text/html");
             multipart.addBodyPart(messageBodyPart);
 

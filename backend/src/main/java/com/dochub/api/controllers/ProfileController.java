@@ -1,5 +1,6 @@
 package com.dochub.api.controllers;
 
+import com.dochub.api.dtos.user.ProfileCreateUserDTO;
 import com.dochub.api.dtos.user.ProfileUpdateUserPasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user.UpdateUserResponseDTO;
@@ -13,6 +14,7 @@ import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,18 @@ public class ProfileController {
     private final UserService userService;
     private final UserRoleService userRoleService;
     private final ProfileService profileService;
+
+    @PostMapping
+    public ResponseEntity<Integer> create (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                           @ModelAttribute @NonNull @Valid final ProfileCreateUserDTO profileCreateUserDTO) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+        final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
+
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(profileService.create(userRoles, profileCreateUserDTO, userService::create));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,

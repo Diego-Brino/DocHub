@@ -19,6 +19,7 @@ public interface Constants {
     String GROUP_ICON_PATH = "images/GroupIcon.png";
 
     // URLs
+    String LOGIN_PAGE_URL = "http://localhost:8085/login";
     String AVATAR_URL = "http://localhost:8080/users/%s/avatar";
     String GROUP_URL = "http://localhost:8080/groups/%s/avatar";
     String PASSWORD_RECOVERY_LINK = "http://localhost:8085/password-recovery?token=%s";
@@ -66,14 +67,17 @@ public interface Constants {
     String CANNOT_VIEW_RESOURCE_PERMISSION = "Não visualizar Recurso";
 
     // Profile Permissions
+    String CREATE_USER_PERMISSION = "Criar Usuário";
     String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
 
     // Utilities
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
+    String ACCOUNT_CREATION_TITLE_EMAIL = "Bem-vindo(a) à DocHub";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
+    String ACCOUNT_CREATION_EMAIL_TEMPLATE_PATH = "templates/account-creation.html";
 
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
