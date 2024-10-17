@@ -1,9 +1,6 @@
 package com.dochub.api.controllers;
 
-import com.dochub.api.dtos.user.ProfileCreateUserDTO;
-import com.dochub.api.dtos.user.ProfileUpdateUserPasswordDTO;
-import com.dochub.api.dtos.user.UpdateUserDTO;
-import com.dochub.api.dtos.user.UpdateUserResponseDTO;
+import com.dochub.api.dtos.user.*;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.JwtService;
@@ -27,6 +24,13 @@ public class ProfileController {
     private final UserService userService;
     private final UserRoleService userRoleService;
     private final ProfileService profileService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getOne (@PathVariable("id") @NonNull final Integer groupId) {
+        return ResponseEntity
+            .ok()
+            .body(userService.getDtoById(groupId));
+    }
 
     @PostMapping
     public ResponseEntity<Integer> create (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
@@ -75,7 +79,7 @@ public class ProfileController {
     }
 
     @PatchMapping("/{id}/password")
-    public ResponseEntity<UpdateUserResponseDTO> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+    public ResponseEntity<Void> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                                                  @PathVariable("id") @NonNull final Integer targetUserId,
                                                                  @RequestBody @NonNull @Valid final ProfileUpdateUserPasswordDTO profileUpdateUserPasswordDTO) {
         final String editorUserEmail = jwtService.extractUserEmail(token);
