@@ -42,15 +42,40 @@ VALUES
    ('Desvincular Usuário de Cargo', 'DocHub', CURRENT_DATE),
    ('Vincular permissão de sistema á Cargo', 'DocHub', CURRENT_DATE),
    ('Desvincular permissão de sistema de Cargo', 'DocHub', CURRENT_DATE),
-   ('Criar Grupo', 'DocHub', CURRENT_DATE),
-   ('Deletar Grupo', 'DocHub', CURRENT_DATE),
    ('Vincular permissão de grupo á Cargo', 'DocHub', CURRENT_DATE),
-   ('Desvincular permissão de grupo de Cargo', 'DocHub', CURRENT_DATE);
+   ('Desvincular permissão de grupo de Cargo', 'DocHub', CURRENT_DATE),
+   ('Criar Grupo', 'DocHub', CURRENT_DATE),
+   ('Editar Grupo', 'DocHub', CURRENT_DATE),
+   ('Deletar Grupo', 'DocHub', CURRENT_DATE),
+   ('Vincular permissão de recurso á Cargo', 'DocHub', CURRENT_DATE),
+   ('Desvincular permissão de recurso de Cargo', 'DocHub', CURRENT_DATE),
+   ('Criar Arquivo', 'DocHub', CURRENT_DATE),
+   ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+   ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
+   ('Criar Pasta', 'DocHub', CURRENT_DATE),
+   ('Editar Pasta', 'DocHub', CURRENT_DATE),
+   ('Deletar Pasta', 'DocHub', CURRENT_DATE),
+   ('Criar Usuário', 'DocHub', CURRENT_DATE),
+   ('Atualizar perfil de Usuário', 'DocHub', CURRENT_DATE),
+   ('Deletar Usuário', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
     ('Editar Grupo', 'DocHub', CURRENT_DATE),
-    ('Deletar Grupo', 'DocHub', CURRENT_DATE);
+    ('Deletar Grupo', 'DocHub', CURRENT_DATE),
+    ('Criar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Criar Pasta', 'DocHub', CURRENT_DATE),
+    ('Editar Pasta', 'DocHub', CURRENT_DATE),
+    ('Deletar Pasta', 'DocHub', CURRENT_DATE);
+
+INSERT INTO permissao_recurso (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Editar Pasta', 'DocHub', CURRENT_DATE),
+    ('Deletar Pasta', 'DocHub', CURRENT_DATE);
 
 INSERT INTO cargo (NOME, DESCRICAO, COR, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -72,7 +97,19 @@ VALUES
     (1, 8, 'DocHub', CURRENT_DATE),
     (1, 9, 'DocHub', CURRENT_DATE),
     (1, 10, 'DocHub', CURRENT_DATE),
-    (1, 11, 'DocHub', CURRENT_DATE);
+    (1, 11, 'DocHub', CURRENT_DATE),
+    (1, 12, 'DocHub', CURRENT_DATE),
+    (1, 13, 'DocHub', CURRENT_DATE),
+    (1, 14, 'DocHub', CURRENT_DATE),
+    (1, 15, 'DocHub', CURRENT_DATE),
+    (1, 16, 'DocHub', CURRENT_DATE),
+    (1, 17, 'DocHub', CURRENT_DATE),
+    (1, 18, 'DocHub', CURRENT_DATE),
+    (1, 19, 'DocHub', CURRENT_DATE),
+    (1, 20, 'DocHub', CURRENT_DATE),
+    (1, 21, 'DocHub', CURRENT_DATE),
+    (1, 22, 'DocHub', CURRENT_DATE),
+    (1, 23, 'DocHub', CURRENT_DATE);
 
 INSERT INTO usuario_cargo (ID_USUARIO, ID_CARGO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
