@@ -72,6 +72,7 @@ public interface Constants {
     String DELETE_USER_PERMISSION = "Deletar Usuário";
 
     // Utilities
+    String ADMIN = "ADMINISTRADOR";
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
     String ACCOUNT_CREATION_TITLE_EMAIL = "Bem-vindo(a) à DocHub";
@@ -119,4 +120,7 @@ public interface Constants {
     String ROLE_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O cargo não pode ser excluído porque existem usuários vinculados a ele.";
     String GROUP_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O grupo não pode ser excluído porque existem processos, recursos ou permissões de grupo vinculados a ele.";
     String CANNOT_DELETE_OWN_USER_EXCEPTION  = "Não é permitido deletar o próprio usuário.";
+    String CANNOT_CREATE_ADMIN_ROLE_EXCEPTION  = "Não é possível criar um cargo com o nome 'ADMINISTRADOR', pois esse cargo já existe e é reservado pelo sistema.";
+    String CANNOT_DELETE_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser excluído, pois é um cargo protegido do sistema.";
+    String CANNOT_EDIT_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser modificado, pois é um cargo protegido do sistema.";
 }

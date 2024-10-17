@@ -6,8 +6,7 @@ import com.dochub.api.dtos.role.UpdateRoleDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Role;
 import com.dochub.api.enums.RoleStatus;
-import com.dochub.api.exceptions.EntityNotFoundByIdException;
-import com.dochub.api.exceptions.RoleCannotBeDeletedException;
+import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.RoleRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -49,6 +48,10 @@ public class RoleService {
     public Integer create (final UserRoleResponseDTO userRoles, final CreateRoleDTO createRoleDTO) {
         Utils.checkPermission(userRoles, Constants.CREATE_ROLE_PERMISSION);
 
+        if (createRoleDTO.name().equalsIgnoreCase(Constants.ADMIN)) {
+            throw new CannotCreateAdminRoleException();
+        }
+
         final Role role = new Role(createRoleDTO, userRoles.user().username());
 
         return roleRepository.save(role).getId();
@@ -58,6 +61,10 @@ public class RoleService {
         Utils.checkPermission(userRoles, Constants.EDIT_ROLE_PERMISSION);
 
         final Role role = getById(roleId);
+
+        if (role.getName().equalsIgnoreCase(Constants.ADMIN)) {
+            throw new CannotEditAdminRoleException();
+        }
 
         Utils.updateFieldIfPresent(updateRoleDTO.name(), role::setName);
         Utils.updateFieldIfPresent(updateRoleDTO.description(), role::setDescription);
@@ -74,6 +81,10 @@ public class RoleService {
 
         final Role role = getById(roleId);
 
+        if (role.getName().equalsIgnoreCase(Constants.ADMIN)) {
+            throw new CannotEditAdminRoleException();
+        }
+
         role.setRoleStatus(roleStatus);
 
         _logAuditForChange(userRoles.user().username(), role);
@@ -86,6 +97,11 @@ public class RoleService {
         Utils.checkPermission(userRoles, Constants.DELETE_ROLE_PERMISSION);
 
         final Role role = getById(roleId);
+
+        if (role.getName().equalsIgnoreCase(Constants.ADMIN)) {
+            throw new CannotDeleteAdminRoleException();
+        }
+
         final Boolean hasUsersAssignedToRole = hasUsersAssignedToRoleFunc.apply(role);
 
         if (hasUsersAssignedToRole) throw new RoleCannotBeDeletedException();

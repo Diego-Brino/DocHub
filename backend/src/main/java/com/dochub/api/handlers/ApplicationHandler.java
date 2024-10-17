@@ -196,6 +196,30 @@ public class ApplicationHandler {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(CannotCreateAdminRoleException.class)
+    public ResponseEntity<ErrorDTO> handleCannotCreateAdminRoleException (CannotCreateAdminRoleException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(CannotDeleteAdminRoleException.class)
+    public ResponseEntity<ErrorDTO> handleCannotDeleteAdminRoleException (CannotDeleteAdminRoleException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(CannotEditAdminRoleException.class)
+    public ResponseEntity<ErrorDTO> handleCannotEditAdminRoleException (CannotEditAdminRoleException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 }
