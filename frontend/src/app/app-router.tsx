@@ -12,6 +12,7 @@ import { ResetPassword } from "@/pages/reset-password.tsx";
 import { ReactNode, useEffect } from "react";
 import { useAuthContext } from "@/contexts/auth";
 import { Roles } from "@/pages/roles.tsx";
+import { Users } from "@/pages/users.tsx";
 
 const AuthenticatedRoute = ({ children }: { children: ReactNode }) => {
   const { token } = useAuthContext();
@@ -79,7 +80,7 @@ const AppBrowserRouter = createBrowserRouter([
             path: "/users",
             element: (
               <AuthenticatedRoute>
-                <Groups />
+                <Users />
               </AuthenticatedRoute>
             ),
           },
