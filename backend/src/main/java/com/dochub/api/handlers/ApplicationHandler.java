@@ -222,4 +222,12 @@ public class ApplicationHandler {
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<ErrorDTO> handleInvalidFileTypeException (InvalidFileTypeException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
 }

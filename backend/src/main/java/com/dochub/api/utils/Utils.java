@@ -2,10 +2,7 @@ package com.dochub.api.utils;
 
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.enums.RoleStatus;
-import com.dochub.api.exceptions.InputStreamFileReadException;
-import com.dochub.api.exceptions.InvalidTokenFormatException;
-import com.dochub.api.exceptions.MultipartFileReadException;
-import com.dochub.api.exceptions.PermissionDeniedException;
+import com.dochub.api.exceptions.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,6 +86,15 @@ public class Utils {
         }
     }
 
+    public static void validateImageType (final MultipartFile file) {
+        final String contentType = file.getContentType();
+
+        if (Objects.isNull(contentType) ||
+            (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/jpg"))) {
+            throw new InvalidFileTypeException();
+        }
+    }
+
     public static void checkPermission (final UserRoleResponseDTO userRoles, final String permission) {
         final boolean hasPermission = checkSystemPermission(userRoles, permission);
 
@@ -119,15 +125,6 @@ public class Utils {
         if (!hasPermission) {
             throw new PermissionDeniedException(String.format(Constants.PERMISSION_DENIED_EXCEPTION_MESSAGE, permission));
         }
-    }
-
-    public static boolean isAuthorizedToViewResource (final UserRoleResponseDTO userRoles,
-                                                        final Integer groupId, final Integer resourceId) {
-        return (
-            !checkSystemPermission(userRoles, Constants.CANNOT_VIEW_RESOURCE_PERMISSION) &&
-            !checkGroupPermission(userRoles, groupId, Constants.CANNOT_VIEW_RESOURCE_PERMISSION) &&
-            !checkResourcePermission(userRoles, groupId, resourceId, Constants.CANNOT_VIEW_RESOURCE_PERMISSION)
-        );
     }
 
     private static boolean checkSystemPermission (final UserRoleResponseDTO userRoles, final String permission) {

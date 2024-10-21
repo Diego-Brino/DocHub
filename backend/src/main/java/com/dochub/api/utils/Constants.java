@@ -63,9 +63,6 @@ public interface Constants {
     String EDIT_FOLDER_PERMISSION = "Editar Pasta";
     String DELETE_FOLDER_PERMISSION = "Deletar Pasta";
 
-    // ResourceService Permissions
-    String CANNOT_VIEW_RESOURCE_PERMISSION = "Não visualizar Recurso";
-
     // Profile Permissions
     String CREATE_USER_PERMISSION = "Criar Usuário";
     String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
@@ -123,4 +120,5 @@ public interface Constants {
     String CANNOT_CREATE_ADMIN_ROLE_EXCEPTION  = "Não é possível criar um cargo com o nome 'ADMINISTRADOR', pois esse cargo já existe e é reservado pelo sistema.";
     String CANNOT_DELETE_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser excluído, pois é um cargo protegido do sistema.";
     String CANNOT_EDIT_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser modificado, pois é um cargo protegido do sistema.";
+    String INVALID_FILE_TYPE_EXCEPTION  = "O arquivo deve ser do tipo JPG, JPEG ou PNG.";
 }

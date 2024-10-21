@@ -60,6 +60,8 @@ public class GroupService {
     public Integer create (final UserRoleResponseDTO userRoles, final CreateGroupDTO createGroupDTO) {
         Utils.checkPermission(userRoles, Constants.CREATE_GROUP_PERMISSION);
 
+        Utils.validateImageType(createGroupDTO.avatar());
+
         final Group group = new Group(createGroupDTO, userRoles.user().username());
 
         return groupRepository.save(group).getId();
@@ -67,6 +69,8 @@ public class GroupService {
 
     public void update (final UserRoleResponseDTO userRoles, final Integer groupId, final UpdateGroupDTO updateGroupDTO) {
         Utils.checkPermission(userRoles, groupId, Constants.EDIT_GROUP_PERMISSION);
+
+        Utils.validateImageType(updateGroupDTO.avatar());
 
         final Group group = getById(groupId);
 
@@ -81,6 +85,8 @@ public class GroupService {
 
     public void updateAvatar (final UserRoleResponseDTO userRoles, final Integer groupId, final MultipartFile avatar) {
         Utils.checkPermission(userRoles, groupId, Constants.EDIT_GROUP_PERMISSION);
+
+        Utils.validateImageType(avatar);
 
         final Group group = getById(groupId);
 

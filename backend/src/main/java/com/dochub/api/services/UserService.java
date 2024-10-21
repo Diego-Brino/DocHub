@@ -115,6 +115,8 @@ public class UserService {
 
         _validateUserIdentity(userId, user);
 
+        Utils.validateImageType(avatar);
+
         user.setAvatar(Utils.readBytesFromMultipartFile(avatar));
 
         _logAuditForChange(user, user.getRealUsername());
@@ -165,6 +167,10 @@ public class UserService {
         if (Objects.nonNull(updateUserDTO.username()) && Utils.containsSpacesOrSpecialCharacters(updateUserDTO.username())) {
             throw new InvalidUsernameFormatException();
         }
+
+        if (Objects.nonNull(updateUserDTO.avatar())) {
+            Utils.validateImageType(updateUserDTO.avatar());
+        }
     }
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer userId) {
@@ -195,6 +201,10 @@ public class UserService {
         if (Utils.containsSpacesOrSpecialCharacters(createUserDTO.username())) {
             throw new InvalidUsernameFormatException();
         }
+
+        if (Objects.nonNull(createUserDTO.avatar())) {
+            Utils.validateImageType(createUserDTO.avatar());
+        }
     }
 
     private void _validateUserCreation (final ProfileCreateUserDTO profileCreateUserDTO) {
@@ -208,6 +218,10 @@ public class UserService {
 
         if (Utils.containsSpacesOrSpecialCharacters(profileCreateUserDTO.username())) {
             throw new InvalidUsernameFormatException();
+        }
+
+        if (Objects.nonNull(profileCreateUserDTO.avatar())) {
+            Utils.validateImageType(profileCreateUserDTO.avatar());
         }
     }
 
