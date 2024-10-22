@@ -1,5 +1,4 @@
 import { AnimatePresence } from "framer-motion";
-import { GroupsGridCardSkeleton } from "@/features/groups/components/groups-grid-card-skeleton.tsx";
 import {
   GetUsersResponse,
   useGetUsers,
@@ -26,8 +25,9 @@ function UsersList() {
   return (
     <UserDeleteConfirmationAlertProvider>
       <div className="w-full h-full gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 overflow-y-scroll content-start relative">
-        {!isLoading && data ? (
-          filteredUsers.length > 0 ? (
+        {!isLoading &&
+          data &&
+          (filteredUsers.length > 0 ? (
             <AnimatePresence>
               {filteredUsers.map((user) => (
                 <UserCard key={user.id} user={user} />
@@ -39,14 +39,7 @@ function UsersList() {
                 Nenhum registro encontrado.
               </p>
             </div>
-          )
-        ) : (
-          <>
-            {[1, 2, 3, 4, 5, 6].map((_group, index) => (
-              <GroupsGridCardSkeleton key={index} />
-            ))}
-          </>
-        )}
+          ))}
       </div>
       <UserDeleteConfirmationAlert />
     </UserDeleteConfirmationAlertProvider>

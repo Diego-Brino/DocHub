@@ -4,7 +4,6 @@ import {
 } from "@/services/roles/use-get-roles.ts";
 import { RoleCard } from "@/features/roles";
 import { AnimatePresence } from "framer-motion";
-import { GroupsGridCardSkeleton } from "@/features/groups/components/groups-grid-card-skeleton.tsx";
 import { useRolesToolbarContext } from "@/features/roles/roles-toolbar/roles-toolbar.tsx";
 import { RoleDeleteConfirmationAlertProvider } from "@/features/roles/role-delete-confirmation-alert/role-delete-confirmation-alert.tsx";
 
@@ -23,8 +22,9 @@ function RolesList() {
   return (
     <RoleDeleteConfirmationAlertProvider>
       <div className="w-full h-full gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 overflow-y-scroll content-start relative">
-        {!isLoading && data ? (
-          filteredRoles.length > 0 ? (
+        {!isLoading &&
+          data &&
+          (filteredRoles.length > 0 ? (
             <AnimatePresence>
               {filteredRoles.map((role) => (
                 <RoleCard key={role.id} role={role} />
@@ -36,14 +36,7 @@ function RolesList() {
                 Nenhum registro encontrado.
               </p>
             </div>
-          )
-        ) : (
-          <>
-            {[1, 2, 3, 4, 5, 6].map((_group, index) => (
-              <GroupsGridCardSkeleton key={index} />
-            ))}
-          </>
-        )}
+          ))}
       </div>
     </RoleDeleteConfirmationAlertProvider>
   );
