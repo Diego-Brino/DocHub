@@ -21,9 +21,8 @@ async function postProfile(
   formData.append("name", user.name);
   formData.append("email", user.email);
   formData.append("username", user.username);
-  formData.append("avatar", "");
 
-  const response = await axiosClient.post(`/profiles/`, formData, {
+  const response = await axiosClient.post(`/profiles`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
