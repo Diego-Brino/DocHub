@@ -14,12 +14,17 @@ export type PostGroupRequest = {
 };
 
 async function postGroup({ token, group }: PostGroupRequest) {
-  const response = await axiosClient.post(`/groups`, group, {
+  const formData = new FormData();
+
+  formData.append("name", group.name);
+  formData.append("description", group.description);
+
+  const response = await axiosClient.post(`/groups`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data; // Assuming the response includes the new group's ID or data
+  return response.data;
 }
 
 function usePostGroup() {

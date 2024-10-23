@@ -87,6 +87,10 @@ public class Utils {
     }
 
     public static void validateImageType (final MultipartFile file) {
+        if (Objects.isNull(file)) {
+            return;
+        }
+
         final String contentType = file.getContentType();
 
         if (Objects.isNull(contentType) ||

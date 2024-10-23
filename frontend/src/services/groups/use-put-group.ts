@@ -10,12 +10,16 @@ export type PutGroupRequest = {
   group: {
     name: string;
     description: string;
-    // Add other fields as necessary
   };
 };
 
 async function putGroup({ token, groupId, group }: PutGroupRequest) {
-  await axiosClient.put(`/groups/${groupId}`, group, {
+  const formData = new FormData();
+
+  formData.append("name", group.name);
+  formData.append("description", group.description);
+
+  await axiosClient.put(`/groups/${groupId}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -30,7 +34,7 @@ function usePutGroup() {
       putGroup({ token, groupId: data.groupId, group: data.group }),
     onSuccess: () => {
       queryClient.invalidateQueries(["groups"]);
-      toast.success("Group updated successfully");
+      toast.success("Grupo atualizado com sucesso");
     },
   });
 }

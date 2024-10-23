@@ -27,7 +27,6 @@ const groupSchema = z.object({
   description: z
     .string({ required_error: "Descrição é obrigatória" })
     .max(512, { message: "Descrição deve ter no máximo 512 caracteres" }),
-  status: z.enum(["ATIVO", "INATIVO"]),
 });
 
 function GroupSheetForm() {
@@ -46,7 +45,6 @@ function GroupSheetForm() {
       id: undefined,
       name: "",
       description: "",
-      status: "ATIVO",
     },
   });
 

@@ -61,6 +61,7 @@ VALUES
 
 INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
+    ('Visualizar Grupo', 'DocHub', CURRENT_DATE),
     ('Editar Grupo', 'DocHub', CURRENT_DATE),
     ('Deletar Grupo', 'DocHub', CURRENT_DATE),
     ('Criar Arquivo', 'DocHub', CURRENT_DATE),
@@ -121,3 +122,15 @@ VALUES
     ('Grupo A', 'Descrição do Grupo A', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
     ('Grupo B', 'Descrição do Grupo B', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
     ('Grupo C', NULL, NULL, 'DocHub', CURRENT_DATE, NULL, NULL);
+
+INSERT INTO cargo_permissao_grupo (ID_CARGO, ID_PERMISSAO_GRUPO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    (1, 1, 1, 'DocHub', CURRENT_DATE),
+    (1, 2, 1,'DocHub', CURRENT_DATE),
+    (1, 3, 1,'DocHub', CURRENT_DATE),
+    (1, 4, 1,'DocHub', CURRENT_DATE),
+    (1, 5, 1,'DocHub', CURRENT_DATE),
+    (1, 6, 1,'DocHub', CURRENT_DATE),
+    (1, 7, 1,'DocHub', CURRENT_DATE),
+    (1, 8, 1,'DocHub', CURRENT_DATE),
+    (1, 9, 1,'DocHub', CURRENT_DATE);

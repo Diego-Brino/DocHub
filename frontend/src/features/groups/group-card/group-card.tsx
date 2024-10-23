@@ -21,9 +21,7 @@ type GroupCardProps = {
   };
 };
 
-function GroupCard({
-  group: { id, name, description, groupUrl },
-}: GroupCardProps) {
+function GroupCard({ group: { id, name, description } }: GroupCardProps) {
   const { mutate: mutateDelete } = useDeleteGroup();
   const { open } = useGroupDeleteConfirmationAlert();
   const { open: openGroupSheet } = useGroupSheetContext();
@@ -40,10 +38,7 @@ function GroupCard({
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
       >
-        <Card
-          className="h-[167px] cursor-pointer"
-          onClick={() => window.open(groupUrl, "_blank")}
-        >
+        <Card className="h-[167px]">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
               <CardTitle>{name}</CardTitle>

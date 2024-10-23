@@ -66,9 +66,7 @@ function GroupDeleteConfirmationAlertProvider({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction className="bg-red-600" onClick={confirm}>
-              Confirmar
-            </AlertDialogAction>
+            <AlertDialogAction onClick={confirm}>Confirmar</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

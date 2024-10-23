@@ -7,6 +7,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet.tsx";
 import { GroupSheetForm } from "@/features/groups/group-sheet/group-sheet-form.tsx";
+import { GroupSheetAvatar } from "@/features/groups/group-sheet/group-sheet-avatar.tsx";
 
 type GroupSheetContext = {
   selectedGroupId: number | null;
@@ -75,6 +76,7 @@ function GroupSheet() {
               : "Crie um novo grupo"}
           </SheetDescription>
         </SheetHeader>
+        <GroupSheetAvatar id={selectedGroupId} />
         <GroupSheetForm />
       </SheetContent>
     </Sheet>
