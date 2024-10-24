@@ -1,11 +1,11 @@
 import {
   Card,
   CardContent,
-  CardDescription,
+  CardDescription, CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { EditIcon, TrashIcon } from "lucide-react";
+import {ArrowRight, EditIcon, TrashIcon} from "lucide-react";
 import { Button } from "@/components/custom/button.tsx";
 import { useDeleteGroup } from "@/services/groups/use-delete-group.ts";
 import { motion } from "framer-motion";
@@ -21,7 +21,7 @@ type GroupCardProps = {
   };
 };
 
-function GroupCard({ group: { id, name, description } }: GroupCardProps) {
+function GroupCard({ group: { id, name, description, groupUrl } }: GroupCardProps) {
   const { mutate: mutateDelete } = useDeleteGroup();
   const { open } = useGroupDeleteConfirmationAlert();
   const { open: openGroupSheet } = useGroupSheetContext();
@@ -38,7 +38,7 @@ function GroupCard({ group: { id, name, description } }: GroupCardProps) {
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
       >
-        <Card className="h-[167px]">
+        <Card className="">
           <CardHeader className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
               <CardTitle>{name}</CardTitle>
@@ -46,25 +46,34 @@ function GroupCard({ group: { id, name, description } }: GroupCardProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => openGroupSheet(id)}
-                >
-                  <EditIcon className="size-5" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => open(handleDelete)}
-                >
-                  <TrashIcon className="size-5" />
-                </Button>
-              </div>
+            <div className="flex w-full h-[220px]">
+              <img src={groupUrl} alt={name} className="w-full object-scale-down" />
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end items-center gap-2">
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={() => openGroupSheet(id)}
+            >
+              <EditIcon className="size-5" />
+            </Button>
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={() => open(handleDelete)}
+            >
+              <TrashIcon className="size-5" />
+            </Button>
+            <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => {}}
+            >
+              Acessar
+              <ArrowRight className="size-5" />
+            </Button>
+          </CardFooter>
         </Card>
       </motion.div>
     </>
