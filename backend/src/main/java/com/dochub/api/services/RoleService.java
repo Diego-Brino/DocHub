@@ -36,6 +36,14 @@ public class RoleService {
         return new RoleResponseDTO(role);
     }
 
+    public RoleResponseDTO getByName (final String roleName) {
+        final Role role = roleRepository
+            .findByNameEqualsIgnoreCase(roleName)
+            .orElseThrow(EntityNotFoundException::new);
+
+        return new RoleResponseDTO(role);
+    }
+
     public List<RoleResponseDTO> getAll () {
         final List<Role> roles = roleRepository.findAll();
 

@@ -230,4 +230,12 @@ public class ApplicationHandler {
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleEntityNotFoundException (EntityNotFoundException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
 }

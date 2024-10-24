@@ -35,6 +35,8 @@ public class GroupController {
     private final FolderService folderService;
     private final ResourceService resourceService;
     private final ProcessService processService;
+    private final RoleService roleService;
+    private final GroupPermissionService groupPermissionService;
 
     @GetMapping
     public ResponseEntity<List<GroupResponseDTO>> getAll (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
@@ -109,7 +111,15 @@ public class GroupController {
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(groupService.create(userRoles, createGroupDTO));
+            .body(
+                groupService.create(
+                    userRoles,
+                    createGroupDTO,
+                    roleService::getByName,
+                    groupPermissionService::getByDescription,
+                    groupRolePermissionService::assignViewPermissionToAdmin
+                )
+            );
     }
 
     @PutMapping("/{id}")

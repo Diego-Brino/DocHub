@@ -40,6 +40,9 @@ public interface Constants {
     String CREATE_SYSTEM_ROLE_PERMISSION = "Vincular permissão de sistema á Cargo";
     String DELETE_SYSTEM_ROLE_PERMISSION = "Desvincular permissão de sistema de Cargo";
 
+    // GroupPermissionService Permissions
+    String VIEW_GROUP = "Visualizar Grupo";
+
     // GroupRolePermissionService Permissions
     String CREATE_GROUP_ROLE_PERMISSION = "Vincular permissão de grupo á Cargo";
     String DELETE_GROUP_ROLE_PERMISSION = "Desvincular permissão de grupo de Cargo";
@@ -121,4 +124,5 @@ public interface Constants {
     String CANNOT_DELETE_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser excluído, pois é um cargo protegido do sistema.";
     String CANNOT_EDIT_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser modificado, pois é um cargo protegido do sistema.";
     String INVALID_FILE_TYPE_EXCEPTION  = "O arquivo deve ser do tipo JPG, JPEG ou PNG.";
+    String ENTITY_NOT_FOUND_EXCEPTION_MESSAGE = "Nenhuma entidade foi encontrada com os parâmetros fornecidos.";
 }

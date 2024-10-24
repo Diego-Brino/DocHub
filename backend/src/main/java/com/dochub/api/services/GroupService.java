@@ -3,6 +3,8 @@ package com.dochub.api.services;
 import com.dochub.api.dtos.group.CreateGroupDTO;
 import com.dochub.api.dtos.group.GroupResponseDTO;
 import com.dochub.api.dtos.group.UpdateGroupDTO;
+import com.dochub.api.dtos.group_permission.GroupPermissionResponseDTO;
+import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.User;
@@ -11,13 +13,16 @@ import com.dochub.api.exceptions.GroupCannontBeDeletedException;
 import com.dochub.api.repositories.GroupRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,14 +62,22 @@ public class GroupService {
         return Utils.getImageFromClasspath(Constants.GROUP_ICON_PATH);
     }
 
-    public Integer create (final UserRoleResponseDTO userRoles, final CreateGroupDTO createGroupDTO) {
+    @Transactional
+    public Integer create (final UserRoleResponseDTO userRoles, final CreateGroupDTO createGroupDTO,
+                           final Function<String, RoleResponseDTO> getRoleByNameFunc,
+                           final Function<String, GroupPermissionResponseDTO> getGroupPermissionByDescriptionFunc,
+                           final TriConsumer<Function<String, RoleResponseDTO>, Function<String, GroupPermissionResponseDTO>, Integer> assignViewPermissionToAdminFunc) {
         Utils.checkPermission(userRoles, Constants.CREATE_GROUP_PERMISSION);
 
         Utils.validateImageType(createGroupDTO.avatar());
 
         final Group group = new Group(createGroupDTO, userRoles.user().username());
 
-        return groupRepository.save(group).getId();
+        final Integer groupId = groupRepository.save(group).getId();
+
+        assignViewPermissionToAdminFunc.accept(getRoleByNameFunc, getGroupPermissionByDescriptionFunc, groupId);
+
+        return groupId;
     }
 
     public void update (final UserRoleResponseDTO userRoles, final Integer groupId, final UpdateGroupDTO updateGroupDTO) {
