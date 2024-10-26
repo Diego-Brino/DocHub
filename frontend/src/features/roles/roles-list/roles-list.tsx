@@ -21,7 +21,7 @@ function RolesList() {
 
   return (
     <RoleDeleteConfirmationAlertProvider>
-      <div className="w-full h-full gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 overflow-y-scroll content-start relative">
+      <div className="w-full h-full gap-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 overflow-y-scroll content-start relative mb-8 md:mb-0">
         {!isLoading &&
           data &&
           (filteredRoles.length > 0 ? (

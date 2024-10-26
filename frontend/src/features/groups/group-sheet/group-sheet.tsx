@@ -76,7 +76,7 @@ function GroupSheet() {
               : "Crie um novo grupo"}
           </SheetDescription>
         </SheetHeader>
-        <GroupSheetAvatar id={selectedGroupId} />
+        {selectedGroupId && <GroupSheetAvatar id={selectedGroupId} />}
         <GroupSheetForm />
       </SheetContent>
     </Sheet>

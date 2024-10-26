@@ -66,7 +66,7 @@ function UsersToolbar() {
   const { open } = useUserSheetContext();
 
   return (
-    <div className="flex justify-between items-center mb-4 bg-muted/60 p-4 rounded-lg border">
+    <div className="flex justify-between items-center gap-4 mb-4 bg-muted/60 p-4 rounded-lg border">
       <Input
         value={filter}
         placeholder="Filtrar..."
