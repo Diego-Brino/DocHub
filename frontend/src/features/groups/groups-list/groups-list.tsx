@@ -18,9 +18,7 @@ function GroupsList() {
   const { data, isLoading } = useGetGroups();
   const { appliedFilter } = useGroupsToolbarContext();
 
-  let filteredGroups = filterGroups(appliedFilter, data || []);
-
-  filteredGroups = [...filteredGroups, ...filteredGroups, ...filteredGroups];
+  const filteredGroups = filterGroups(appliedFilter, data || []);
 
   return (
     <GroupDeleteConfirmationAlertProvider>

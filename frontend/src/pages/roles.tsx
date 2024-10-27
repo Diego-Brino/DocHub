@@ -17,6 +17,7 @@ import {
   RolePermissionDeleteConfirmationAlert,
   RolePermissionDeleteConfirmationAlertProvider,
 } from "@/features/roles/role-permission-delete-confirmation-alert/role-permission-delete-confirmation-alert.tsx";
+import { RoleAddPermissionSheetProvider } from "@/features/roles/role-add-permission-sheet/role-add-permission-sheet.tsx";
 
 function Roles() {
   return (
@@ -31,7 +32,9 @@ function Roles() {
             <RoleSheet />
             <RoleUsersDialog />
             <RolePermissionDeleteConfirmationAlertProvider>
-              <RolePermissionsDialog />
+              <RoleAddPermissionSheetProvider>
+                <RolePermissionsDialog />
+              </RoleAddPermissionSheetProvider>
               <RolePermissionDeleteConfirmationAlert />
             </RolePermissionDeleteConfirmationAlertProvider>
           </RolePermissionsDialogProvider>

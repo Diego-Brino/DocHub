@@ -24,6 +24,7 @@ import {
 import { Button } from "@/components/custom/button.tsx";
 import { TrashIcon } from "lucide-react";
 import { useRolePermissionDeleteConfirmationAlertContext } from "@/features/roles/role-permission-delete-confirmation-alert/role-permission-delete-confirmation-alert.tsx";
+import { useRoleAddPermissionSheetContext } from "@/features/roles/role-add-permission-sheet/role-add-permission-sheet.tsx";
 
 type RolePermissionsDialogContext = {
   selectedRoleId: number | null;
@@ -85,6 +86,8 @@ function RolePermissionsDialog() {
   const { isOpen, close, selectedRoleId } = useRolePermissionsDialogContext();
 
   const { open } = useRolePermissionDeleteConfirmationAlertContext();
+  const { open: openRoleAddPermissionSheet } =
+    useRoleAddPermissionSheetContext();
 
   const { data } = useGetRole({ id: selectedRoleId });
 
@@ -147,10 +150,15 @@ function RolePermissionsDialog() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="system">
-            <DataTable
-              columns={columnsSystem}
-              data={data?.systemPermissions || []}
-            />
+            <div className="flex flex-col gap-4 pt-2">
+              <Button onClick={openRoleAddPermissionSheet}>
+                Adicionar permissão de sistema
+              </Button>
+              <DataTable
+                columns={columnsSystem}
+                data={data?.systemPermissions || []}
+              />
+            </div>
           </TabsContent>
           <TabsContent value="group">Grupo</TabsContent>
           <TabsContent value="resource">Recursos</TabsContent>
