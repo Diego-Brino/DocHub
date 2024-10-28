@@ -14,6 +14,10 @@ export type GetRoleResponse = {
   color: string;
   status: string;
   systemPermissions: { id: number; description: string }[];
+  groupPermissions: {
+    group: { id: number; name: string; description: string; groupUrl: string };
+    permissions: { id: number; description: string }[];
+  }[];
 };
 
 async function getRole({

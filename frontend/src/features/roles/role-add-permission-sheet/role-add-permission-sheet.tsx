@@ -10,8 +10,9 @@ import { RoleAddPermissionSheetForm } from "@/features/roles/role-add-permission
 
 type RoleAddPermissionSheetContext = {
   isOpen: boolean;
-  open: () => void;
+  open: (type: "system" | "group" | "resource") => void;
   close: () => void;
+  type?: "system" | "group" | "resource";
 };
 
 const RoleAddPermissionSheetContext =
@@ -19,6 +20,7 @@ const RoleAddPermissionSheetContext =
     isOpen: false,
     open: () => {},
     close: () => {},
+    type: "system",
   });
 
 type RoleAddPermissionSheetProviderProps = {
@@ -29,8 +31,10 @@ function RoleAddPermissionSheetProvider({
   children,
 }: RoleAddPermissionSheetProviderProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [type, setType] = useState<"system" | "group" | "resource">("system");
 
-  const open = () => {
+  const open = (type: "system" | "group" | "resource") => {
+    setType(type);
     setIsOpen(true);
   };
 
@@ -39,7 +43,9 @@ function RoleAddPermissionSheetProvider({
   };
 
   return (
-    <RoleAddPermissionSheetContext.Provider value={{ isOpen, open, close }}>
+    <RoleAddPermissionSheetContext.Provider
+      value={{ isOpen, open, close, type }}
+    >
       {children}
       <RoleAddPermissionSheet />
     </RoleAddPermissionSheetContext.Provider>
