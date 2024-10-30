@@ -14,7 +14,6 @@ import org.apache.commons.lang3.function.TriFunction;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +24,6 @@ public class ResourceService {
         return resourceRepository
             .findById(resourceId)
             .orElseThrow(EntityNotFoundByIdException::new);
-    }
-
-    public Boolean hasResourcesAssignedToGroup (final Group group) {
-        final Integer qtdResources = resourceRepository.countResourceByGroup(group);
-
-        if (Objects.equals(qtdResources, 0)) return Boolean.FALSE;
-
-        return Boolean.TRUE;
     }
 
     public RootGroupResourcesResponseDTO getRootGroupResources (final User user, final Group group,

@@ -42,9 +42,7 @@ public class ResourceRolePermissionService {
         resourceRolePermissionRepository.delete(resourceRolePermission);
     }
 
-    public void delete (final UserRoleResponseDTO userRoles, final List<ResourceRolePermission> resourceRolePermissions) {
-        Utils.checkPermission(userRoles, Constants.DELETE_RESOURCE_ROLE_PERMISSION);
-
+    public void delete (final List<ResourceRolePermission> resourceRolePermissions) {
         resourceRolePermissionRepository.deleteAll(resourceRolePermissions);
     }
 

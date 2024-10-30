@@ -30,4 +30,6 @@ public interface FolderRepository extends JpaRepository<Folder, Integer> {
            "  AND f.parentFolder = :parentFolder " +
            "  AND (rp IS NULL OR ur.user.id IS NOT NULL) ")
     Optional<List<Folder>> findByResource_GroupAndParentFolderWithPermission (@Param("group") Group group, @Param("parentFolder") Folder parentFolder, @Param("user") User user);
+
+    Optional<List<Folder>> findByResource_Group (@Param("group") Group group);
 }

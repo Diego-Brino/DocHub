@@ -7,11 +7,13 @@ import com.dochub.api.dtos.group_permission.GroupPermissionResponseDTO;
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
+import com.dochub.api.entities.Resource;
 import com.dochub.api.entities.User;
+import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
-import com.dochub.api.exceptions.GroupCannontBeDeletedException;
 import com.dochub.api.repositories.GroupRepository;
 import com.dochub.api.utils.Constants;
+import com.dochub.api.utils.S3Utils;
 import com.dochub.api.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +66,7 @@ public class GroupService {
 
     @Transactional
     public Integer create (final UserRoleResponseDTO userRoles, final CreateGroupDTO createGroupDTO,
+                           final Consumer<String> createS3BucketFunc,
                            final Function<String, RoleResponseDTO> getRoleByNameFunc,
                            final Function<String, GroupPermissionResponseDTO> getGroupPermissionByDescriptionFunc,
                            final TriConsumer<Function<String, RoleResponseDTO>, Function<String, GroupPermissionResponseDTO>, Integer> assignViewPermissionToAdminFunc) {
@@ -71,11 +74,15 @@ public class GroupService {
 
         Utils.validateImageType(createGroupDTO.avatar());
 
-        final Group group = new Group(createGroupDTO, userRoles.user().username());
+        final String idS3Bucket = S3Utils.generateBucketName();
+
+        final Group group = new Group(createGroupDTO, idS3Bucket, userRoles.user().username());
 
         final Integer groupId = groupRepository.save(group).getId();
 
         assignViewPermissionToAdminFunc.accept(getRoleByNameFunc, getGroupPermissionByDescriptionFunc, groupId);
+
+        createS3BucketFunc.accept(idS3Bucket);
 
         return groupId;
     }
@@ -110,21 +117,22 @@ public class GroupService {
         groupRepository.save(group);
     }
 
-    public void delete (final Function<Group, Boolean> hasGroupRolePermissionsAssignedToGroupFunc,
-                        final Function<Group, Boolean> hasResourcesAssignedToGroupFunc,
-                        final Function<Group, Boolean> hasProcessesAssignedToGroupFunc,
-                        final UserRoleResponseDTO userRoles, final Integer groupId) {
+    @Transactional
+    public void delete (final UserRoleResponseDTO userRoles, final Integer groupId,
+                        final Consumer<String> deleteBucketWithContentsAsyncFunc,
+                        final Consumer<Group> deleteAllGroupRolePermissionsAssignedToGroupFunc,
+                        final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
+                        final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc,
+                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllArchivesAssignedToGroupFunc,
+                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllFoldersAssignedToGroupFunc) {
         final Group group = getById(groupId);
 
-        final Boolean hasGroupRolePermissionsAssignedToGroup = hasGroupRolePermissionsAssignedToGroupFunc.apply(group);
-        final Boolean hasResourcesAssignedToGroup = hasResourcesAssignedToGroupFunc.apply(group);
-        final Boolean hasProcessesAssignedToGroup = hasProcessesAssignedToGroupFunc.apply(group);
-
-        if (hasGroupRolePermissionsAssignedToGroup || hasResourcesAssignedToGroup || hasProcessesAssignedToGroup) {
-            throw new GroupCannontBeDeletedException();
-        }
-
         Utils.checkPermission(userRoles, groupId, Constants.DELETE_GROUP_PERMISSION);
+
+        deleteBucketWithContentsAsyncFunc.accept(group.getIdS3Bucket());
+        deleteAllGroupRolePermissionsAssignedToGroupFunc.accept(group);
+        deleteAllArchivesAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
+        deleteAllFoldersAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
         groupRepository.delete(group);
     }

@@ -3,6 +3,7 @@ package com.dochub.api.entities;
 import com.dochub.api.dtos.group.CreateGroupDTO;
 import com.dochub.api.utils.Utils;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,10 +24,15 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "NOME")
+    @NotNull
+    @Column(name = "ID_S3_BUCKET", length = 63)
+    private String idS3Bucket;
+
+    @NotNull
+    @Column(name = "NOME", length = 128)
     private String name;
 
-    @Column(name = "DESCRICAO")
+    @Column(name = "DESCRICAO", length = 256)
     private String description;
 
     @Column(name = "AVATAR")
@@ -35,7 +41,8 @@ public class Group {
     @Embedded
     private AuditRecord auditRecord;
 
-    public Group (final CreateGroupDTO createGroupDTO, final String initiatorUsername) {
+    public Group (final CreateGroupDTO createGroupDTO, final String idS3Bucket, final String initiatorUsername) {
+        this.idS3Bucket = idS3Bucket;
         this.name = createGroupDTO.name();
         this.description = createGroupDTO.description();
 

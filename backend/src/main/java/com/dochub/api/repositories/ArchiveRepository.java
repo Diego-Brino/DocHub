@@ -42,4 +42,6 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
            "  AND a.folder = :folder " +
            "  AND (rp IS NULL OR ur.user.id IS NOT NULL) ")
     Optional<List<Archive>> findByResource_GroupAndFolderWithPermission (@Param("group") Group group, @Param("folder") Folder folder, @Param("user") User user);
+
+    Optional<List<Archive>> findByResource_Group (@Param("group") Group group);
 }

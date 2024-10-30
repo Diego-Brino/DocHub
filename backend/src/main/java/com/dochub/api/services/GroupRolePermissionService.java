@@ -4,7 +4,6 @@ import com.dochub.api.dtos.group_permission.GroupPermissionResponseDTO;
 import com.dochub.api.dtos.role.RoleResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
-import com.dochub.api.entities.GroupPermission;
 import com.dochub.api.entities.group_role_permission.GroupRolePermission;
 import com.dochub.api.entities.group_role_permission.GroupRolePermissionPK;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
@@ -16,23 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class GroupRolePermissionService {
     private final GroupRolePermissionRepository groupRolePermissionRepository;
-
-    public Boolean hasGroupRolePermissionsAssignedToGroup (final Group group) {
-        final List<GroupRolePermission> groupRolePermissions = groupRolePermissionRepository
-            .findByGroup(group)
-            .orElse(Collections.emptyList());
-
-        if (groupRolePermissions.isEmpty()) return Boolean.FALSE;
-
-        return Boolean.TRUE;
-    }
 
     public void assignViewPermissionToAdmin (final Function<String, RoleResponseDTO> getRoleByNameFunc,
                                              final Function<String, GroupPermissionResponseDTO> getGroupPermissionByDescriptionFunc,
@@ -60,6 +48,14 @@ public class GroupRolePermissionService {
         final GroupRolePermission groupRolePermission = _getById(groupRolePermissionPK);
 
         groupRolePermissionRepository.delete(groupRolePermission);
+    }
+
+    public void deleteAllGroupRolePermissionsAssignedToGroup (final Group group) {
+        final List<GroupRolePermission> groupRolePermissions = groupRolePermissionRepository
+            .findByGroup(group)
+            .orElse(Collections.emptyList());
+
+        groupRolePermissionRepository.deleteAll(groupRolePermissions);
     }
 
     private GroupRolePermission _getById (final GroupRolePermissionPK groupRolePermissionPK) {

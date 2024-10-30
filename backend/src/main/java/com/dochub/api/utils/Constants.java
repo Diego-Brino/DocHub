@@ -27,6 +27,10 @@ public interface Constants {
     // Email Subjects
     String PASSWORD_RESET_INITIATOR_NAME = "DocHub - ResetLink";
 
+    // S3
+    Integer UUID_BUCKET_CHARACTER_LIMIT = 49;
+    String BUCKET_NAME = "dochub-%s-dochub";
+
     // RoleService Permissions
     String CREATE_ROLE_PERMISSION = "Criar Cargo";
     String EDIT_ROLE_PERMISSION = "Editar Cargo";
@@ -125,4 +129,11 @@ public interface Constants {
     String CANNOT_EDIT_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser modificado, pois é um cargo protegido do sistema.";
     String INVALID_FILE_TYPE_EXCEPTION  = "O arquivo deve ser do tipo JPG, JPEG ou PNG.";
     String ENTITY_NOT_FOUND_EXCEPTION_MESSAGE = "Nenhuma entidade foi encontrada com os parâmetros fornecidos.";
+
+    // S3 Exception Messages
+    String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O nome do bucket informado já existe!";
+    String CREATE_BUCKET_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar criar um bucket.";
+    String DELETE_BUCKET_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar deletar um bucket.";
+    String CREATE_OBJECT_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar criar um objeto no bucket informado.";
+    String DELETE_OBJECT_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar deletar um objeto no bucket informado.";
 }
