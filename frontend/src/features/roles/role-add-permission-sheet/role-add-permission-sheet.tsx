@@ -6,7 +6,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet.tsx";
-import { RoleAddPermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-permission-sheet-form.tsx";
+import { RoleAddSystemPermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-system-permission-sheet-form.tsx";
+import { RoleAddGroupPermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-group-permission-sheet-form.tsx";
 
 type RoleAddPermissionSheetContext = {
   isOpen: boolean;
@@ -65,7 +66,7 @@ function useRoleAddPermissionSheetContext() {
 }
 
 function RoleAddPermissionSheet() {
-  const { isOpen, close } = useRoleAddPermissionSheetContext();
+  const { isOpen, close, type } = useRoleAddPermissionSheetContext();
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && close()}>
@@ -74,7 +75,9 @@ function RoleAddPermissionSheet() {
           <SheetTitle>Cargo</SheetTitle>
           <SheetDescription>Adicione permissões ao cargo</SheetDescription>
         </SheetHeader>
-        <RoleAddPermissionSheetForm />
+        {type === "system" && <RoleAddSystemPermissionSheetForm />}
+        {type === "group" && <RoleAddGroupPermissionSheetForm />}
+        {type === "resource" && <RoleAddSystemPermissionSheetForm />}
       </SheetContent>
     </Sheet>
   );

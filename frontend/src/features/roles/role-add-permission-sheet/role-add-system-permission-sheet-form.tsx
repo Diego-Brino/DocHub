@@ -31,7 +31,7 @@ const schemaSystemPermission = z.object({
   description: z.string(),
 });
 
-function RoleAddPermissionSheetForm() {
+function RoleAddSystemPermissionSheetForm() {
   const { selectedRoleId } = useRolePermissionsDialogContext();
 
   const { data: dataRole } = useGetRole({ id: selectedRoleId });
@@ -121,6 +121,7 @@ function RoleAddPermissionSheetForm() {
   );
 }
 
-RoleAddPermissionSheetForm.displayName = "RoleAddPermissionSheetForm";
+RoleAddSystemPermissionSheetForm.displayName =
+  "RoleAddSystemPermissionSheetForm";
 
-export { RoleAddPermissionSheetForm };
+export { RoleAddSystemPermissionSheetForm };

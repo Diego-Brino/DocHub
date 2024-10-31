@@ -14,7 +14,7 @@ export type PostSystemRolePermissionsRequest = {
 
 export type PostSystemRolePermissionsResponse = void;
 
-async function deleteSystemRolePermissions({
+async function postSystemRolePermissions({
   token,
   systemRolePermission,
 }: PostSystemRolePermissionsRequest): Promise<PostSystemRolePermissionsResponse> {
@@ -37,7 +37,7 @@ function usePostSystemRolePermissions() {
   return useMutation({
     mutationFn: (
       systemRolePermission: PostSystemRolePermissionsRequest["systemRolePermission"],
-    ) => deleteSystemRolePermissions({ token, systemRolePermission }),
+    ) => postSystemRolePermissions({ token, systemRolePermission }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["role-permissions"] });
       queryClient.invalidateQueries({ queryKey: ["roles"] });

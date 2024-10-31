@@ -6,21 +6,22 @@ import queryClient from "@/lib/react-query";
 
 export type PostSystemRolePermissionsRequest = {
   token: string;
-  systemRolePermission: {
-    idSystemPermission: number;
+  groupRolePermission: {
+    idGroupPermission: number;
     idRole: number;
+    idGroup: number;
   };
 };
 
 export type PostSystemRolePermissionsResponse = void;
 
-async function deleteSystemRolePermissions({
+async function postGroupRolePermissions({
   token,
-  systemRolePermission,
+  groupRolePermission,
 }: PostSystemRolePermissionsRequest): Promise<PostSystemRolePermissionsResponse> {
   const response = await axiosClient.post(
-    `/system-role-permissions`,
-    systemRolePermission,
+    `/group-role-permissions`,
+    groupRolePermission,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -36,8 +37,8 @@ function usePostGroupRolePermissions() {
 
   return useMutation({
     mutationFn: (
-      systemRolePermission: PostSystemRolePermissionsRequest["systemRolePermission"],
-    ) => deleteSystemRolePermissions({ token, systemRolePermission }),
+      groupRolePermission: PostSystemRolePermissionsRequest["groupRolePermission"],
+    ) => postGroupRolePermissions({ token, groupRolePermission }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["role-permissions"] });
       queryClient.invalidateQueries({ queryKey: ["roles"] });
