@@ -2,6 +2,7 @@ package com.dochub.api.handlers;
 
 import com.dochub.api.dtos.ErrorDTO;
 import com.dochub.api.exceptions.*;
+import com.dochub.api.exceptions.s3.*;
 import com.dochub.api.utils.Constants;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -237,5 +238,45 @@ public class ApplicationHandler {
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(BucketAlreadyExistsException.class)
+    public ResponseEntity<ErrorDTO> handleBucketAlreadyExistsException (BucketAlreadyExistsException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(CreateBucketException.class)
+    public ResponseEntity<ErrorDTO> handleCreateBucketException (CreateBucketException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(DeleteBucketException.class)
+    public ResponseEntity<ErrorDTO> handleDeleteBucketException (DeleteBucketException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(CreateObjectException.class)
+    public ResponseEntity<ErrorDTO> handleCreateObjectException (CreateObjectException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
+    @ExceptionHandler(DeleteObjectException.class)
+    public ResponseEntity<ErrorDTO> handleDeleteObjectException (DeleteObjectException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
     }
 }

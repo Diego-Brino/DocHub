@@ -10,6 +10,7 @@ import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.repositories.ArchiveRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Service
@@ -85,26 +86,39 @@ public class ArchiveService {
         archiveRepository.save(archive);
     }
 
+    @Transactional
     public void delete (final UserRoleResponseDTO userRoles, final Integer archiveId,
                         final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
-                        final BiConsumer<UserRoleResponseDTO, List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+                        final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final Archive archive = getById(archiveId);
 
         Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.DELETE_ARCHIVE_PERMISSION);
 
-        _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, userRoles, deleteResourceRolePermissionsFunc);
+        _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
         archiveRepository.delete(archive);
     }
 
+    @Transactional
+    public void deleteAllArchivesAssignedToGroup (final Group group,
+                                                  final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
+                                                  final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+        final List<Archive> archives = archiveRepository
+            .findByResource_Group(group)
+            .orElse(Collections.emptyList());
+
+        archives.forEach(archive -> _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc));
+
+        archiveRepository.deleteAll(archives);
+    }
+
     private void _deleteResourceRolePermissionsIfPresent (final Resource resource,
                                                           final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
-                                                          final UserRoleResponseDTO userRoles,
-                                                          final BiConsumer<UserRoleResponseDTO, List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+                                                          final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final List<ResourceRolePermission> resourceRolePermissions = getAllByResourceFunc.apply(resource);
 
         if (!resourceRolePermissions.isEmpty()) {
-            deleteResourceRolePermissionsFunc.accept(userRoles, resourceRolePermissions);
+            deleteResourceRolePermissionsFunc.accept(resourceRolePermissions);
         }
     }
 

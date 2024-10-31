@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`cargo` (
 
 CREATE TABLE IF NOT EXISTS `dochub`.`grupo` (
                          `ID_GRUPO` int NOT NULL AUTO_INCREMENT,
+                         `ID_S3_BUCKET` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                          `NOME` varchar(128) NOT NULL,
                          `DESCRICAO` varchar(256) DEFAULT NULL,
                          `AVATAR` longblob,
@@ -38,9 +39,9 @@ CREATE TABLE IF NOT EXISTS `dochub`.`grupo` (
                          `DATA_INSERCAO` datetime NOT NULL,
                          `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
                          `DATA_ALTERACAO` datetime DEFAULT NULL,
-                         PRIMARY KEY (`ID_GRUPO`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
+                         PRIMARY KEY (`ID_GRUPO`),
+                         UNIQUE KEY `grupo_unique` (`ID_S3_BUCKET`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- dochub.permissao_grupo definition
 

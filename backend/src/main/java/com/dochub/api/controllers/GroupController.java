@@ -10,6 +10,7 @@ import com.dochub.api.entities.Folder;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.*;
+import com.dochub.api.services.s3.BucketService;
 import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -37,6 +38,8 @@ public class GroupController {
     private final ProcessService processService;
     private final RoleService roleService;
     private final GroupPermissionService groupPermissionService;
+    private final BucketService bucketService;
+    private final ResourceRolePermissionService resourceRolePermissionService;
 
     @GetMapping
     public ResponseEntity<List<GroupResponseDTO>> getAll (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
@@ -115,6 +118,7 @@ public class GroupController {
                 groupService.create(
                     userRoles,
                     createGroupDTO,
+                    bucketService::create,
                     roleService::getByName,
                     groupPermissionService::getByDescription,
                     groupRolePermissionService::assignViewPermissionToAdmin
@@ -153,18 +157,21 @@ public class GroupController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+    public ResponseEntity<Void> delete (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                         @PathVariable("id") @NonNull final Integer groupId) {
         final String userEmail = jwtService.extractUserEmail(token);
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
         groupService.delete(
-            groupRolePermissionService::hasGroupRolePermissionsAssignedToGroup,
-            resourceService::hasResourcesAssignedToGroup,
-            processService::hasProcessesAssignedToGroup,
             userRoles,
-            groupId
+            groupId,
+            bucketService::deleteBucketWithContentsAsync,
+            groupRolePermissionService::deleteAllGroupRolePermissionsAssignedToGroup,
+            resourceRolePermissionService::getAllByResource,
+            resourceRolePermissionService::delete,
+            archiveService::deleteAllArchivesAssignedToGroup,
+            folderService::deleteAllFoldersAssignedToGroup
         );
 
         return ResponseEntity

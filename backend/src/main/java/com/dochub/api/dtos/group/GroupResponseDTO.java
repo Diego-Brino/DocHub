@@ -5,6 +5,7 @@ import com.dochub.api.utils.Constants;
 
 public record GroupResponseDTO (
     Integer id,
+    String idS3Bucket,
     String name,
     String description,
     String groupUrl
@@ -12,6 +13,7 @@ public record GroupResponseDTO (
     public GroupResponseDTO (final Group group) {
         this(
             group.getId(),
+            group.getIdS3Bucket(),
             group.getName(),
             group.getDescription(),
             String.format(Constants.GROUP_URL + "?v=" + System.currentTimeMillis(), group.getId())

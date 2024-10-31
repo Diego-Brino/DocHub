@@ -117,11 +117,11 @@ VALUES
     (2, 1, 'DocHub', CURRENT_DATE),
     (3, 1, 'DocHub', CURRENT_DATE);
 
-INSERT INTO grupo (NOME, DESCRICAO, AVATAR, USUARIO_INSERCAO, DATA_INSERCAO, USUARIO_ALTERACAO, DATA_ALTERACAO)
+INSERT INTO grupo (ID_S3_BUCKET, NOME, DESCRICAO, AVATAR, USUARIO_INSERCAO, DATA_INSERCAO, USUARIO_ALTERACAO, DATA_ALTERACAO)
 VALUES
-    ('Grupo A', 'Descrição do Grupo A', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
-    ('Grupo B', 'Descrição do Grupo B', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
-    ('Grupo C', NULL, NULL, 'DocHub', CURRENT_DATE, NULL, NULL);
+    ('dochub-group1-dochub', 'Grupo A', 'Descrição do Grupo A', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
+    ('dochub-group2-dochub', 'Grupo B', 'Descrição do Grupo B', NULL, 'DocHub', CURRENT_DATE, NULL, NULL),
+    ('dochub-group3-dochub', 'Grupo C', NULL, NULL, 'DocHub', CURRENT_DATE, NULL, NULL);
 
 INSERT INTO cargo_permissao_grupo (ID_CARGO, ID_PERMISSAO_GRUPO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES

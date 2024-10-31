@@ -15,6 +15,7 @@ import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.repositories.FolderRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Service
@@ -85,16 +86,30 @@ public class FolderService {
         folderRepository.save(folder);
     }
 
+    @Transactional
     public void delete (final UserRoleResponseDTO userRoles, final Integer folderId,
                         final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
-                        final BiConsumer<UserRoleResponseDTO, List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+                        final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final Folder folder = getById(folderId);
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.DELETE_FOLDER_PERMISSION);
 
-        _deleteResourceRolePermissionsIfPresent(folder.getResource(), getAllByResourceFunc, userRoles, deleteResourceRolePermissionsFunc);
+        _deleteResourceRolePermissionsIfPresent(folder.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
         folderRepository.delete(folder);
+    }
+
+    @Transactional
+    public void deleteAllFoldersAssignedToGroup (final Group group,
+                                                 final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
+                                                 final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+        final List<Folder> folders = folderRepository
+            .findByResource_Group(group)
+            .orElse(Collections.emptyList());
+
+        folders.forEach(archive -> _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc));
+
+        folderRepository.deleteAll(folders);
     }
 
     private void _updateParentFolderIfPresent (final Folder parentFolder, final Folder folder) {
@@ -109,12 +124,11 @@ public class FolderService {
 
     private void _deleteResourceRolePermissionsIfPresent (final Resource resource,
                                                           final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
-                                                          final UserRoleResponseDTO userRoles,
-                                                          final BiConsumer<UserRoleResponseDTO, List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
+                                                          final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final List<ResourceRolePermission> resourceRolePermissions = getAllByResourceFunc.apply(resource);
 
         if (!resourceRolePermissions.isEmpty()) {
-            deleteResourceRolePermissionsFunc.accept(userRoles, resourceRolePermissions);
+            deleteResourceRolePermissionsFunc.accept(resourceRolePermissions);
         }
     }
 
