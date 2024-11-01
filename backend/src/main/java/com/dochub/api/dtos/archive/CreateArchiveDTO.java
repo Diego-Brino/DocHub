@@ -4,9 +4,11 @@ import com.dochub.api.utils.Constants;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
 
 public record CreateArchiveDTO (
+    @NotBlank(message = Constants.HASH_S3_IS_REQUIRED_MESSAGE)
+    String hashS3,
+
     @NotBlank(message = Constants.NAME_IS_REQUIRED_MESSAGE)
     @Length(max = 128)
     String name,
@@ -19,6 +21,9 @@ public record CreateArchiveDTO (
 
     Integer folderId,
 
+    @NotBlank(message = Constants.CONTENT_TYPE_IS_REQUIRED_MESSAGE)
+    String contentType,
+
     @NonNull
-    MultipartFile file) {
+    Long length) {
 }

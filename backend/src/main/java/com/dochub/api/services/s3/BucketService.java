@@ -3,6 +3,7 @@ package com.dochub.api.services.s3;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.dochub.api.exceptions.s3.BucketAlreadyExistsException;
+import com.dochub.api.exceptions.s3.BucketNotFoundException;
 import com.dochub.api.exceptions.s3.CreateBucketException;
 import com.dochub.api.exceptions.s3.DeleteBucketException;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,9 @@ import java.util.List;
 public class BucketService {
     private final AmazonS3 s3Client;
 
-    public List<Bucket> getAll () {
-        return s3Client.listBuckets();
-    }
-
-    public Boolean doesBucketExist (final String bucketName) {
-        return s3Client.doesBucketExistV2(bucketName);
-    }
-
     public void create (final String bucketName) {
-        if (doesBucketExist(bucketName)) {
-            throw new BucketAlreadyExistsException();
+        if (s3Client.doesBucketExistV2(bucketName)) {
+            throw new BucketAlreadyExistsException(bucketName);
         }
 
         try {
@@ -36,7 +29,7 @@ public class BucketService {
                 .withCannedAcl(CannedAccessControlList.Private)
             );
         } catch (Exception e) {
-            throw new CreateBucketException();
+            throw new CreateBucketException(bucketName);
         }
     }
 
@@ -46,6 +39,10 @@ public class BucketService {
     }
 
     public void deleteBucketWithContents (final String bucketName) {
+        if (!s3Client.doesBucketExistV2(bucketName)) {
+            throw new BucketNotFoundException(bucketName);
+        }
+
         final ListObjectsV2Request listRequest = new ListObjectsV2Request().withBucketName(bucketName);
 
         ListObjectsV2Result listResult;
@@ -72,7 +69,7 @@ public class BucketService {
 
             s3Client.deleteBucket(bucketName);
         } catch (Exception e) {
-            throw new DeleteBucketException();
+            throw new DeleteBucketException(bucketName);
         }
     }
 }

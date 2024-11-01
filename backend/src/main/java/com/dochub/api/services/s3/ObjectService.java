@@ -1,51 +1,79 @@
 package com.dochub.api.services.s3;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.dochub.api.dtos.s3.object.CreateObjectDTO;
-import com.dochub.api.dtos.s3.object.DeleteObjectDTO;
-import com.dochub.api.exceptions.s3.CreateObjectException;
-import com.dochub.api.exceptions.s3.DeleteObjectException;
-import com.dochub.api.utils.S3Utils;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.dochub.api.dtos.archive.ArchiveS3ResponseDTO;
+import com.dochub.api.exceptions.s3.*;
+import com.dochub.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class ObjectService {
     private final AmazonS3 s3Client;
 
-    public List<S3ObjectSummary> getAll (final String bucketName) {
-        final ObjectListing objectListing = s3Client.listObjects(S3Utils.getFormattedBucketName(bucketName));
-
-        return objectListing.getObjectSummaries();
+    public Boolean doesObjectExist (final String bucketName, final String objectName) {
+        return s3Client.doesObjectExist(bucketName, objectName);
     }
 
-    public void create (final CreateObjectDTO createObjectDTO) {
-        try {
-            final var putObjectRequest = new PutObjectRequest(
-                S3Utils.getFormattedBucketName(createObjectDTO.bucketName()),
-                createObjectDTO.file().getName(),
-                createObjectDTO.file().getInputStream(),
-                S3Utils.buildMetadata(createObjectDTO.file())
-            ).withCannedAcl(CannedAccessControlList.Private);
+    public ArchiveS3ResponseDTO getObject (final String bucketName, final String objectName) {
+        _validate(bucketName, objectName);
 
-            s3Client.putObject(putObjectRequest);
+        try {
+            final S3Object s3Object = s3Client.getObject(bucketName, objectName);
+            final S3ObjectInputStream inputStream = s3Object.getObjectContent();
+
+            byte[] fileContent = Utils.convertInputStreamToByteArray(inputStream);
+
+            inputStream.close();
+
+            return new ArchiveS3ResponseDTO(s3Object.getObjectMetadata().getContentType(), fileContent);
         } catch (Exception e) {
-            throw new CreateObjectException();
+            throw new GetS3ObjectException(objectName, bucketName);
         }
     }
 
-    public void delete (final DeleteObjectDTO deleteObjectDTO) {
+    public String generatePresignedUrl (final String bucketName, final String fileName) {
+        if (!s3Client.doesBucketExistV2(bucketName)) {
+            throw new BucketNotFoundException(bucketName);
+        }
+
         try {
-            s3Client.deleteObject(S3Utils.getFormattedBucketName(deleteObjectDTO.bucketName()), deleteObjectDTO.objectName());
+            final Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
+
+            final GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, fileName)
+                .withMethod(HttpMethod.PUT)
+                .withExpiration(expiration);
+
+            return s3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
         } catch (Exception e) {
-            throw new DeleteObjectException();
+            throw new PresignedUrlGenerationException();
+        }
+    }
+
+    public void delete (final String bucketName, final String objectName) {
+        _validate(bucketName, objectName);
+
+        try {
+            s3Client.deleteObject(bucketName, objectName);
+        } catch (Exception e) {
+            throw new DeleteObjectException(bucketName, objectName);
+        }
+    }
+
+    private void _validate (final String bucketName, final String objectName) {
+        if (!s3Client.doesBucketExistV2(bucketName)) {
+            throw new BucketNotFoundException(bucketName);
+        }
+
+        if (!s3Client.doesObjectExist(bucketName, objectName)) {
+            throw new ObjectNotFoundException(bucketName, objectName);
         }
     }
 }

@@ -102,6 +102,8 @@ public interface Constants {
     String ID_GROUP_IS_REQUIRED_MESSAGE = "O campo 'Id Grupo' é obrigatório.";
     String ID_RESOURCE_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Recurso' é obrigatório.";
     String ID_RESOURCE_IS_REQUIRED_MESSAGE = "O campo 'Id Recurso' é obrigatório.";
+    String CONTENT_TYPE_IS_REQUIRED_MESSAGE = "O campo 'Content-Type' é obrigatório.";
+    String HASH_S3_IS_REQUIRED_MESSAGE = "O campo 'hashS3' é obrigatório";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -129,11 +131,15 @@ public interface Constants {
     String CANNOT_EDIT_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser modificado, pois é um cargo protegido do sistema.";
     String INVALID_FILE_TYPE_EXCEPTION  = "O arquivo deve ser do tipo JPG, JPEG ou PNG.";
     String ENTITY_NOT_FOUND_EXCEPTION_MESSAGE = "Nenhuma entidade foi encontrada com os parâmetros fornecidos.";
+    String INPUT_STREM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do arquivo.";
 
     // S3 Exception Messages
-    String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O nome do bucket informado já existe!";
-    String CREATE_BUCKET_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar criar um bucket.";
-    String DELETE_BUCKET_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar deletar um bucket.";
-    String CREATE_OBJECT_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar criar um objeto no bucket informado.";
-    String DELETE_OBJECT_EXCEPTION_MESSAGE = "Um erro inesperado ocorreu ao tentar deletar um objeto no bucket informado.";
+    String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";
+    String BUCKET_NOT_FOUND_EXCEPTION = "Nenhum bucket foi encontrado com o nome '%s'.";
+    String CREATE_BUCKET_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado ao tentar criar o bucket '%s'.";
+    String DELETE_BUCKET_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado ao tentar deletar o bucket '%s'.";
+    String OBJECT_NOT_FOUND_EXCEPTION = "O arquivo '%s' não foi encontrado no bucket '%s'.";
+    String DELETE_OBJECT_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado ao tentar deletar o arquivo '%s' no bucket '%s'.";
+    String GET_S3_OBJECT_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado ao tentar recuperar o arquivo '%s' no bucket '%s'.";
+    String PRESIGNED_URL_GENERATION_EXCEPTION_MESSAGE = "Falha ao gerar a URL pré-assinada para o arquivo especificado.";
 }

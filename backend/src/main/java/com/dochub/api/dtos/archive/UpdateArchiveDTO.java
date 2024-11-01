@@ -1,7 +1,6 @@
 package com.dochub.api.dtos.archive;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.multipart.MultipartFile;
 
 public record UpdateArchiveDTO (
     @Length(max = 128)
@@ -12,6 +11,7 @@ public record UpdateArchiveDTO (
 
     Integer folderId,
 
-    MultipartFile file
-) {
+    String contentType,
+    
+    Long length) {
 }

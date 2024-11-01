@@ -8,6 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -51,6 +54,23 @@ public class Utils {
             return multipartFile.getBytes();
         } catch (Exception e) {
             throw new MultipartFileReadException();
+        }
+    }
+
+    public static byte[] convertInputStreamToByteArray (final InputStream inputStream) {
+        try {
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final byte[] buffer = new byte[1024];
+
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            throw new InputStreamReadException();
         }
     }
 

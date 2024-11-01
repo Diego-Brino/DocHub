@@ -240,12 +240,28 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
     }
 
+    @ExceptionHandler(InputStreamReadException.class)
+    public ResponseEntity<ErrorDTO> handleInputStreamReadException (InputStreamReadException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+    }
+
     @ExceptionHandler(BucketAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handleBucketAlreadyExistsException (BucketAlreadyExistsException e) {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(BucketNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleBucketNotFoundException (BucketNotFoundException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
     }
 
     @ExceptionHandler(CreateBucketException.class)
@@ -253,7 +269,7 @@ public class ApplicationHandler {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
     @ExceptionHandler(DeleteBucketException.class)
@@ -261,19 +277,35 @@ public class ApplicationHandler {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
-    }
-
-    @ExceptionHandler(CreateObjectException.class)
-    public ResponseEntity<ErrorDTO> handleCreateObjectException (CreateObjectException e) {
-        log.error(e.getMessage(), e);
-
-        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDTO);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
     @ExceptionHandler(DeleteObjectException.class)
     public ResponseEntity<ErrorDTO> handleDeleteObjectException (DeleteObjectException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleObjectNotFoundException (ObjectNotFoundException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDTO);
+    }
+
+    @ExceptionHandler(PresignedUrlGenerationException.class)
+    public ResponseEntity<ErrorDTO> handlePresignedUrlGenerationException (PresignedUrlGenerationException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(GetS3ObjectException.class)
+    public ResponseEntity<ErrorDTO> handleGetS3ObjectException (GetS3ObjectException e) {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());

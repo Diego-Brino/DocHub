@@ -26,7 +26,7 @@ public class Archive {
     @JoinColumn(name = "ID_ARQUIVO", nullable = false)
     private Resource resource;
 
-    @Column(name = "HASH_S3", length = 256)
+    @Column(name = "ID_S3_OBJECT", length = 256)
     private String s3Hash;
 
     @Column(name = "TIPO", length = 64, nullable = false)
@@ -43,8 +43,9 @@ public class Archive {
     private AuditRecord auditRecord;
 
     public Archive (final CreateArchiveDTO createArchiveDTO, final Folder folder, final String initiatorUsername) {
-        this.type = createArchiveDTO.file().getContentType();
-        this.length = createArchiveDTO.file().getSize();
+        this.s3Hash = createArchiveDTO.hashS3();
+        this.type = createArchiveDTO.contentType();
+        this.length = createArchiveDTO.length();
 
         if (Objects.nonNull(folder)) {
             this.folder = folder;
