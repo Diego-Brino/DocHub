@@ -12,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -117,6 +119,16 @@ public class Utils {
             (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/jpg"))) {
             throw new InvalidFileTypeException();
         }
+    }
+
+    public static String formatDate (final Date date) {
+        if (Objects.nonNull(date)) {
+            final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            return sdf.format(date);
+        }
+
+        return "";
     }
 
     public static void checkPermission (final UserRoleResponseDTO userRoles, final String permission) {

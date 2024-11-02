@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Service
@@ -23,7 +24,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponseDTO authenticate (final AuthenticationRequestDTO authenticationRequestDTO,
-                                                   final Function<String, User> getUserById, final BiFunction<Map<String, Object>, User, String> generateToken) {
+                                                   final Function<String, User> getUserByIdFunc, final Consumer<User> updateLastAccessFunc,
+                                                   final BiFunction<Map<String, Object>, User, String> generateTokenFunc) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 authenticationRequestDTO.email(),
@@ -31,12 +33,14 @@ public class AuthenticationService {
             )
         );
 
-        final User user = getUserById.apply(authenticationRequestDTO.email());
+        final User user = getUserByIdFunc.apply(authenticationRequestDTO.email());
+
+        updateLastAccessFunc.accept(user);
 
         final HashMap<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("id", user.getId());
 
-        final String token = generateToken.apply(extraClaims, user);
+        final String token = generateTokenFunc.apply(extraClaims, user);
 
         return buildAuthenticationResponse(user, token);
     }

@@ -41,6 +41,6 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponseDTO> authenticate (@RequestBody @Valid final AuthenticationRequestDTO authenticationRequestDTO) {
         return ResponseEntity
             .ok()
-            .body(authenticationService.authenticate(authenticationRequestDTO, userService::getByEmail, jwtService::generateToken));
+            .body(authenticationService.authenticate(authenticationRequestDTO, userService::getByEmail, userService::updateLastAccess, jwtService::generateToken));
     }
 }

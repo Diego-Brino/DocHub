@@ -110,6 +110,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void updateLastAccess (final User user) {
+        user.setLastAccess(new Date());
+
+        userRepository.save(user);
+    }
+
     public void updateAvatar (final Integer userId, final String userEmail, final MultipartFile avatar) {
         final User user = getByEmail(userEmail);
 
