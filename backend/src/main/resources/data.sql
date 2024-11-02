@@ -23,7 +23,6 @@ TRUNCATE TABLE `dochub`.`historico`;
 TRUNCATE TABLE `dochub`.`pasta`;
 TRUNCATE TABLE `dochub`.`usuario_cargo_fluxo`;
 TRUNCATE TABLE `dochub`.`arquivo`;
-TRUNCATE TABLE `dochub`.`processo_recurso`;
 
 SET foreign_key_checks = 1;
 
@@ -134,3 +133,24 @@ VALUES
     (1, 7, 1,'DocHub', CURRENT_DATE),
     (1, 8, 1,'DocHub', CURRENT_DATE),
     (1, 9, 1,'DocHub', CURRENT_DATE);
+
+INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    ('PDF', 'Documento PDF na Raiz', 1, 'DocHub', CURRENT_DATE),
+    ('DOCX', 'Documento DOCX na Raiz', 1, 'DocHub', CURRENT_DATE),
+    ('Logo Unaerp', 'Logo da Unaerp na Raiz', 2, 'DocHub', CURRENT_DATE),
+    ('PDF', 'Documento PDF na Raiz', 3, 'DocHub', CURRENT_DATE);
+
+INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    ('PDF', 'Documento PDF na Raiz', 1, 'DocHub', CURRENT_DATE),
+    ('DOCX', 'Documento DOCX na Raiz', 1, 'DocHub', CURRENT_DATE),
+    ('Logo Unaerp', 'Logo da Unaerp na Raiz', 2, 'DocHub', CURRENT_DATE),
+    ('PDF', 'Documento PDF na Raiz', 3, 'DocHub', CURRENT_DATE);
+
+INSERT INTO arquivo (ID_ARQUIVO, ID_S3_OBJECT, TIPO, TAMANHO, USUARIO_INSERCAO, DATA_INSERCAO)
+VALUES
+    (1, 'teste.pdf', 'application/pdf', 30.3, 'DocHub', CURRENT_DATE),
+    (2, 'teste.docx', 'application/pdf', 11.7, 'DocHub', CURRENT_DATE),
+    (3, 'Logos png-04.png', 'image/png', 65, 'DocHub', CURRENT_DATE),
+    (4, 'teste.pdf', 'application/pdf', 30.3, 'DocHub', CURRENT_DATE);
