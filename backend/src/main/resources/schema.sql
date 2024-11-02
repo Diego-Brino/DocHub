@@ -1,3 +1,8 @@
+DROP DATABASE dochub;
+CREATE DATABASE dochub;
+
+USE dochub;
+
 -- dochub.atividade definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`atividade` (

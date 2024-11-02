@@ -23,7 +23,6 @@ TRUNCATE TABLE `dochub`.`historico`;
 TRUNCATE TABLE `dochub`.`pasta`;
 TRUNCATE TABLE `dochub`.`usuario_cargo_fluxo`;
 TRUNCATE TABLE `dochub`.`arquivo`;
-TRUNCATE TABLE `dochub`.`processo_recurso`;
 
 SET foreign_key_checks = 1;
 
