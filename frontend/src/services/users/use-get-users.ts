@@ -12,6 +12,7 @@ export type GetUsersResponse = {
   email: string;
   username: string;
   avatarUrl: string;
+  lastAccess: string;
 };
 
 async function getUsers({

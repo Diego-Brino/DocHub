@@ -26,11 +26,12 @@ type UserCardProps = {
     username: string;
     email: string;
     avatarUrl: string;
+    lastAccess: string;
   };
 };
 
 function UserCard({
-  user: { id, name, username, email, avatarUrl },
+  user: { id, name, username, email, avatarUrl, lastAccess },
 }: UserCardProps) {
   const { mutate: mutateDelete } = useDeleteProfile({ profileId: id });
 
@@ -62,7 +63,10 @@ function UserCard({
             </Avatar>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-end items-center">
+            <div className="flex justify-between items-center">
+              <p className="text-muted-foreground text-sm">
+                {lastAccess ? lastAccess : "Sem último acesso"}
+              </p>
               <div className="flex items-center gap-2">
                 <Tooltip>
                   <TooltipTrigger asChild>
