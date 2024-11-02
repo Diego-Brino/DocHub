@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface ResourceHistoryRepository extends JpaRepository<ResourceHistory, Integer> {
-    Optional<List<ResourceHistory>> findAllByGroup (Group group);
+    Optional<List<ResourceHistory>> findAllByGroupOrderByActionDateDesc (Group group);
 }

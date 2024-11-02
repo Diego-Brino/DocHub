@@ -93,6 +93,9 @@ public interface Constants {
     String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
     String DELETE_USER_PERMISSION = "Deletar Usuário";
 
+    // ResourceHistoryService Permissions
+    String VIEW_RESOURCES_HISTORY = "Visualizar histórico de Recursos";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";

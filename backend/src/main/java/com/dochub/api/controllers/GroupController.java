@@ -6,6 +6,7 @@ import com.dochub.api.dtos.group.GroupResponseDTO;
 import com.dochub.api.dtos.group.UpdateGroupDTO;
 import com.dochub.api.dtos.resource.ResourceResponseDTO;
 import com.dochub.api.dtos.resource.RootGroupResourcesResponseDTO;
+import com.dochub.api.dtos.resource_history.ResourceHistoryResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Folder;
 import com.dochub.api.entities.Group;
@@ -120,6 +121,19 @@ public class GroupController {
                     archiveService::getGroupArchivesByFolder
                 )
             );
+    }
+
+    @GetMapping("/{id}/resource-histories")
+    public ResponseEntity<List<ResourceHistoryResponseDTO>> getAllResourceHistories (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                                                                     @PathVariable("id") @NonNull final Integer groupId) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
+        final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
+        final Group group = groupService.getById(groupId);
+
+        return ResponseEntity
+            .ok()
+            .body(resourceHistoryService.getAllByGroup(userRoles, group));
     }
 
     @PostMapping

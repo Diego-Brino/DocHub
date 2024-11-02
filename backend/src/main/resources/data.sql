@@ -56,7 +56,8 @@ VALUES
    ('Deletar Pasta', 'DocHub', CURRENT_DATE),
    ('Criar Usuário', 'DocHub', CURRENT_DATE),
    ('Atualizar perfil de Usuário', 'DocHub', CURRENT_DATE),
-   ('Deletar Usuário', 'DocHub', CURRENT_DATE);
+   ('Deletar Usuário', 'DocHub', CURRENT_DATE),
+   ('Visualizar histórico de Recursos', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -68,7 +69,8 @@ VALUES
     ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
     ('Criar Pasta', 'DocHub', CURRENT_DATE),
     ('Editar Pasta', 'DocHub', CURRENT_DATE),
-    ('Deletar Pasta', 'DocHub', CURRENT_DATE);
+    ('Deletar Pasta', 'DocHub', CURRENT_DATE),
+    ('Visualizar histórico de Recursos', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_recurso (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -109,7 +111,8 @@ VALUES
     (1, 20, 'DocHub', CURRENT_DATE),
     (1, 21, 'DocHub', CURRENT_DATE),
     (1, 22, 'DocHub', CURRENT_DATE),
-    (1, 23, 'DocHub', CURRENT_DATE);
+    (1, 23, 'DocHub', CURRENT_DATE),
+    (1, 24, 'DocHub', CURRENT_DATE);
 
 INSERT INTO usuario_cargo (ID_USUARIO, ID_CARGO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -132,7 +135,8 @@ VALUES
     (1, 6, 1,'DocHub', CURRENT_DATE),
     (1, 7, 1,'DocHub', CURRENT_DATE),
     (1, 8, 1,'DocHub', CURRENT_DATE),
-    (1, 9, 1,'DocHub', CURRENT_DATE);
+    (1, 9, 1,'DocHub', CURRENT_DATE),
+    (1, 10, 1,'DocHub', CURRENT_DATE);
 
 INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
