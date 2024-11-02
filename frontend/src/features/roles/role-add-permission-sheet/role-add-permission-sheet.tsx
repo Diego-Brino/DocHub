@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sheet.tsx";
 import { RoleAddSystemPermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-system-permission-sheet-form.tsx";
 import { RoleAddGroupPermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-group-permission-sheet-form.tsx";
+import { RoleAddResourcePermissionSheetForm } from "@/features/roles/role-add-permission-sheet/role-add-resource-permission-sheet-form.tsx";
 
 type RoleAddPermissionSheetContext = {
   isOpen: boolean;
@@ -77,7 +78,7 @@ function RoleAddPermissionSheet() {
         </SheetHeader>
         {type === "system" && <RoleAddSystemPermissionSheetForm />}
         {type === "group" && <RoleAddGroupPermissionSheetForm />}
-        {type === "resource" && <RoleAddSystemPermissionSheetForm />}
+        {type === "resource" && <RoleAddResourcePermissionSheetForm />}
       </SheetContent>
     </Sheet>
   );

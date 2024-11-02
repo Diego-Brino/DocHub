@@ -18,6 +18,22 @@ export type GetRoleResponse = {
     group: { id: number; name: string; description: string; groupUrl: string };
     permissions: { id: number; description: string }[];
   }[];
+  resourcePermissions: {
+    resource: {
+      id: number;
+      name: string;
+      description: string;
+      type: "Arquivo" | "Pasta";
+      group: {
+        id: number;
+        name: string;
+        description: string;
+        groupUrl: string;
+        idS3Bucket: string;
+      };
+    };
+    permissions: { id: number; description: string }[];
+  }[];
 };
 
 async function getRole({

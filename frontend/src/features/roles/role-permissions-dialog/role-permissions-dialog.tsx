@@ -26,6 +26,11 @@ import { TrashIcon } from "lucide-react";
 import { useRolePermissionDeleteConfirmationAlertContext } from "@/features/roles/role-permission-delete-confirmation-alert/role-permission-delete-confirmation-alert.tsx";
 import { useRoleAddPermissionSheetContext } from "@/features/roles/role-add-permission-sheet/role-add-permission-sheet.tsx";
 import { useDeleteGroupRolePermissions } from "@/services/group-role-permissions/use-delete-group-role-permissions.ts";
+import {
+  Archive,
+  Folder,
+} from "@/services/groups/use-get-group-root-resources.ts";
+import { useDeleteResourceRolePermissions } from "@/services/resource-role-permissions/use-delete-resource-role-permissions.ts";
 
 type RolePermissionsDialogContext = {
   selectedRoleId: number | null;
@@ -96,6 +101,8 @@ function RolePermissionsDialog() {
     useDeleteSystemRolePermissions();
   const { mutate: mutateDeleteGroupRolePermissions } =
     useDeleteGroupRolePermissions();
+  const { mutate: mutateDeleteResourceRolePermissions } =
+    useDeleteResourceRolePermissions();
 
   const handleDelete = (idSystemPermission: number) => {
     mutateDeleteSystemRolePermissions({
@@ -112,6 +119,17 @@ function RolePermissionsDialog() {
       idRole: selectedRoleId as number,
       idGroupPermission,
       idGroup,
+    });
+  };
+
+  const handleDeleteResourcePermission = (
+    idResourcePermission: number,
+    idResource: number,
+  ) => {
+    mutateDeleteResourceRolePermissions({
+      idRole: selectedRoleId as number,
+      idResourcePermission,
+      idResource,
     });
   };
 
@@ -192,6 +210,62 @@ function RolePermissionsDialog() {
     },
   ];
 
+  const columnsResource: ColumnDef<{
+    resource: Archive | Folder;
+    permission: { id: number; description: string };
+  }>[] = [
+    {
+      header: "Recurso",
+      accessorKey: "name",
+      accessorFn: (row) => row.resource.name,
+      cell: ({ row }) => (
+        <p className="text-nowrap">{row.original.resource.name}</p>
+      ),
+    },
+    {
+      header: "Descrição",
+      accessorKey: "description",
+      accessorFn: (row) => row.resource.description,
+      cell: ({ row }) => (
+        <p className="text-nowrap">{row.original.resource.description}</p>
+      ),
+    },
+    {
+      header: "Permissão",
+      accessorKey: "permission",
+      accessorFn: (row) => row.permission.description,
+      cell: ({ row }) => (
+        <p className="text-nowrap">{row.original.permission.description}</p>
+      ),
+    },
+    {
+      header: "Ações",
+      accessorKey: "id",
+      enableColumnFilter: false,
+      cell: ({ row }) => (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                open(() =>
+                  handleDeleteResourcePermission(
+                    row.original.permission.id,
+                    row.original.resource.id,
+                  ),
+                )
+              }
+            >
+              <TrashIcon className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Excluir</TooltipContent>
+        </Tooltip>
+      ),
+    },
+  ];
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="min-w-[500px] max-w-min">
@@ -248,8 +322,17 @@ function RolePermissionsDialog() {
                 Adicionar permissão de recurso
               </Button>
               <DataTable
-                columns={columnsSystem}
-                data={data?.systemPermissions || []}
+                columns={columnsResource}
+                data={(() => {
+                  const flattenedArray = data?.resourcePermissions.flatMap(
+                    (resource) =>
+                      resource.permissions.map((permission) => ({
+                        resource: resource.resource,
+                        permission,
+                      })),
+                  );
+                  return flattenedArray || [];
+                })()}
               />
             </div>
           </TabsContent>
