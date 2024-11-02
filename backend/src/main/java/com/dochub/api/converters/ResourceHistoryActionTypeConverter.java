@@ -1,14 +1,14 @@
 package com.dochub.api.converters;
 
-import com.dochub.api.enums.ResourceHistoryAction;
+import com.dochub.api.enums.ResourceHistoryActionType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class ResourceHistoryActionConverter implements AttributeConverter<ResourceHistoryAction, String> {
+public class ResourceHistoryActionTypeConverter implements AttributeConverter<ResourceHistoryActionType, String> {
 
     @Override
-    public String convertToDatabaseColumn (ResourceHistoryAction attribute) {
+    public String convertToDatabaseColumn (ResourceHistoryActionType attribute) {
         if (attribute == null) {
             return null;
         }
@@ -16,12 +16,12 @@ public class ResourceHistoryActionConverter implements AttributeConverter<Resour
     }
 
     @Override
-    public ResourceHistoryAction convertToEntityAttribute (String dbData) {
+    public ResourceHistoryActionType convertToEntityAttribute (String dbData) {
         if (dbData == null) {
             return null;
         }
 
-        for (ResourceHistoryAction status : ResourceHistoryAction.values()) {
+        for (ResourceHistoryActionType status : ResourceHistoryActionType.values()) {
             if (status.getCode().equals(dbData)) {
                 return status;
             }

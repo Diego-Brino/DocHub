@@ -31,6 +31,19 @@ public interface Constants {
     Integer UUID_BUCKET_CHARACTER_LIMIT = 49;
     String BUCKET_NAME = "dochub-%s-dochub";
 
+    // Utilities
+    String ADMIN = "ADMINISTRADOR";
+    String UTF_8 = "UTF-8";
+    String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
+    String ACCOUNT_CREATION_TITLE_EMAIL = "Bem-vindo(a) à DocHub";
+    String ROOT = "Root";
+    String RESOURCE_CREATED_HISTORY_MESSAGE = "O recurso '%s' foi criado dentro da pasta '%s'.";
+    String RESOURCE_DELETED_BY_GROUP_DELETION_MESSAGE = "O recurso foi deletado devido à exclusão do grupo '%s'.";
+
+    // Templates
+    String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
+    String ACCOUNT_CREATION_EMAIL_TEMPLATE_PATH = "templates/account-creation.html";
+
     // RoleService Permissions
     String CREATE_ROLE_PERMISSION = "Criar Cargo";
     String EDIT_ROLE_PERMISSION = "Editar Cargo";
@@ -75,16 +88,6 @@ public interface Constants {
     String UPDATE_USER_PROFILE_PERMISSION = "Atualizar perfil de Usuário";
     String DELETE_USER_PERMISSION = "Deletar Usuário";
 
-    // Utilities
-    String ADMIN = "ADMINISTRADOR";
-    String UTF_8 = "UTF-8";
-    String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
-    String ACCOUNT_CREATION_TITLE_EMAIL = "Bem-vindo(a) à DocHub";
-
-    // Templates
-    String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
-    String ACCOUNT_CREATION_EMAIL_TEMPLATE_PATH = "templates/account-creation.html";
-
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
@@ -104,6 +107,7 @@ public interface Constants {
     String ID_RESOURCE_IS_REQUIRED_MESSAGE = "O campo 'Id Recurso' é obrigatório.";
     String CONTENT_TYPE_IS_REQUIRED_MESSAGE = "O campo 'Content-Type' é obrigatório.";
     String HASH_S3_IS_REQUIRED_MESSAGE = "O campo 'hashS3' é obrigatório";
+    String ACTION_USER_ID_REQUIRED_MESSAGE = "O campo 'Usuário Ação' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -132,6 +136,7 @@ public interface Constants {
     String INVALID_FILE_TYPE_EXCEPTION  = "O arquivo deve ser do tipo JPG, JPEG ou PNG.";
     String ENTITY_NOT_FOUND_EXCEPTION_MESSAGE = "Nenhuma entidade foi encontrada com os parâmetros fornecidos.";
     String INPUT_STREM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do arquivo.";
+    String INVALID_FOLDER_MOVE_EXCEPTION_MESSAGE = "Uma pasta não pode ser movida para ela mesma.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

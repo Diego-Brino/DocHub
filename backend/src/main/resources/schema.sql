@@ -293,19 +293,15 @@ CREATE TABLE IF NOT EXISTS `dochub`.`fluxo_resposta` (
 
 CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
                              `ID_HISTORICO` int NOT NULL AUTO_INCREMENT,
-                             `DATA_INICIO` datetime NOT NULL,
-                             `DATA_FIM` datetime DEFAULT NULL,
-                             `ACAO` enum('CRIAR','DELETAR','EDITAR') NOT NULL,
                              `ID_RECURSO` int NOT NULL,
-                             `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                             `DATA_INSERCAO` datetime NOT NULL,
-                             `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-                             `DATA_ALTERACAO` datetime DEFAULT NULL,
-                             PRIMARY KEY (`ID_HISTORICO`),
-                             KEY `historico_recurso_FK` (`ID_RECURSO`),
-                             CONSTRAINT `historico_recurso_FK` FOREIGN KEY (`ID_RECURSO`) REFERENCES `recurso` (`ID_RECURSO`)
+                             `ID_PASTA_ANTERIOR` int DEFAULT NULL,
+                             `ID_PASTA_ATUAL` int DEFAULT NULL,
+                             `TIPO_MOVIMENTACAO` enum('CRIADO','EDITADO','DELETADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                             `DESCRICAO` varchar(256) DEFAULT NULL,
+                             `USUARIO_MOVIMENTACAO` varchar(100) NOT NULL,
+                             `DATA_MOVIMENTACAO` datetime NOT NULL,
+                             PRIMARY KEY (`ID_HISTORICO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 -- dochub.pasta definition
 

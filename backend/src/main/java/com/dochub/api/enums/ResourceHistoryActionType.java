@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ResourceHistoryAction {
-    CREATE("CRIAR"),
-    EDIT("EDITAR"),
-    DELETE("DELETAR");
+public enum ResourceHistoryActionType {
+    CREATED("CRIADO"),
+    EDITED("EDITADO"),
+    DELETED("DELETADO");
 
     private final String code;
 

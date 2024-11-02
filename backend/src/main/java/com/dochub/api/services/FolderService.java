@@ -11,7 +11,9 @@ import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Resource;
 import com.dochub.api.entities.User;
 import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
+import com.dochub.api.enums.ResourceHistoryActionType;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.InvalidFolderMoveException;
 import com.dochub.api.repositories.FolderRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -30,6 +32,8 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class FolderService {
+    private final ResourceHistoryService resourceHistoryService;
+
     private final FolderRepository folderRepository;
 
     public Folder getById (final Integer folderId) {
@@ -57,6 +61,7 @@ public class FolderService {
         return new FolderContentsResponseDTO(archives, subFolders);
     }
 
+    @Transactional
     public Integer create (final UserRoleResponseDTO userRoles, final Group group,
                            final CreateFolderDTO createFolderDTO, final Folder parentFolder) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_FOLDER_PERMISSION);
@@ -67,15 +72,38 @@ public class FolderService {
         resource.setFolder(folder);
         folder.setResource(resource);
 
-        return folderRepository.save(folder).getId();
+        final Integer folderId = folderRepository.save(folder).getId();
+
+        final String folderLocalDescription = Objects.nonNull(parentFolder) ?
+            parentFolder.getResource().getName() :
+            Constants.ROOT;
+
+        resourceHistoryService.create(
+            resource,
+            parentFolder,
+            ResourceHistoryActionType.CREATED,
+            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, resource.getName(), folderLocalDescription),
+            userRoles.user().username()
+        );
+
+        return folderId;
     }
 
+    @Transactional
     public void update (final UserRoleResponseDTO userRoles,
                         final Integer folderId, final UpdateFolderDTO updateFolderDTO,
                         final Folder parentFolder) {
         final Folder folder = getById(folderId);
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.EDIT_FOLDER_PERMISSION);
+
+        resourceHistoryService.create(
+            folder.getResource(),
+            folder.getParentFolder(),
+            Objects.nonNull(parentFolder) ? parentFolder : null,
+            ResourceHistoryActionType.EDITED,
+            userRoles.user().username()
+        );
 
         Utils.updateFieldIfPresent(updateFolderDTO.name(), folder.getResource()::setName);
         Utils.updateFieldIfPresent(updateFolderDTO.description(), folder.getResource()::setDescription);
@@ -94,6 +122,14 @@ public class FolderService {
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.DELETE_FOLDER_PERMISSION);
 
+        resourceHistoryService.create(
+            folder.getResource(),
+            folder.getParentFolder(),
+            folder.getParentFolder(),
+            ResourceHistoryActionType.DELETED,
+            userRoles.user().username()
+        );
+
         _deleteResourceRolePermissionsIfPresent(folder.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
         folderRepository.delete(folder);
@@ -109,10 +145,22 @@ public class FolderService {
 
         folders.forEach(archive -> _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc));
 
+        folders.forEach(folder -> resourceHistoryService.create(
+            folder.getResource(),
+            folder.getParentFolder(),
+            ResourceHistoryActionType.DELETED,
+            String.format(Constants.RESOURCE_DELETED_BY_GROUP_DELETION_MESSAGE, group.getName()),
+            Constants.SYSTEM_NAME
+        ));
+
         folderRepository.deleteAll(folders);
     }
 
     private void _updateParentFolderIfPresent (final Folder parentFolder, final Folder folder) {
+        if (Objects.nonNull(parentFolder) && parentFolder.equals(folder)) {
+            throw new InvalidFolderMoveException();
+        }
+
         if (Objects.nonNull(parentFolder)) {
             folder.setParentFolder(parentFolder);
 
