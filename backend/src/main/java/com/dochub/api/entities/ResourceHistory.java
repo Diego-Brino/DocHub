@@ -22,17 +22,9 @@ public class ResourceHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_RECURSO", nullable = false)
-    private Resource resource;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_PASTA_ANTERIOR")
-    private Folder previousFolder;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_PASTA_ATUAL")
-    private Folder currentFolder;
+    @ManyToOne
+    @JoinColumn(name = "ID_GRUPO", nullable = false)
+    private Group group;
 
     @Column(name = "TIPO_MOVIMENTACAO", nullable = false)
     @Convert(converter = ResourceHistoryActionTypeConverter.class)
@@ -47,4 +39,11 @@ public class ResourceHistory {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_MOVIMENTACAO", nullable = false)
     private Date actionDate;
+
+    public ResourceHistory (final Group group, final String description, final String actionUser) {
+        this.group = group;
+        this.description = description;
+        this.actionUser = actionUser;
+        this.actionDate = new Date();
+    }
 }

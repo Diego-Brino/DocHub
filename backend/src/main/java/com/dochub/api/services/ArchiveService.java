@@ -4,6 +4,7 @@ import com.dochub.api.dtos.archive.*;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.*;
 import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
+import com.dochub.api.exceptions.ArchiveAlreadyExistsException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.exceptions.s3.ObjectNotFoundException;
 import com.dochub.api.repositories.ArchiveRepository;
@@ -12,6 +13,7 @@ import com.dochub.api.utils.S3Utils;
 import com.dochub.api.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -86,11 +88,16 @@ public class ArchiveService {
     @Transactional
     public Integer create (final UserRoleResponseDTO userRoles, final Group group,
                            final BiFunction<String, String, Boolean> doesObjectExistsFunc,
-                           final CreateArchiveDTO createArchiveDTO, final Folder folder) {
+                           final CreateArchiveDTO createArchiveDTO, final Folder folder,
+                           final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_ARCHIVE_PERMISSION);
 
         if (!doesObjectExistsFunc.apply(group.getIdS3Bucket(), createArchiveDTO.hashS3())) {
             throw new ObjectNotFoundException(group.getIdS3Bucket(), createArchiveDTO.hashS3());
+        }
+
+        if (archiveRepository.findByS3Hash(createArchiveDTO.hashS3()).isPresent()) {
+            throw new ArchiveAlreadyExistsException();
         }
 
         final Resource resource = new Resource(createArchiveDTO, group, userRoles.user().username());
@@ -98,6 +105,8 @@ public class ArchiveService {
 
         resource.setArchive(archive);
         archive.setResource(resource);
+
+        _logCreationHistory(resource.getName(), folder, group, userRoles.user().username(), logCreationResourceHistoryFunc);
 
         return archiveRepository.save(archive).getId();
     }
@@ -107,7 +116,8 @@ public class ArchiveService {
                         final Integer archiveId,
                         final BiFunction<String, String, Boolean> doesObjectExistsFunc,
                         final UpdateArchiveDTO updateArchiveDTO,
-                        final Function<Integer, Folder> getFolderByIdFunc) {
+                        final Function<Integer, Folder> getFolderByIdFunc,
+                        final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
         final Archive archive = getById(archiveId);
 
         if (!doesObjectExistsFunc.apply(archive.getResource().getGroup().getIdS3Bucket(), archive.getS3Hash())) {
@@ -115,6 +125,8 @@ public class ArchiveService {
         }
 
         Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.EDIT_ARCHIVE_PERMISSION);
+
+        _logEditHistory(archive, updateArchiveDTO, getFolderByIdFunc, userRoles.user().username(), logEditResourceHistoryFunc);
 
         Utils.updateFieldIfPresent(updateArchiveDTO.name(), archive.getResource()::setName);
         Utils.updateFieldIfPresent(updateArchiveDTO.description(), archive.getResource()::setDescription);
@@ -129,12 +141,15 @@ public class ArchiveService {
 
     @Transactional
     public void delete (final UserRoleResponseDTO userRoles, final Integer archiveId,
+                        final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc,
                         final BiConsumer<String, String> deleteS3ObjectFunc,
                         final Function<Resource, List<ResourceRolePermission>> getAllResourceRolePermissionsByResourceFunc,
                         final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final Archive archive = getById(archiveId);
 
         Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.DELETE_ARCHIVE_PERMISSION);
+
+        _logDeletionHistory(archive, userRoles.user().username(), logDeletionResourceHistoryFunc);
 
         deleteS3ObjectFunc.accept(archive.getResource().getGroup().getIdS3Bucket(), archive.getS3Hash());
 
@@ -154,6 +169,129 @@ public class ArchiveService {
         archives.forEach(archive -> _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllResourceRolePermissionsByResourceFunc, deleteResourceRolePermissionsFunc));
 
         archiveRepository.deleteAll(archives);
+    }
+
+    private void _logCreationHistory (final String archiveName, final Folder folder,
+                                      final Group group, final String actionUser,
+                                      final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
+        final String createdIn = Objects.nonNull(folder) ?
+            folder.getResource().getName() :
+            Constants.ROOT;
+
+        logCreationResourceHistoryFunc.accept(
+            group,
+            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, archiveName, createdIn),
+            actionUser
+        );
+    }
+
+    private void _logEditHistory (final Archive archive,
+                                  final UpdateArchiveDTO updateArchiveDTO,
+                                  final Function<Integer, Folder> getFolderByIdFunc,
+                                  final String actionUser,
+                                  final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
+        final StringBuilder description = new StringBuilder();
+
+        _appendUpdatedName(archive, updateArchiveDTO, description);
+        _appendUpdatedDescription(archive, updateArchiveDTO, description);
+        _appendUpdatedContentType(archive, updateArchiveDTO, description);
+        _appendUpdatedLength(archive, updateArchiveDTO, description);
+        _appendUpdatedFolder(archive, updateArchiveDTO, getFolderByIdFunc, description);
+
+        logEditResourceHistoryFunc.accept(archive.getResource().getGroup(), description.toString(), actionUser);
+    }
+
+    private void _logDeletionHistory (final Archive archive,
+                                      final String actionUser,
+                                      final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc) {
+        final String resourceIn = Objects.nonNull(archive.getFolder()) ?
+            archive.getFolder().getResource().getName() :
+            Constants.ROOT;
+
+        logDeletionResourceHistoryFunc.accept(
+            archive.getResource().getGroup(),
+            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, archive.getResource().getName(), resourceIn),
+            actionUser
+        );
+    }
+
+    private void _appendUpdatedName (final Archive archive,
+                                     final UpdateArchiveDTO updateArchiveDTO,
+                                     final StringBuilder description) {
+        if (Objects.nonNull(updateArchiveDTO.name()) && !updateArchiveDTO.name().isBlank()) {
+            final String message = String.format(
+                Constants.RESOURCE_NAME_UPDATED_MESSAGE,
+                archive.getResource().getName(), updateArchiveDTO.name()
+            );
+
+            description.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedDescription (final Archive archive,
+                                            final UpdateArchiveDTO updateArchiveDTO,
+                                            final StringBuilder description) {
+        if (Objects.nonNull(updateArchiveDTO.description()) && !updateArchiveDTO.description().isBlank()) {
+            final String message = String.format(
+                Constants.RESOURCE_DESCRIPTION_UPDATED_MESSAGE,
+                archive.getResource().getDescription(), updateArchiveDTO.description()
+            );
+
+            description.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedContentType (final Archive archive,
+                                            final UpdateArchiveDTO updateArchiveDTO,
+                                            final StringBuilder description) {
+        if (Objects.nonNull(updateArchiveDTO.contentType()) && !updateArchiveDTO.contentType().isBlank()) {
+            final String message = String.format(
+                Constants.RESOURCE_CONTENT_TYPE_UPDATED_MESSAGE,
+                archive.getType(), updateArchiveDTO.contentType()
+            );
+
+            description.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedLength (final Archive archive,
+                                       final UpdateArchiveDTO updateArchiveDTO,
+                                       final StringBuilder description) {
+        if (Objects.nonNull(updateArchiveDTO.length())) {
+            final String message = String.format(
+                Constants.RESOURCE_LENGTH_UPDATED_MESSAGE,
+                archive.getLength(), updateArchiveDTO.length()
+            );
+
+            description.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedFolder (final Archive archive,
+                                       final UpdateArchiveDTO updateArchiveDTO,
+                                       final Function<Integer, Folder> getFolderByIdFunc,
+                                       final StringBuilder description) {
+        if (Objects.nonNull(updateArchiveDTO.folderId())) {
+            final Folder newFolder = getFolderByIdFunc.apply(updateArchiveDTO.folderId());
+
+            final String oldFolderName = archive.getFolder() != null ?
+                archive.getFolder().getResource().getName() :
+                Constants.ROOT;
+
+            final String message = String.format(
+                Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
+                oldFolderName, newFolder.getResource().getName()
+            );
+
+            description.append(message).append("\n");
+        }else if (Objects.nonNull(archive.getFolder())) {
+            final String message = String.format(
+                Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
+                archive.getFolder().getResource().getName(), Constants.ROOT
+            );
+
+            description.append(message).append("\n");
+        }
     }
 
     private void _deleteResourceRolePermissionsIfPresent (final Resource resource,

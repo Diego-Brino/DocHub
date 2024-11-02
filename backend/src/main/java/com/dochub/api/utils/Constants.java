@@ -36,9 +36,14 @@ public interface Constants {
     String UTF_8 = "UTF-8";
     String PASSWORD_RECOVERY_TITLE_EMAIL = "Redefina sua senha do DocHub";
     String ACCOUNT_CREATION_TITLE_EMAIL = "Bem-vindo(a) à DocHub";
-    String ROOT = "Root";
-    String RESOURCE_CREATED_HISTORY_MESSAGE = "O recurso '%s' foi criado dentro da pasta '%s'.";
-    String RESOURCE_DELETED_BY_GROUP_DELETION_MESSAGE = "O recurso foi deletado devido à exclusão do grupo '%s'.";
+    String ROOT = "Raiz";
+    String RESOURCE_CREATED_HISTORY_MESSAGE = "Um novo recurso chamado '%s' foi criado na pasta '%s'.";
+    String RESOURCE_NAME_UPDATED_MESSAGE = "O nome do recurso foi alterado de '%s' para '%s'.";
+    String RESOURCE_DESCRIPTION_UPDATED_MESSAGE = "A descrição do recurso foi alterada de '%s' para '%s'.";
+    String RESOURCE_FOLDER_UPDATED_MESSAGE = "O recurso foi movido da pasta '%s' para a pasta '%s'.";
+    String RESOURCE_CONTENT_TYPE_UPDATED_MESSAGE = "O tipo do recurso foi alterado de '%s' para '%s'.";
+    String RESOURCE_LENGTH_UPDATED_MESSAGE = "O tamanho do recurso foi alterado de '%s' para '%s'.";
+    String RESOURCE_DELETED_HISTORY_MESSAGE = "O recurso '%s' foi deletado da pasta '%s'.";
 
     // Templates
     String PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH = "templates/password_recovery.html";
@@ -107,7 +112,6 @@ public interface Constants {
     String ID_RESOURCE_IS_REQUIRED_MESSAGE = "O campo 'Id Recurso' é obrigatório.";
     String CONTENT_TYPE_IS_REQUIRED_MESSAGE = "O campo 'Content-Type' é obrigatório.";
     String HASH_S3_IS_REQUIRED_MESSAGE = "O campo 'hashS3' é obrigatório";
-    String ACTION_USER_ID_REQUIRED_MESSAGE = "O campo 'Usuário Ação' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -137,6 +141,7 @@ public interface Constants {
     String ENTITY_NOT_FOUND_EXCEPTION_MESSAGE = "Nenhuma entidade foi encontrada com os parâmetros fornecidos.";
     String INPUT_STREM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do arquivo.";
     String INVALID_FOLDER_MOVE_EXCEPTION_MESSAGE = "Uma pasta não pode ser movida para ela mesma.";
+    String ARCHIVE_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Já existe um arquivo apontando para o s3Hash informado.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

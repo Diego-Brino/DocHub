@@ -44,4 +44,6 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
     Optional<List<Archive>> findByResource_GroupAndFolderWithPermission (@Param("group") Group group, @Param("folder") Folder folder, @Param("user") User user);
 
     Optional<List<Archive>> findByResource_Group (@Param("group") Group group);
+
+    Optional<Archive> findByS3Hash (String s3Hash);
 }

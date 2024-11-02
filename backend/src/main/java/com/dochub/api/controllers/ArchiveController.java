@@ -33,6 +33,7 @@ public class ArchiveController {
     private final ArchiveService archiveService;
     private final ResourceRolePermissionService resourceRolePermissionService;
     private final ObjectService objectService;
+    private final ResourceHistoryService resourceHistoryService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ArchiveResponseDTO> getOne (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
@@ -108,7 +109,7 @@ public class ArchiveController {
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(archiveService.create(userRoles, group, objectService::doesObjectExist, createArchiveDTO, folder));
+            .body(archiveService.create(userRoles, group, objectService::doesObjectExist, createArchiveDTO, folder, resourceHistoryService::logCreationResourceHistory));
     }
 
     @PutMapping("/{id}")
@@ -119,7 +120,7 @@ public class ArchiveController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        archiveService.update(userRoles, archiveId, objectService::doesObjectExist, updateArchiveDTO, folderService::getById);
+        archiveService.update(userRoles, archiveId, objectService::doesObjectExist, updateArchiveDTO, folderService::getById, resourceHistoryService::logEditResourceHistory);
 
         return ResponseEntity
             .ok()
@@ -136,6 +137,7 @@ public class ArchiveController {
         archiveService.delete(
             userRoles,
             archiveId,
+            resourceHistoryService::logDeletionResourceHistory,
             objectService::delete,
             resourceRolePermissionService::getAllByResource,
             resourceRolePermissionService::delete

@@ -298,14 +298,14 @@ CREATE TABLE IF NOT EXISTS `dochub`.`fluxo_resposta` (
 
 CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
                              `ID_HISTORICO` int NOT NULL AUTO_INCREMENT,
-                             `ID_RECURSO` int NOT NULL,
-                             `ID_PASTA_ANTERIOR` int DEFAULT NULL,
-                             `ID_PASTA_ATUAL` int DEFAULT NULL,
+                             `ID_GRUPO` int NOT NULL,
                              `TIPO_MOVIMENTACAO` enum('CRIADO','EDITADO','DELETADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                              `DESCRICAO` varchar(256) DEFAULT NULL,
                              `USUARIO_MOVIMENTACAO` varchar(100) NOT NULL,
                              `DATA_MOVIMENTACAO` datetime NOT NULL,
-                             PRIMARY KEY (`ID_HISTORICO`)
+                             PRIMARY KEY (`ID_HISTORICO`),
+                             KEY `historico_grupo_FK` (`ID_GRUPO`),
+                             CONSTRAINT `historico_grupo_FK` FOREIGN KEY (`ID_GRUPO`) REFERENCES `grupo` (`ID_GRUPO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- dochub.pasta definition

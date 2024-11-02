@@ -40,6 +40,7 @@ public class GroupController {
     private final GroupPermissionService groupPermissionService;
     private final BucketService bucketService;
     private final ResourceRolePermissionService resourceRolePermissionService;
+    private final ResourceHistoryService resourceHistoryService;
 
     @GetMapping
     public ResponseEntity<List<GroupResponseDTO>> getAll (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
@@ -171,7 +172,8 @@ public class GroupController {
             resourceRolePermissionService::getAllByResource,
             resourceRolePermissionService::delete,
             archiveService::deleteAllArchivesAssignedToGroup,
-            folderService::deleteAllFoldersAssignedToGroup
+            folderService::deleteAllFoldersAssignedToGroup,
+            resourceHistoryService::deleteAllAssignedToGroup
         );
 
         return ResponseEntity

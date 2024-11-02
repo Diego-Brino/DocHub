@@ -27,6 +27,7 @@ public class FolderController {
     private final GroupService groupService;
     private final FolderService folderService;
     private final ResourceRolePermissionService resourceRolePermissionService;
+    private final ResourceHistoryService resourceHistoryService;
 
     @PostMapping
     public ResponseEntity<Integer> create (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
@@ -39,7 +40,7 @@ public class FolderController {
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(folderService.create(userRoles, group, createFolderDTO, parentFolder));
+            .body(folderService.create(userRoles, group, createFolderDTO, parentFolder, resourceHistoryService::logCreationResourceHistory));
     }
 
     @PutMapping("/{id}")
@@ -51,7 +52,7 @@ public class FolderController {
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
         final Folder parentFolder = Objects.nonNull(updateFolderDTO.parentFolderId()) ? folderService.getById(updateFolderDTO.parentFolderId()) : null;
 
-        folderService.update(userRoles, id, updateFolderDTO, parentFolder);
+        folderService.update(userRoles, id, updateFolderDTO, parentFolder, resourceHistoryService::logEditResourceHistory);
 
         return ResponseEntity
             .ok()
@@ -65,7 +66,13 @@ public class FolderController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        folderService.delete(userRoles, id, resourceRolePermissionService::getAllByResource, resourceRolePermissionService::delete);
+        folderService.delete(
+            userRoles,
+            id,
+            resourceHistoryService::logDeletionResourceHistory,
+            resourceRolePermissionService::getAllByResource,
+            resourceRolePermissionService::delete
+        );
 
         return ResponseEntity
             .noContent()

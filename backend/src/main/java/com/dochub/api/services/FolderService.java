@@ -11,7 +11,6 @@ import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Resource;
 import com.dochub.api.entities.User;
 import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
-import com.dochub.api.enums.ResourceHistoryActionType;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.exceptions.InvalidFolderMoveException;
 import com.dochub.api.repositories.FolderRepository;
@@ -19,6 +18,7 @@ import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.apache.commons.lang3.function.TriFunction;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +32,6 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class FolderService {
-    private final ResourceHistoryService resourceHistoryService;
-
     private final FolderRepository folderRepository;
 
     public Folder getById (final Integer folderId) {
@@ -63,7 +61,8 @@ public class FolderService {
 
     @Transactional
     public Integer create (final UserRoleResponseDTO userRoles, final Group group,
-                           final CreateFolderDTO createFolderDTO, final Folder parentFolder) {
+                           final CreateFolderDTO createFolderDTO, final Folder parentFolder,
+                           final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_FOLDER_PERMISSION);
 
         final Resource resource = new Resource(createFolderDTO, group, userRoles.user().username());
@@ -72,38 +71,20 @@ public class FolderService {
         resource.setFolder(folder);
         folder.setResource(resource);
 
-        final Integer folderId = folderRepository.save(folder).getId();
+        _logCreationHistory(resource.getName(), parentFolder, group, userRoles.user().username(), logCreationResourceHistoryFunc);
 
-        final String folderLocalDescription = Objects.nonNull(parentFolder) ?
-            parentFolder.getResource().getName() :
-            Constants.ROOT;
-
-        resourceHistoryService.create(
-            resource,
-            parentFolder,
-            ResourceHistoryActionType.CREATED,
-            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, resource.getName(), folderLocalDescription),
-            userRoles.user().username()
-        );
-
-        return folderId;
+        return folderRepository.save(folder).getId();
     }
 
     @Transactional
     public void update (final UserRoleResponseDTO userRoles,
-                        final Integer folderId, final UpdateFolderDTO updateFolderDTO,
-                        final Folder parentFolder) {
+                        final Integer folderId, final UpdateFolderDTO updateFolderDTO, final Folder parentFolder,
+                        final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
         final Folder folder = getById(folderId);
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.EDIT_FOLDER_PERMISSION);
 
-        resourceHistoryService.create(
-            folder.getResource(),
-            folder.getParentFolder(),
-            Objects.nonNull(parentFolder) ? parentFolder : null,
-            ResourceHistoryActionType.EDITED,
-            userRoles.user().username()
-        );
+        _logEditHistory(folder, updateFolderDTO, parentFolder, userRoles.user().username(), logEditResourceHistoryFunc);
 
         Utils.updateFieldIfPresent(updateFolderDTO.name(), folder.getResource()::setName);
         Utils.updateFieldIfPresent(updateFolderDTO.description(), folder.getResource()::setDescription);
@@ -116,19 +97,14 @@ public class FolderService {
 
     @Transactional
     public void delete (final UserRoleResponseDTO userRoles, final Integer folderId,
+                        final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc,
                         final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
                         final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc) {
         final Folder folder = getById(folderId);
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.DELETE_FOLDER_PERMISSION);
 
-        resourceHistoryService.create(
-            folder.getResource(),
-            folder.getParentFolder(),
-            folder.getParentFolder(),
-            ResourceHistoryActionType.DELETED,
-            userRoles.user().username()
-        );
+        _logDeletionHistory(folder, userRoles.user().username(), logDeletionResourceHistoryFunc);
 
         _deleteResourceRolePermissionsIfPresent(folder.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
@@ -145,15 +121,99 @@ public class FolderService {
 
         folders.forEach(archive -> _deleteResourceRolePermissionsIfPresent(archive.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc));
 
-        folders.forEach(folder -> resourceHistoryService.create(
-            folder.getResource(),
-            folder.getParentFolder(),
-            ResourceHistoryActionType.DELETED,
-            String.format(Constants.RESOURCE_DELETED_BY_GROUP_DELETION_MESSAGE, group.getName()),
-            Constants.SYSTEM_NAME
-        ));
-
         folderRepository.deleteAll(folders);
+    }
+
+    private void _logCreationHistory (final String folderName, final Folder parentFolder,
+                                      final Group group, final String actionUser,
+                                      final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
+        final String createdIn = Objects.nonNull(parentFolder) ?
+            parentFolder.getResource().getName() :
+            Constants.ROOT;
+
+        logCreationResourceHistoryFunc.accept(
+            group,
+            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, folderName, createdIn),
+            actionUser
+        );
+    }
+
+    private void _logEditHistory (final Folder folder, final UpdateFolderDTO updateFolderDTO, final Folder parentFolder,
+                                  final String actionUser,
+                                  final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
+        final StringBuilder description = new StringBuilder();
+
+        _appendUpdatedName(folder, updateFolderDTO, description);
+        _appendUpdatedDescription(folder, updateFolderDTO, description);
+        _appendUpdatedFolderLocation(folder, parentFolder, description);
+
+        logEditResourceHistoryFunc.accept(folder.getResource().getGroup(), description.toString(), actionUser);
+    }
+
+    private void _logDeletionHistory (final Folder folder,
+                                      final String actionUser,
+                                      final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc) {
+        final String resourceIn = Objects.nonNull(folder.getParentFolder()) ?
+            folder.getParentFolder().getResource().getName() :
+            Constants.ROOT;
+
+        logDeletionResourceHistoryFunc.accept(
+            folder.getResource().getGroup(),
+            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, folder.getResource().getName(), resourceIn),
+            actionUser
+        );
+    }
+
+    private void _appendUpdatedName (final Folder folder,
+                                     final UpdateFolderDTO updateFolderDTO,
+                                     final StringBuilder descriptionBuilder) {
+        if (Objects.nonNull(updateFolderDTO.name()) && !updateFolderDTO.name().isBlank()) {
+            final String message = String.format(
+                Constants.RESOURCE_NAME_UPDATED_MESSAGE,
+                folder.getResource().getName(), updateFolderDTO.name()
+            );
+
+            descriptionBuilder.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedDescription (final Folder folder,
+                                            final UpdateFolderDTO updateFolderDTO,
+                                            final StringBuilder description) {
+        if (Objects.nonNull(updateFolderDTO.description()) && !updateFolderDTO.description().isBlank()) {
+            final String message = String.format(
+                Constants.RESOURCE_DESCRIPTION_UPDATED_MESSAGE,
+                folder.getResource().getDescription(), updateFolderDTO.description()
+            );
+
+            description.append(message).append("\n");
+        }
+    }
+
+    private void _appendUpdatedFolderLocation (final Folder folder,
+                                               final Folder parentFolder,
+                                               final StringBuilder description) {
+        if (Objects.nonNull(parentFolder)) {
+            final String oldParentName = Objects.nonNull(folder.getParentFolder()) ?
+                folder.getParentFolder().getResource().getName() :
+                Constants.ROOT;
+
+            final String newParentName = parentFolder.getResource().getName();
+
+            final String message = String.format(
+                Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
+                oldParentName, newParentName
+            );
+
+            description.append(message).append("\n");
+        }else if (Objects.nonNull(folder.getParentFolder())) {
+            final String message = String.format(
+                Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
+                folder.getParentFolder().getResource().getName(), Constants.ROOT
+            );
+
+            description.append(message).append("\n");
+        }
     }
 
     private void _updateParentFolderIfPresent (final Folder parentFolder, final Folder folder) {
