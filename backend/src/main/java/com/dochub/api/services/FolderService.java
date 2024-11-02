@@ -6,10 +6,7 @@ import com.dochub.api.dtos.folder.FolderContentsResponseDTO;
 import com.dochub.api.dtos.folder.FolderResponseDTO;
 import com.dochub.api.dtos.folder.UpdateFolderDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entities.Folder;
-import com.dochub.api.entities.Group;
-import com.dochub.api.entities.Resource;
-import com.dochub.api.entities.User;
+import com.dochub.api.entities.*;
 import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.exceptions.InvalidFolderMoveException;
@@ -38,6 +35,12 @@ public class FolderService {
         return folderRepository
             .findById(folderId)
             .orElseThrow(EntityNotFoundByIdException::new);
+    }
+
+    public List<Folder> getGroupFoldersByGroup (final Group group) {
+        return folderRepository
+            .findByResource_Group(group)
+            .orElse(Collections.emptyList());
     }
 
     public List<FolderResponseDTO> getGroupFoldersByParentFolder (final Group group, final Folder parentFolder, final User user) {

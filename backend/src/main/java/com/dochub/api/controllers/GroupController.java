@@ -4,6 +4,7 @@ import com.dochub.api.dtos.folder.FolderContentsResponseDTO;
 import com.dochub.api.dtos.group.CreateGroupDTO;
 import com.dochub.api.dtos.group.GroupResponseDTO;
 import com.dochub.api.dtos.group.UpdateGroupDTO;
+import com.dochub.api.dtos.resource.ResourceResponseDTO;
 import com.dochub.api.dtos.resource.RootGroupResourcesResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Folder;
@@ -64,6 +65,21 @@ public class GroupController {
         return ResponseEntity
             .ok()
             .body(groupService.getGroupAvatar(groupId));
+    }
+
+    @GetMapping("/{id}/resources")
+    public ResponseEntity<List<ResourceResponseDTO>> getAllGroupResources (@PathVariable("id") @NonNull final Integer groupId) {
+        final Group group = groupService.getById(groupId);
+
+        return ResponseEntity
+            .ok()
+            .body(
+                resourceService.getAllGroupResources(
+                    group,
+                    archiveService::getGroupArchivesByGroup,
+                    folderService::getGroupFoldersByGroup
+                )
+            );
     }
 
     @GetMapping("/{id}/root-resources")

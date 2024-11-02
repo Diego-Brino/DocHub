@@ -48,6 +48,12 @@ public class ArchiveService {
         return new ArchiveResponseDTO(archive.getResource());
     }
 
+    public List<Archive> getGroupArchivesByGroup (final Group group) {
+        return archiveRepository
+            .findByResource_Group(group)
+            .orElse(Collections.emptyList());
+    }
+
     public List<ArchiveResponseDTO> getGroupArchivesByFolder (final Group group, final Folder parentFolder, final User user) {
         final List<Archive> archives = Objects.isNull(parentFolder)
             ? archiveRepository.findByResource_GroupAndFolderIsNullWithPermission(group, user).orElse(Collections.emptyList())
