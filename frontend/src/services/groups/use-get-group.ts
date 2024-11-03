@@ -19,8 +19,6 @@ async function getGroup(
     },
   });
 
-  console.log(response.data);
-
   return response.data;
 }
 
