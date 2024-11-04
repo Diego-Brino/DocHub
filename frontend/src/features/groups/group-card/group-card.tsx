@@ -12,7 +12,7 @@ import { useDeleteGroup } from "@/services/groups/use-delete-group.ts";
 import { motion } from "framer-motion";
 import { useGroupSheetContext } from "@/features/groups/group-sheet/group-sheet.tsx";
 import { useGroupDeleteConfirmationAlert } from "@/features/groups/group-delete-confirmation-alert/group-delete-confirmation-alert.tsx";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog.tsx";
 import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import { useGetGroupHistory } from "@/services/groups/use-get-group-history.ts";
+import { Separator } from "@/components/ui/separator.tsx";
 
 type GroupCardProps = {
   group: {
@@ -45,7 +46,80 @@ function GroupCard({
 
   const [openHistory, setOpenHistory] = useState(false);
 
-  const { data } = useGetGroupHistory(id);
+  let { data } = useGetGroupHistory(id);
+
+  data = [
+    {
+      id: 1,
+      actionType: "CRIADO",
+      description: "TEST ETSTETtetet ewytdwuyedtuywe",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 2,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 3,
+      actionType: "CRIADO",
+      description: "TEST ETSTETtetet ewytdwuyedtuywe",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 4,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 5,
+      actionType: "CRIADO",
+      description: "TEST ETSTETtetet ewytdwuyedtuywe",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 6,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 7,
+      actionType: "CRIADO",
+      description: "TEST ETSTETtetet ewytdwuyedtuywe",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 8,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 9,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+    {
+      id: 10,
+      actionType: "DELETADO",
+      description: "Lorem Ipsum",
+      actionDate: "10/10/2024 - 10:24:44",
+      actionUser: "dbizzotto",
+    },
+  ];
 
   return (
     <>
@@ -101,19 +175,29 @@ function GroupCard({
         </Card>
       </motion.div>
       <Dialog open={openHistory} onOpenChange={(open) => setOpenHistory(open)}>
-        <DialogContent>
+        <DialogContent className="max-h-[600px] overflow-y-hidden">
           <DialogHeader>
             <DialogTitle>Histórico de alterações</DialogTitle>
             <DialogDescription>
               Veja todas as alterações realizadas neste grupo.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea>
+          <ScrollArea className="w-full h-96">
             {data?.map((history) => (
-              <div key={history.id} className="flex flex-col gap-2">
-                <p className="text-muted-foreground">{history.actionType}</p>
-                <p>{history.description}</p>
-              </div>
+              <Fragment key={history.id}>
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between">
+                    <p className="text-muted-foreground">
+                      {history.actionUser}
+                    </p>
+                    <p className="text-muted-foreground">
+                      {history.actionDate}
+                    </p>
+                  </div>
+                  <p>{history.description}</p>
+                </div>
+                <Separator className="my-2" />
+              </Fragment>
             ))}
           </ScrollArea>
         </DialogContent>
