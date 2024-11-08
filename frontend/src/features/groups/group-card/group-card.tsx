@@ -23,6 +23,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import { useGetGroupHistory } from "@/services/groups/use-get-group-history.ts";
 import { Separator } from "@/components/ui/separator.tsx";
+import { useNavigate } from "react-router-dom";
 
 type GroupCardProps = {
   group: {
@@ -36,7 +37,10 @@ type GroupCardProps = {
 function GroupCard({
   group: { id, name, description, groupUrl },
 }: GroupCardProps) {
+  const navigate = useNavigate();
+
   const { mutate: mutateDelete } = useDeleteGroup();
+
   const { open } = useGroupDeleteConfirmationAlert();
   const { open: openGroupSheet } = useGroupSheetContext();
 
@@ -46,80 +50,7 @@ function GroupCard({
 
   const [openHistory, setOpenHistory] = useState(false);
 
-  let { data } = useGetGroupHistory(id);
-
-  data = [
-    {
-      id: 1,
-      actionType: "CRIADO",
-      description: "TEST ETSTETtetet ewytdwuyedtuywe",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 2,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 3,
-      actionType: "CRIADO",
-      description: "TEST ETSTETtetet ewytdwuyedtuywe",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 4,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 5,
-      actionType: "CRIADO",
-      description: "TEST ETSTETtetet ewytdwuyedtuywe",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 6,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 7,
-      actionType: "CRIADO",
-      description: "TEST ETSTETtetet ewytdwuyedtuywe",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 8,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 9,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-    {
-      id: 10,
-      actionType: "DELETADO",
-      description: "Lorem Ipsum",
-      actionDate: "10/10/2024 - 10:24:44",
-      actionUser: "dbizzotto",
-    },
-  ];
+  const { data } = useGetGroupHistory(id);
 
   return (
     <>
@@ -129,7 +60,7 @@ function GroupCard({
         initial={{ opacity: 0 }}
         exit={{ opacity: 0 }}
       >
-        <Card className="">
+        <Card>
           <CardHeader className="flex flex-row justify-between">
             <div className="flex flex-col gap-2">
               <CardTitle>{name}</CardTitle>
@@ -167,7 +98,13 @@ function GroupCard({
             >
               <TrashIcon className="size-5" />
             </Button>
-            <Button className="gap-2" variant="outline" onClick={() => {}}>
+            <Button
+              className="gap-2"
+              variant="outline"
+              onClick={() => {
+                navigate(`/groups/${id}`);
+              }}
+            >
               Acessar
               <ArrowRight className="size-5" />
             </Button>
@@ -175,31 +112,39 @@ function GroupCard({
         </Card>
       </motion.div>
       <Dialog open={openHistory} onOpenChange={(open) => setOpenHistory(open)}>
-        <DialogContent className="max-h-[600px] overflow-y-hidden">
+        <DialogContent className="h-[500px] max-h-[500px] overflow-y-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>Histórico de alterações</DialogTitle>
             <DialogDescription>
               Veja todas as alterações realizadas neste grupo.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="w-full h-96">
-            {data?.map((history) => (
-              <Fragment key={history.id}>
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between">
-                    <p className="text-muted-foreground">
-                      {history.actionUser}
-                    </p>
-                    <p className="text-muted-foreground">
-                      {history.actionDate}
-                    </p>
+          {data && data?.length > 0 ? (
+            <ScrollArea className="w-full h-96">
+              {data.map((history) => (
+                <Fragment key={history.id}>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between">
+                      <p className="text-muted-foreground">
+                        {history.actionUser}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {history.actionDate}
+                      </p>
+                    </div>
+                    <p>{history.description}</p>
                   </div>
-                  <p>{history.description}</p>
-                </div>
-                <Separator className="my-2" />
-              </Fragment>
-            ))}
-          </ScrollArea>
+                  <Separator className="my-2" />
+                </Fragment>
+              ))}
+            </ScrollArea>
+          ) : (
+            <div className="h-full w-full flex justify-center items-center">
+              <p className="text-muted-foreground">
+                Nenhuma alteração encontrada.
+              </p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </>

@@ -13,6 +13,7 @@ import { ReactNode, useEffect } from "react";
 import { useAuthContext } from "@/contexts/auth";
 import { Roles } from "@/pages/roles.tsx";
 import { Users } from "@/pages/users.tsx";
+import { Group } from "@/pages/group.tsx";
 
 const AuthenticatedRoute = ({ children }: { children: ReactNode }) => {
   const { token } = useAuthContext();
@@ -73,6 +74,14 @@ const AppBrowserRouter = createBrowserRouter([
             element: (
               <AuthenticatedRoute>
                 <Groups />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: "/groups/:id",
+            element: (
+              <AuthenticatedRoute>
+                <Group />
               </AuthenticatedRoute>
             ),
           },
