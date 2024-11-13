@@ -64,7 +64,8 @@ public class ArchiveController {
 
     @GetMapping("/presigned-url/create")
     public ResponseEntity<ArchivePresignedUrlResponseDTO> getPresignedUrlToCreate (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                                                                   @RequestParam("groupId") @NotNull final Integer groupId) {
+                                                                                   @RequestParam("groupId") @NotNull final Integer groupId,
+                                                                                   @RequestParam("contentType") @NotBlank final String contentType) {
         final String userEmail = jwtService.extractUserEmail(token);
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
@@ -75,14 +76,16 @@ public class ArchiveController {
             .body(archiveService.getPresignedUrlForCreate(
                 userRoles,
                 group,
-                objectService::generatePresignedUrl
+                objectService::generatePresignedUrl,
+                contentType
             ));
     }
 
     @GetMapping("/presigned-url/update")
     public ResponseEntity<ArchivePresignedUrlResponseDTO> getPresignedUrlToUpdate (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                                                                    @RequestParam("groupId") @NotNull final Integer groupId,
-                                                                                   @RequestParam("hashS3") @NotBlank final String hashS3) {
+                                                                                   @RequestParam("hashS3") @NotBlank final String hashS3,
+                                                                                   @RequestParam("contentType") @NotBlank final String contentType) {
         final String userEmail = jwtService.extractUserEmail(token);
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
@@ -91,10 +94,11 @@ public class ArchiveController {
         return ResponseEntity
                 .ok()
                 .body(archiveService.getPresignedUrlForUpdate(
-                        userRoles,
-                        group,
-                        hashS3,
-                        objectService::generatePresignedUrl
+                    userRoles,
+                    group,
+                    hashS3,
+                    objectService::generatePresignedUrl,
+                    contentType
                 ));
     }
 

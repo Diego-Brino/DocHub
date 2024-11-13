@@ -136,7 +136,27 @@ VALUES
     (1, 7, 1,'DocHub', CURRENT_DATE),
     (1, 8, 1,'DocHub', CURRENT_DATE),
     (1, 9, 1,'DocHub', CURRENT_DATE),
-    (1, 10, 1,'DocHub', CURRENT_DATE);
+    (1, 10, 1,'DocHub', CURRENT_DATE),
+    (1, 1, 2, 'DocHub', CURRENT_DATE),
+    (1, 2, 2,'DocHub', CURRENT_DATE),
+    (1, 3, 2,'DocHub', CURRENT_DATE),
+    (1, 4, 2,'DocHub', CURRENT_DATE),
+    (1, 5, 2,'DocHub', CURRENT_DATE),
+    (1, 6, 2,'DocHub', CURRENT_DATE),
+    (1, 7, 2,'DocHub', CURRENT_DATE),
+    (1, 8, 2,'DocHub', CURRENT_DATE),
+    (1, 9, 2,'DocHub', CURRENT_DATE),
+    (1, 10, 2,'DocHub', CURRENT_DATE),
+    (1, 1, 3, 'DocHub', CURRENT_DATE),
+    (1, 2, 3,'DocHub', CURRENT_DATE),
+    (1, 3, 3,'DocHub', CURRENT_DATE),
+    (1, 4, 3,'DocHub', CURRENT_DATE),
+    (1, 5, 3,'DocHub', CURRENT_DATE),
+    (1, 6, 3,'DocHub', CURRENT_DATE),
+    (1, 7, 3,'DocHub', CURRENT_DATE),
+    (1, 8, 3,'DocHub', CURRENT_DATE),
+    (1, 9, 3,'DocHub', CURRENT_DATE),
+    (1, 10, 3,'DocHub', CURRENT_DATE);
 
 INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES

@@ -16,6 +16,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
            "JOIN grp.role r " +
            "JOIN r.userRoles ur " +
            "WHERE ur.user = :user " +
-           "  AND grp.groupPermission.description = 'Visualizar Grupo'")
+           "  AND grp.groupPermission.description = 'Visualizar Grupo' OR ur.role.id = 1"
+    )
     List<Group> findGroupsByUserWithViewPermission (@Param("user") User user);
 }

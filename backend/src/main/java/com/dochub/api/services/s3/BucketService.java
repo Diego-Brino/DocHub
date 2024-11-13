@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -28,6 +29,18 @@ public class BucketService {
                 new CreateBucketRequest(bucketName)
                 .withCannedAcl(CannedAccessControlList.Private)
             );
+
+            final CORSRule corsRule = new CORSRule()
+                .withAllowedOrigins(List.of("*"))
+                .withAllowedMethods(List.of(CORSRule.AllowedMethods.PUT, CORSRule.AllowedMethods.POST, CORSRule.AllowedMethods.GET))
+                .withAllowedHeaders(List.of("*"))
+                .withExposedHeaders(List.of("ETag", "x-amz-server-side-encryption"))
+                .withMaxAgeSeconds(3000);
+
+            final BucketCrossOriginConfiguration corsConfiguration = new BucketCrossOriginConfiguration()
+                .withRules(corsRule);
+
+            s3Client.setBucketCrossOriginConfiguration(bucketName, corsConfiguration);
         } catch (Exception e) {
             throw new CreateBucketException(bucketName);
         }

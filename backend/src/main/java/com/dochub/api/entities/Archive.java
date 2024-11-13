@@ -29,7 +29,7 @@ public class Archive {
     @Column(name = "ID_S3_OBJECT", length = 256)
     private String s3Hash;
 
-    @Column(name = "TIPO", length = 64, nullable = false)
+    @Column(name = "TIPO", length = 1000, nullable = false)
     private String type;
 
     @Column(name = "TAMANHO", nullable = false)

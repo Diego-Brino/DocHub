@@ -39,7 +39,7 @@ public class ObjectService {
         }
     }
 
-    public String generatePresignedUrl (final String bucketName, final String fileName) {
+    public String generatePresignedUrl (final String bucketName, final String fileName, final String contentType) {
         if (!s3Client.doesBucketExistV2(bucketName)) {
             throw new BucketNotFoundException(bucketName);
         }
@@ -49,7 +49,8 @@ public class ObjectService {
 
             final GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, fileName)
                 .withMethod(HttpMethod.PUT)
-                .withExpiration(expiration);
+                .withExpiration(expiration)
+                .withContentType(contentType);
 
             return s3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
         } catch (Exception e) {

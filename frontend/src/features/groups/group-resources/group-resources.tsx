@@ -169,7 +169,7 @@ function GroupResources() {
                 }
               })()}
           </div>
-          <SheetFooter>
+          <SheetFooter className="flex flex-col sm:flex-col gap-4">
             <Button asChild className="w-full">
               <a
                 href={fileUrl || undefined}
@@ -177,6 +177,9 @@ function GroupResources() {
               >
                 Baixar
               </a>
+            </Button>
+            <Button variant={"destructive"} className="w-full !m-0" onClick={() => {}}>
+                Remover
             </Button>
           </SheetFooter>
         </SheetContent>

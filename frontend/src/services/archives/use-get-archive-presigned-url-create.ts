@@ -1,6 +1,6 @@
 import axiosClient from "@/lib/axios";
-import { useAuthContext } from "@/contexts/auth";
-import { useMutation } from "react-query";
+import {useAuthContext} from "@/contexts/auth";
+import {useMutation} from "react-query";
 
 export type ArchivePresignedUrlResponse = {
   url: string;
@@ -10,6 +10,7 @@ export type ArchivePresignedUrlResponse = {
 async function getPresignedUrlToCreate(
   token: string,
   groupId: number,
+  contentType: string
 ): Promise<ArchivePresignedUrlResponse> {
   const response = await axiosClient.get("/archives/presigned-url/create", {
     headers: {
@@ -17,17 +18,18 @@ async function getPresignedUrlToCreate(
     },
     params: {
       groupId: groupId,
+      contentType: contentType
     },
   });
 
   return response.data;
 }
 
-const usePresignedUrlMutation = (groupId: number) => {
+const usePresignedUrlMutation = (groupId: number, contentType: string) => {
   const { token } = useAuthContext();
 
   return useMutation({
-    mutationFn: () => getPresignedUrlToCreate(token, Number(groupId)),
+    mutationFn: () => getPresignedUrlToCreate(token, Number(groupId), contentType),
   });
 };
 

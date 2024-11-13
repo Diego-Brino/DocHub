@@ -14,6 +14,7 @@ import com.dochub.api.utils.Utils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.function.TriConsumer;
+import org.apache.commons.lang3.function.TriFunction;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -73,20 +74,22 @@ public class ArchiveService {
     }
 
     public ArchivePresignedUrlResponseDTO getPresignedUrlForCreate (final UserRoleResponseDTO userRoles, final Group group,
-                                                                    final BiFunction<String, String, String> generatePresignedUrlFunc) {
+                                                                    final TriFunction<String, String, String, String> generatePresignedUrlFunc,
+                                                                    final String contentType) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_ARCHIVE_PERMISSION);
 
         final String fileName = S3Utils.generateFileName();
-        final String presignedUrl = generatePresignedUrlFunc.apply(group.getIdS3Bucket(), fileName);
+        final String presignedUrl = generatePresignedUrlFunc.apply(group.getIdS3Bucket(), fileName, contentType);
 
         return new ArchivePresignedUrlResponseDTO(presignedUrl, fileName);
     }
 
     public ArchivePresignedUrlResponseDTO getPresignedUrlForUpdate (final UserRoleResponseDTO userRoles, final Group group, final String fileName,
-                                                                    final BiFunction<String, String, String> generatePresignedUrlFunc) {
+                                                                    final TriFunction<String, String, String, String> generatePresignedUrlFunc,
+                                                                    final String contentType) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_ARCHIVE_PERMISSION);
 
-        final String presignedUrl = generatePresignedUrlFunc.apply(group.getIdS3Bucket(), fileName);
+        final String presignedUrl = generatePresignedUrlFunc.apply(group.getIdS3Bucket(), fileName, contentType);
 
         return new ArchivePresignedUrlResponseDTO(presignedUrl, fileName);
     }
