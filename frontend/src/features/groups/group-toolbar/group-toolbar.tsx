@@ -1,5 +1,5 @@
 import { Input } from "@/components/custom/input.tsx";
-import { Plus, Search } from "lucide-react";
+import { FolderPlus, Search } from "lucide-react";
 import {
   createContext,
   ReactNode,
@@ -131,15 +131,17 @@ function GroupToolbar() {
             }
           }}
         />
-        <Button
-          className="gap-2"
-          onClick={() => {
-            setOpenNewFolderModal(true);
-          }}
-        >
-          <Plus />
-          Nova Pasta
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            className="gap-2"
+            onClick={() => {
+              setOpenNewFolderModal(true);
+            }}
+          >
+            <FolderPlus />
+            Nova Pasta
+          </Button>
+        </div>
       </div>
       <Dialog
         open={openNewFolderModal}

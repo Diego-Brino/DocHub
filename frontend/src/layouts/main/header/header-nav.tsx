@@ -12,7 +12,7 @@ const LINKS = [
 
 function HeaderNav() {
   const location = useLocation();
-  const pathname = location.pathname;
+  const pathname = "/" + location.pathname.split("/")[1];
 
   return (
     <div className="hidden md:flex flex-1 gap-4 items-center justify-center">
