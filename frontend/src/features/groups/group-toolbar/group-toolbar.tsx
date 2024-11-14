@@ -1,5 +1,5 @@
 import { Input } from "@/components/custom/input.tsx";
-import { FolderPlus, Search } from "lucide-react";
+import {FolderMinus, FolderPlus, Search} from "lucide-react";
 import {
   createContext,
   ReactNode,
@@ -30,6 +30,15 @@ import {
   FormMessage,
 } from "@/components/ui/form.tsx";
 import { usePostFolder } from "@/services/folders/use-post-folder.ts";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from "@/components/ui/alert-dialog.tsx";
 
 type GroupToolbarContext = {
   filter: string;
@@ -86,6 +95,8 @@ const schema = z.object({
 });
 
 function GroupToolbar() {
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
+
   const { filter, setFilter, applyFilter } = useGroupToolbarContext();
 
   const { id } = useParams();
@@ -132,6 +143,16 @@ function GroupToolbar() {
           }}
         />
         <div className="flex gap-4">
+          <Button
+              variant='destructive'
+              className="gap-2"
+              onClick={() => {
+                setIsAlertOpen(true)
+              }}
+          >
+            <FolderMinus />
+            Remover Pasta Atual
+          </Button>
           <Button
             className="gap-2"
             onClick={() => {
@@ -203,6 +224,29 @@ function GroupToolbar() {
           </Form>
         </DialogContent>
       </Dialog>
+      <AlertDialog
+          open={isAlertOpen}
+          onOpenChange={(open) => setIsAlertOpen(open)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja excluir esta pasta?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+                onClick={() => {
+                  console.log("Remover pasta atual")
+                }}
+            >
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

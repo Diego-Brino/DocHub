@@ -1,24 +1,13 @@
-import {
-  Archive,
-  Folder,
-  useGetGroupRootResources,
-} from "@/services/groups/use-get-group-root-resources.ts";
-import { useParams } from "react-router-dom";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card.tsx";
-import { File, Folder as FolderIcon } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet.tsx";
-import { MouseEventHandler, useEffect, useState } from "react";
-import { useGetArchive } from "@/services/archives/use-get-archive.ts";
-import { useGetArchiveFile } from "@/services/archives/use-get-archive-file.ts";
-import { Button } from "@/components/custom/button.tsx";
-import { useDeleteArchive } from "@/services/archives/use-delete-archive.ts";
+import {Archive, Folder, useGetGroupRootResources,} from "@/services/groups/use-get-group-root-resources.ts";
+import {useParams} from "react-router-dom";
+import {Card, CardTitle} from "@/components/ui/card.tsx";
+import {File, Folder as FolderIcon} from "lucide-react";
+import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle,} from "@/components/ui/sheet.tsx";
+import {MouseEventHandler, useEffect, useState} from "react";
+import {useGetArchive} from "@/services/archives/use-get-archive.ts";
+import {useGetArchiveFile} from "@/services/archives/use-get-archive-file.ts";
+import {Button} from "@/components/custom/button.tsx";
+import {useDeleteArchive} from "@/services/archives/use-delete-archive.ts";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,9 +51,6 @@ function ArchiveCard({
         <File className="size-8 min-h-8 min-w-8" />
         <div className="overflow-hidden">
           <CardTitle className="text-xl">{archive.name}</CardTitle>
-          <CardDescription className="whitespace-nowrap overflow-hidden text-ellipsis">
-            {archive.description}
-          </CardDescription>
         </div>
       </div>
     </Card>
@@ -84,9 +70,6 @@ const FolderCard = ({
         <FolderIcon className="size-8 min-h-8 min-w-8" />
         <div className="overflow-hidden">
           <CardTitle className="text-xl">{folder.name}</CardTitle>
-          <CardDescription className="whitespace-nowrap overflow-hidden text-ellipsis">
-            {folder.description}
-          </CardDescription>
         </div>
       </div>
     </Card>

@@ -43,8 +43,6 @@ function Group() {
   const handleUpload = async () => {
     if (!files || files.length === 0) return;
 
-    console.log("Uploading file:", files[0]);
-
     try {
       setIsUploading(true);
       const { url, hashS3 } = await mutateAsync();
