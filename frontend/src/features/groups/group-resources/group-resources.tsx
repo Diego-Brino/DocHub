@@ -18,6 +18,17 @@ import { MouseEventHandler, useEffect, useState } from "react";
 import { useGetArchive } from "@/services/archives/use-get-archive.ts";
 import { useGetArchiveFile } from "@/services/archives/use-get-archive-file.ts";
 import { Button } from "@/components/custom/button.tsx";
+import { useDeleteArchive } from "@/services/archives/use-delete-archive.ts";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog.tsx";
 
 function getFileExtension(mimeType: string) {
   switch (mimeType) {
@@ -85,7 +96,11 @@ const FolderCard = ({
 function GroupResources() {
   const { id } = useParams();
 
+  const { mutateAsync } = useDeleteArchive();
+
   const { data } = useGetGroupRootResources(Number(id));
+
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -178,12 +193,44 @@ function GroupResources() {
                 Baixar
               </a>
             </Button>
-            <Button variant={"destructive"} className="w-full !m-0" onClick={() => {}}>
-                Remover
+            <Button
+              variant={"destructive"}
+              className="w-full !m-0"
+              onClick={() => {
+                setIsAlertOpen(true);
+              }}
+            >
+              Remover
             </Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>
+      <AlertDialog
+        open={isAlertOpen}
+        onOpenChange={(open) => setIsAlertOpen(open)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja excluir este arquivo?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                mutateAsync(selectedResourceId as number).finally(() => {
+                  setIsAlertOpen(false);
+                  setIsOpen(false);
+                });
+              }}
+            >
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
