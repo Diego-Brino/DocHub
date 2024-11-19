@@ -96,6 +96,11 @@ public interface Constants {
     // ResourceHistoryService Permissions
     String VIEW_RESOURCES_HISTORY = "Visualizar histórico de Recursos";
 
+    // ServiceService Permissions
+    String CREATE_SERVICE = "Criar Serviço";
+    String EDIT_SERVICE = "Editar Serviço";
+    String DELETE_SERVICE = "Deletar Serviço";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
@@ -114,7 +119,8 @@ public interface Constants {
     String ID_RESOURCE_PERMISSION_IS_REQUIRED_MESSAGE = "O campo 'Id Permissão de Recurso' é obrigatório.";
     String ID_RESOURCE_IS_REQUIRED_MESSAGE = "O campo 'Id Recurso' é obrigatório.";
     String CONTENT_TYPE_IS_REQUIRED_MESSAGE = "O campo 'Content-Type' é obrigatório.";
-    String HASH_S3_IS_REQUIRED_MESSAGE = "O campo 'hashS3' é obrigatório";
+    String HASH_S3_IS_REQUIRED_MESSAGE = "O campo 'hashS3' é obrigatório.";
+    String DESCRIPTION_IS_REQUIRED_MESSAGE = "O campo 'Descrição' é obrigatório.";
 
     // Exception Messages
     String GENERIC_ERROR_EXCEPTION_MESSAGE = "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.";
@@ -145,6 +151,7 @@ public interface Constants {
     String INPUT_STREM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do arquivo.";
     String INVALID_FOLDER_MOVE_EXCEPTION_MESSAGE = "Uma pasta não pode ser movida para ela mesma.";
     String ARCHIVE_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Já existe um arquivo apontando para o s3Hash informado.";
+    String CANNOT_DELETE_SERVICE_EXCEPTION_MESSAGE = "Não é possível deletar o serviço informado, existem processos vinculados a ele.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

@@ -1,8 +1,5 @@
 package com.dochub.api.entities;
 
-import com.dochub.api.converters.ProcessStatusConverter;
-import com.dochub.api.converters.RoleStatusConverter;
-import com.dochub.api.enums.ProcessStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,10 +27,6 @@ public class Process {
     @Column(name = "DATA_FIM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
-
-    @Column(name = "STATUS")
-    @Convert(converter = ProcessStatusConverter.class)
-    private ProcessStatus processStatus;
 
     @ManyToOne
     @JoinColumn(name = "ID_SERVICO", nullable = false, insertable = false, updatable = false)
