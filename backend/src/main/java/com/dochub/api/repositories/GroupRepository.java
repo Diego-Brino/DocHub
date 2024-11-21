@@ -11,12 +11,21 @@ import java.util.List;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
-    @Query("SELECT DISTINCT grp.group " +
-           " FROM GroupRolePermission grp " +
-           "JOIN grp.role r " +
-           "JOIN r.userRoles ur " +
-           "WHERE ur.user = :user " +
-           "  AND grp.groupPermission.description = 'Visualizar Grupo' OR ur.role.id = 1"
+    @Query(
+        "SELECT g " +
+        "  FROM Group g " +
+        " LEFT JOIN GroupRolePermission grp ON ( grp.group.id = g.id ) " +
+        " LEFT JOIN GroupPermission gp ON ( gp.id = grp.groupPermission.id ) " +
+        " LEFT JOIN UserRole ur ON ( ur.role.id = grp.role.id ) " +
+        "WHERE        ( ur.user = :user AND UPPER(gp.description) = 'VISUALIZAR GRUPO' AND ur.role.roleStatus = 'ATIVO' )" +
+        "   OR EXISTS ( " +
+                        "SELECT uc " +
+                        "  FROM UserRole uc " +
+                        " JOIN Role r ON ( r.id = uc.role.id ) " +
+                        "WHERE uc.user = :user " +
+                        "  AND UPPER(r.name) = 'ADMINISTRADOR' " +
+                        "  AND r.roleStatus = 'ATIVO' " +
+                     ")"
     )
     List<Group> findGroupsByUserWithViewPermission (@Param("user") User user);
 }

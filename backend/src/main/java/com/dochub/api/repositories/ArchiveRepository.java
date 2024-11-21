@@ -14,33 +14,103 @@ import java.util.Optional;
 
 @Repository
 public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
-    @Query("SELECT DISTINCT a " +
-           " FROM Archive a " +
-           "LEFT JOIN ResourceRolePermission rrp ON a.resource.id = rrp.resource.id " +
-           "LEFT JOIN rrp.resourcePermission rp ON rp.description = 'Visualizar Recurso' " +
-           "LEFT JOIN rrp.role.userRoles ur ON ur.user = :user " +
-           "WHERE a.id = :idArchive " +
-           "  AND (rp IS NULL OR ur.user.id IS NOT NULL) ")
+    @Query("""
+        SELECT a
+          FROM Archive a
+        WHERE a.resource.group = :group
+          AND a.id = :idArchive
+          AND (
+                EXISTS        (
+                                SELECT uc
+                                  FROM UserRole uc
+                                WHERE uc.user = :user
+                                  AND UPPER(uc.role.name) = 'ADMINISTRADOR'
+                                  AND uc.role.roleStatus = 'ATIVO'                
+                              )
+                OR EXISTS     (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                 JOIN Role r ON ( r.id = rrp.role.id )
+                                 JOIN UserRole ur ON ( ur.user = :user AND ur.role.id = r.id )
+                                WHERE UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                                  AND r.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                              )
+                OR NOT EXISTS (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                WHERE rrp.role.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                                  AND UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                              )  
+              )                      
+    """)
     Optional<Archive> findById (@Param("user") User user, @Param("idArchive") Integer idArchive);
 
-    @Query("SELECT a " +
-           " FROM Archive a " +
-           "LEFT JOIN ResourceRolePermission rrp ON a.resource.id = rrp.resource.id " +
-           "LEFT JOIN rrp.resourcePermission rp ON rp.description = 'Visualizar Recurso' " +
-           "LEFT JOIN rrp.role.userRoles ur ON ur.user = :user " +
-           "WHERE a.resource.group = :group " +
-           "  AND (a.folder IS NULL) " +
-           "  AND (rp IS NULL OR ur.user.id IS NOT NULL) ")
+    @Query("""
+        SELECT a
+          FROM Archive a
+        WHERE a.resource.group = :group
+          AND a.folder IS NULL
+          AND (
+                EXISTS        (
+                                SELECT uc
+                                  FROM UserRole uc
+                                WHERE uc.user = :user
+                                  AND UPPER(uc.role.name) = 'ADMINISTRADOR'
+                                  AND uc.role.roleStatus = 'ATIVO'                
+                              )
+                OR EXISTS     (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                 JOIN Role r ON ( r.id = rrp.role.id )
+                                 JOIN UserRole ur ON ( ur.user = :user AND ur.role.id = r.id )
+                                WHERE UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                                  AND r.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                              )
+                OR NOT EXISTS (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                WHERE rrp.role.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                                  AND UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                              )  
+              )                      
+    """)
     Optional<List<Archive>> findByResource_GroupAndFolderIsNullWithPermission (@Param("group") Group group, @Param("user") User user);
 
-    @Query("SELECT a " +
-           " FROM Archive a " +
-           "LEFT JOIN ResourceRolePermission rrp ON a.resource.id = rrp.resource.id " +
-           "LEFT JOIN rrp.resourcePermission rp ON rp.description = 'Visualizar Recurso' " +
-           "LEFT JOIN rrp.role.userRoles ur ON ur.user = :user " +
-           "WHERE a.resource.group = :group " +
-           "  AND a.folder = :folder " +
-           "  AND (rp IS NULL OR ur.user.id IS NOT NULL) ")
+    @Query("""
+        SELECT a
+          FROM Archive a
+        WHERE a.resource.group = :group
+          AND a.folder = :folder
+          AND (
+                EXISTS        (
+                                SELECT uc
+                                  FROM UserRole uc
+                                WHERE uc.user = :user
+                                  AND UPPER(uc.role.name) = 'ADMINISTRADOR'
+                                  AND uc.role.roleStatus = 'ATIVO'                
+                              )
+                OR EXISTS     (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                 JOIN Role r ON ( r.id = rrp.role.id )
+                                 JOIN UserRole ur ON ( ur.user = :user AND ur.role.id = r.id )
+                                WHERE UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                                  AND r.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                              )
+                OR NOT EXISTS (
+                                SELECT rrp
+                                  FROM ResourceRolePermission rrp
+                                WHERE rrp.role.roleStatus = 'ATIVO'
+                                  AND rrp.resource.id = a.resource.id
+                                  AND UPPER(rrp.resourcePermission.description) = 'VISUALIZAR ARQUIVO' 
+                              )  
+              )                      
+    """)
     Optional<List<Archive>> findByResource_GroupAndFolderWithPermission (@Param("group") Group group, @Param("folder") Folder folder, @Param("user") User user);
 
     Optional<List<Archive>> findByResource_Group (@Param("group") Group group);

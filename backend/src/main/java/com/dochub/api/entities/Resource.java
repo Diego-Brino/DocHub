@@ -1,7 +1,9 @@
 package com.dochub.api.entities;
 
+import com.dochub.api.converters.ResourceOriginConverter;
 import com.dochub.api.dtos.archive.CreateArchiveDTO;
 import com.dochub.api.dtos.folder.CreateFolderDTO;
+import com.dochub.api.enums.ResourceOrigin;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -31,6 +34,10 @@ public class Resource {
     @ManyToOne
     @JoinColumn(name = "ID_GRUPO", nullable = false)
     private Group group;
+
+    @Column(name = "ORIGEM")
+    @Convert(converter = ResourceOriginConverter.class)
+    private ResourceOrigin origin;
 
     @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
     private Archive archive;
@@ -61,5 +68,12 @@ public class Resource {
             .insertionUser(initiatorUsername)
             .insertionDate(new Date())
             .build();
+    }
+
+    @PrePersist
+    public void prePersist () {
+        if (Objects.isNull(this.origin)) {
+            this.origin = ResourceOrigin.GROUP;
+        }
     }
 }
