@@ -1,10 +1,13 @@
 package com.dochub.api.entities;
 
+import com.dochub.api.dtos.response.CreateResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Builder
@@ -23,4 +26,13 @@ public class Response {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Response (final CreateResponseDTO createResponseDTO, final String initiatorUsername) {
+        this.description = createResponseDTO.description();
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

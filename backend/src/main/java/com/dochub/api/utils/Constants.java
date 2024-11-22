@@ -106,6 +106,11 @@ public interface Constants {
     String EDIT_ACTIVITY = "Editar Atividade";
     String DELETE_ACTIVITY = "Deletar Atividade";
 
+    // Response Permissions
+    String CREATE_RESPONSE = "Criar Resposta";
+    String EDIT_RESPONSE = "Editar Resposta";
+    String DELETE_RESPONSE = "Deletar Resposta";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
@@ -158,6 +163,7 @@ public interface Constants {
     String ARCHIVE_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Já existe um arquivo apontando para o s3Hash informado.";
     String CANNOT_DELETE_SERVICE_EXCEPTION_MESSAGE = "Não é possível deletar o serviço informado, existem processos vinculados a ele.";
     String CANNOT_DELETE_ACTIVITY_EXCEPTION_MESSAGE = "Não é possível deletar a atividade selecionada, existem fluxos vinculadas a ela.";
+    String CANNOT_DELETE_RESPONSE_EXCEPTION_MESSAGE = "Não é possível deletar a resposta selecionada, existem fluxos de resposta vinculadas a ela.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";
