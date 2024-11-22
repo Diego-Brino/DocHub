@@ -57,7 +57,16 @@ VALUES
    ('Criar Usuário', 'DocHub', CURRENT_DATE),
    ('Atualizar perfil de Usuário', 'DocHub', CURRENT_DATE),
    ('Deletar Usuário', 'DocHub', CURRENT_DATE),
-   ('Visualizar histórico de Recursos', 'DocHub', CURRENT_DATE);
+   ('Visualizar histórico de Recursos', 'DocHub', CURRENT_DATE),
+   ('Criar Serviço', 'DocHub', CURRENT_DATE),
+   ('Editar Serviço', 'DocHub', CURRENT_DATE),
+   ('Deletar Serviço', 'DocHub', CURRENT_DATE),
+   ('Criar Atividade', 'DocHub', CURRENT_DATE),
+   ('Editar Atividade', 'DocHub', CURRENT_DATE),
+   ('Deletar Atividade', 'DocHub', CURRENT_DATE),
+   ('Criar Resposta', 'DocHub', CURRENT_DATE),
+   ('Editar Resposta', 'DocHub', CURRENT_DATE),
+   ('Deletar Resposta', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -112,7 +121,16 @@ VALUES
     (1, 21, 'DocHub', CURRENT_DATE),
     (1, 22, 'DocHub', CURRENT_DATE),
     (1, 23, 'DocHub', CURRENT_DATE),
-    (1, 24, 'DocHub', CURRENT_DATE);
+    (1, 24, 'DocHub', CURRENT_DATE),
+    (1, 25, 'DocHub', CURRENT_DATE),
+    (1, 26, 'DocHub', CURRENT_DATE),
+    (1, 27, 'DocHub', CURRENT_DATE),
+    (1, 28, 'DocHub', CURRENT_DATE),
+    (1, 29, 'DocHub', CURRENT_DATE),
+    (1, 30, 'DocHub', CURRENT_DATE),
+    (1, 31, 'DocHub', CURRENT_DATE),
+    (1, 32, 'DocHub', CURRENT_DATE),
+    (1, 33, 'DocHub', CURRENT_DATE);
 
 INSERT INTO usuario_cargo (ID_USUARIO, ID_CARGO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
