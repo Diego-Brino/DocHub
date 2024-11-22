@@ -101,6 +101,11 @@ public interface Constants {
     String EDIT_SERVICE = "Editar Serviço";
     String DELETE_SERVICE = "Deletar Serviço";
 
+    // Activity Permissions
+    String CREATE_ACTIVITY = "Criar Atividade";
+    String EDIT_ACTIVITY = "Editar Atividade";
+    String DELETE_ACTIVITY = "Deletar Atividade";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
@@ -152,6 +157,7 @@ public interface Constants {
     String INVALID_FOLDER_MOVE_EXCEPTION_MESSAGE = "Uma pasta não pode ser movida para ela mesma.";
     String ARCHIVE_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Já existe um arquivo apontando para o s3Hash informado.";
     String CANNOT_DELETE_SERVICE_EXCEPTION_MESSAGE = "Não é possível deletar o serviço informado, existem processos vinculados a ele.";
+    String CANNOT_DELETE_ACTIVITY_EXCEPTION_MESSAGE = "Não é possível deletar a atividade selecionada, existem fluxos vinculadas a ela.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";
