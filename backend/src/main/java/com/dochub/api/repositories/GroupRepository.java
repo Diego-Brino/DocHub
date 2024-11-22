@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query(
-        "SELECT g " +
+        "SELECT DISTINCT g " +
         "  FROM Group g " +
         " LEFT JOIN GroupRolePermission grp ON ( grp.group.id = g.id ) " +
         " LEFT JOIN GroupPermission gp ON ( gp.id = grp.groupPermission.id ) " +
