@@ -10,7 +10,6 @@ TRUNCATE TABLE `dochub`.`cargo`;
 TRUNCATE TABLE `dochub`.`grupo`;
 TRUNCATE TABLE `dochub`.`cargo_permissao_grupo`;
 TRUNCATE TABLE `dochub`.`cargo_permissao_sistema`;
-TRUNCATE TABLE `dochub`.`atividade`;
 TRUNCATE TABLE `dochub`.`usuario`;
 TRUNCATE TABLE `dochub`.`processo`;
 TRUNCATE TABLE `dochub`.`recurso`;
@@ -23,6 +22,9 @@ TRUNCATE TABLE `dochub`.`historico`;
 TRUNCATE TABLE `dochub`.`pasta`;
 TRUNCATE TABLE `dochub`.`usuario_cargo_fluxo`;
 TRUNCATE TABLE `dochub`.`arquivo`;
+TRUNCATE TABLE `dochub`.`solicitacao`;
+TRUNCATE TABLE `dochub`.`movimento`;
+TRUNCATE TABLE `dochub`.`movimento_recurso`;
 
 SET foreign_key_checks = 1;
 
