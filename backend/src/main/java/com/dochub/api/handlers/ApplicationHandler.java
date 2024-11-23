@@ -184,14 +184,6 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(GroupCannontBeDeletedException.class)
-    public ResponseEntity<ErrorDTO> handleGroupCannontBeDeletedException (GroupCannontBeDeletedException e) {
-        log.error(e.getMessage(), e);
-
-        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
-    }
-
     @ExceptionHandler(CannotDeleteOwnUserException.class)
     public ResponseEntity<ErrorDTO> handleCannotDeleteOwnUserException (CannotDeleteOwnUserException e) {
         log.error(e.getMessage(), e);
@@ -264,24 +256,32 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(CannotDeleteServiceException.class)
-    public ResponseEntity<ErrorDTO> handleCannotDeleteServiceException (CannotDeleteServiceException e) {
+    @ExceptionHandler(ActivityInUseException.class)
+    public ResponseEntity<ErrorDTO> handleActivityInUseException (ActivityInUseException e) {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(CannotDeleteActivityException.class)
-    public ResponseEntity<ErrorDTO> handleCannotDeleteActivityException (CannotDeleteActivityException e) {
+    @ExceptionHandler(ProcessInProgressException.class)
+    public ResponseEntity<ErrorDTO> handleProcessInProgressException (ProcessInProgressException e) {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
-    @ExceptionHandler(CannotDeleteResponseException.class)
-    public ResponseEntity<ErrorDTO> handleCannotDeleteResponseException (CannotDeleteResponseException e) {
+    @ExceptionHandler(ResponseInUseException.class)
+    public ResponseEntity<ErrorDTO> handleResponseInUseException (ResponseInUseException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(ServiceHasProcessesInProgressException.class)
+    public ResponseEntity<ErrorDTO> handleServiceHasProcessesInProgressException (ServiceHasProcessesInProgressException e) {
         log.error(e.getMessage(), e);
 
         final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());

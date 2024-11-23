@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -23,6 +24,9 @@ public class Service {
 
     @Column(name = "DESCRICAO", nullable = false, length = 256)
     private String description;
+
+    @OneToMany(mappedBy = "service", cascade = { CascadeType.REMOVE })
+    private List<Process> processes;
 
     @Embedded
     private AuditRecord auditRecord;

@@ -4,8 +4,8 @@ import com.dochub.api.dtos.service.CreateServiceDTO;
 import com.dochub.api.dtos.service.ServiceResponseDTO;
 import com.dochub.api.dtos.service.UpdateServiceDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.exceptions.CannotDeleteServiceException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.ServiceHasProcessesInProgressException;
 import com.dochub.api.repositories.ServiceRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -44,17 +44,24 @@ public class ServiceService {
     }
 
     public Integer create (final UserRoleResponseDTO userRoles, final CreateServiceDTO createServiceDTO) {
-        Utils.checkPermission(userRoles, Constants.CREATE_SERVICE);
+        Utils.checkPermission(userRoles, Constants.CREATE_SERVICE_PERMISSION);
 
         final com.dochub.api.entities.Service service = new com.dochub.api.entities.Service(createServiceDTO, userRoles.user().username());
 
         return serviceRepository.save(service).getId();
     }
 
-    public void update (final UserRoleResponseDTO userRoles, final Integer serviceId, final UpdateServiceDTO updateServiceDTO) {
-        Utils.checkPermission(userRoles, Constants.EDIT_SERVICE);
+    public void update (final UserRoleResponseDTO userRoles,
+                        final Integer serviceId, final UpdateServiceDTO updateServiceDTO,
+                        final Function<com.dochub.api.entities.Service, Boolean> hasRequestInProgressAssignedToServiceFunc) {
+        Utils.checkPermission(userRoles, Constants.EDIT_SERVICE_PERMISSION);
 
         final com.dochub.api.entities.Service service = getById(serviceId);
+        final Boolean hasRequestInProgressAssignedToService = hasRequestInProgressAssignedToServiceFunc.apply(service);
+
+        if (hasRequestInProgressAssignedToService) {
+            throw new ServiceHasProcessesInProgressException();
+        }
 
         Utils.updateFieldIfPresent(updateServiceDTO.description(), service::setDescription);
 
@@ -64,15 +71,14 @@ public class ServiceService {
     }
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer serviceId,
-                        final Function<com.dochub.api.entities.Service, Boolean> hasProcessAssignedToServiceFunc) {
-        Utils.checkPermission(userRoles, Constants.DELETE_SERVICE);
+                        final Function<com.dochub.api.entities.Service, Boolean> hasRequestInProgressAssignedToServiceFunc) {
+        Utils.checkPermission(userRoles, Constants.DELETE_SERVICE_PERMISSION);
 
         final com.dochub.api.entities.Service service = getById(serviceId);
+        final Boolean hasRequestInProgressAssignedToService = hasRequestInProgressAssignedToServiceFunc.apply(service);
 
-        final Boolean hasProcessAssignedToService = hasProcessAssignedToServiceFunc.apply(service);
-
-        if (hasProcessAssignedToService) {
-            throw new CannotDeleteServiceException();
+        if (hasRequestInProgressAssignedToService) {
+            throw new ServiceHasProcessesInProgressException();
         }
 
         serviceRepository.delete(service);

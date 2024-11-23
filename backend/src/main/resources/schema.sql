@@ -1,8 +1,3 @@
-DROP DATABASE dochub;
-CREATE DATABASE dochub;
-
-USE dochub;
-
 -- dochub.atividade definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`atividade` (
@@ -182,13 +177,27 @@ CREATE TABLE IF NOT EXISTS `dochub`.`cargo_permissao_sistema` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+-- dochub.historico definition
+
+CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
+                             `ID_HISTORICO` int NOT NULL AUTO_INCREMENT,
+                             `ID_GRUPO` int NOT NULL,
+                             `TIPO_MOVIMENTACAO` enum('CRIADO','EDITADO','DELETADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                             `DESCRICAO` varchar(256) DEFAULT NULL,
+                             `USUARIO_MOVIMENTACAO` varchar(100) NOT NULL,
+                             `DATA_MOVIMENTACAO` datetime NOT NULL,
+                             PRIMARY KEY (`ID_HISTORICO`),
+                             KEY `historico_grupo_FK` (`ID_GRUPO`),
+                             CONSTRAINT `historico_grupo_FK` FOREIGN KEY (`ID_GRUPO`) REFERENCES `grupo` (`ID_GRUPO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 -- dochub.processo definition
 
 CREATE TABLE IF NOT EXISTS `dochub`.`processo` (
                             `ID_PROCESSO` int NOT NULL AUTO_INCREMENT,
                             `DATA_INICIO` date NOT NULL,
                             `DATA_FIM` date DEFAULT NULL,
-                            `STATUS` enum('ATIVO','INATIVO') NOT NULL,
                             `ID_SERVICO` int NOT NULL,
                             `ID_GRUPO` int NOT NULL,
                             `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -210,6 +219,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`recurso` (
                            `NOME` varchar(128) NOT NULL,
                            `DESCRICAO` varchar(256) DEFAULT NULL,
                            `ID_GRUPO` int NOT NULL,
+                           `ORIGEM` enum('GRUPO','FLUXO') NOT NULL,
                            `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `DATA_INSERCAO` datetime NOT NULL,
                            `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -217,6 +227,25 @@ CREATE TABLE IF NOT EXISTS `dochub`.`recurso` (
                            PRIMARY KEY (`ID_RECURSO`),
                            KEY `recurso_grupo_FK` (`ID_GRUPO`),
                            CONSTRAINT `recurso_grupo_FK` FOREIGN KEY (`ID_GRUPO`) REFERENCES `grupo` (`ID_GRUPO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- dochub.solicitacao definition
+
+CREATE TABLE IF NOT EXISTS `dochub`.`solicitacao` (
+                               `ID_SOLICITACAO` int NOT NULL AUTO_INCREMENT,
+                               `ID_USUARIO` int NOT NULL,
+                               `ID_PROCESSO` int NOT NULL,
+                               `STATUS` enum('EM ANDAMENTO','FINALIZADO') NOT NULL,
+                               `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                               `DATA_INSERCAO` datetime NOT NULL,
+                               `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                               `DATA_ALTERACAO` datetime DEFAULT NULL,
+                               PRIMARY KEY (`ID_SOLICITACAO`),
+                               KEY `solicitacao_usuario_FK` (`ID_USUARIO`),
+                               KEY `solicitacao_processo_FK` (`ID_PROCESSO`),
+                               CONSTRAINT `solicitacao_processo_FK` FOREIGN KEY (`ID_PROCESSO`) REFERENCES `processo` (`ID_PROCESSO`),
+                               CONSTRAINT `solicitacao_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -259,6 +288,7 @@ CREATE TABLE IF NOT EXISTS `cargo_permissao_recurso` (
 
 CREATE TABLE IF NOT EXISTS `dochub`.`fluxo` (
                          `ID_FLUXO` int NOT NULL AUTO_INCREMENT,
+                         `ORDEM` int NOT NULL,
                          `PRAZO` int DEFAULT NULL COMMENT 'Prazo em dias para o fluxo obter uma resposta.',
                          `DATA_LIMITE` date DEFAULT NULL COMMENT 'Data específica para aquele fluxo sem respondido.',
                          `ID_PROCESSO` int NOT NULL,
@@ -294,19 +324,41 @@ CREATE TABLE IF NOT EXISTS `dochub`.`fluxo_resposta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- dochub.historico definition
+-- dochub.movimento definition
 
-CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
-                             `ID_HISTORICO` int NOT NULL AUTO_INCREMENT,
-                             `ID_GRUPO` int NOT NULL,
-                             `TIPO_MOVIMENTACAO` enum('CRIADO','EDITADO','DELETADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                             `DESCRICAO` varchar(256) DEFAULT NULL,
-                             `USUARIO_MOVIMENTACAO` varchar(100) NOT NULL,
-                             `DATA_MOVIMENTACAO` datetime NOT NULL,
-                             PRIMARY KEY (`ID_HISTORICO`),
-                             KEY `historico_grupo_FK` (`ID_GRUPO`),
-                             CONSTRAINT `historico_grupo_FK` FOREIGN KEY (`ID_GRUPO`) REFERENCES `grupo` (`ID_GRUPO`)
+CREATE TABLE IF NOT EXISTS `dochub`.`movimento` (
+                             `ID_MOVIMENTO` int NOT NULL AUTO_INCREMENT,
+                             `ID_SOLICITACAO` int NOT NULL,
+                             `ID_FLUXO` int NOT NULL,
+                             `ID_RESPOSTA` int NOT NULL,
+                             `ORDEM` int NOT NULL,
+                             `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                             `DATA_INSERCAO` datetime NOT NULL,
+                             `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                             `DATA_ALTERACAO` datetime DEFAULT NULL,
+                             PRIMARY KEY (`ID_MOVIMENTO`),
+                             KEY `movimento_fluxo_resposta_FK` (`ID_FLUXO`,`ID_RESPOSTA`),
+                             KEY `movimento_solicitacao_FK` (`ID_SOLICITACAO`),
+                             CONSTRAINT `movimento_fluxo_resposta_FK` FOREIGN KEY (`ID_FLUXO`, `ID_RESPOSTA`) REFERENCES `fluxo_resposta` (`ID_FLUXO`, `ID_RESPOSTA`),
+                             CONSTRAINT `movimento_solicitacao_FK` FOREIGN KEY (`ID_SOLICITACAO`) REFERENCES `solicitacao` (`ID_SOLICITACAO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- dochub.movimento_recurso definition
+
+CREATE TABLE IF NOT EXISTS `dochub`.`movimento_recurso` (
+                                     `ID_MOVIMENTO` int NOT NULL,
+                                     `ID_RECURSO` int NOT NULL,
+                                     `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                     `DATA_INSERCAO` datetime NOT NULL,
+                                     `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                                     `DATA_ALTERACAO` datetime DEFAULT NULL,
+                                     PRIMARY KEY (`ID_MOVIMENTO`,`ID_RECURSO`),
+                                     KEY `movimento_recurso_recurso_FK` (`ID_RECURSO`),
+                                     CONSTRAINT `movimento_recurso_movimento_FK` FOREIGN KEY (`ID_MOVIMENTO`) REFERENCES `movimento` (`ID_MOVIMENTO`),
+                                     CONSTRAINT `movimento_recurso_recurso_FK` FOREIGN KEY (`ID_RECURSO`) REFERENCES `recurso` (`ID_RECURSO`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 -- dochub.pasta definition
 
@@ -337,9 +389,8 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo_fluxo` (
                                        PRIMARY KEY (`ID_USUARIO`,`ID_CARGO`,`ID_FLUXO`),
                                        KEY `usuario_cargo_fluxo_cargo_FK` (`ID_CARGO`),
                                        KEY `usuario_cargo_fluxo_fluxo_FK` (`ID_FLUXO`),
-                                       CONSTRAINT `usuario_cargo_fluxo_cargo_FK` FOREIGN KEY (`ID_CARGO`) REFERENCES `cargo` (`ID_CARGO`),
                                        CONSTRAINT `usuario_cargo_fluxo_fluxo_FK` FOREIGN KEY (`ID_FLUXO`) REFERENCES `fluxo` (`ID_FLUXO`),
-                                       CONSTRAINT `usuario_cargo_fluxo_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
+                                       CONSTRAINT `usuario_cargo_fluxo_usuario_cargo_FK` FOREIGN KEY (`ID_USUARIO`, `ID_CARGO`) REFERENCES `usuario_cargo` (`ID_USUARIO`, `ID_CARGO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -348,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo_fluxo` (
 CREATE TABLE IF NOT EXISTS `dochub`.`arquivo` (
                            `ID_ARQUIVO` int NOT NULL,
                            `ID_S3_OBJECT` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                           `TIPO` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                           `TIPO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `TAMANHO` bigint NOT NULL,
                            `ID_PASTA` int DEFAULT NULL,
                            `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,

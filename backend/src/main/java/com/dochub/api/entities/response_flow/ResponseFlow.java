@@ -1,7 +1,6 @@
 package com.dochub.api.entities.response_flow;
 
-import com.dochub.api.entities.AuditRecord;
-import com.dochub.api.entities.Flow;
+import com.dochub.api.entities.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +16,14 @@ import lombok.NoArgsConstructor;
 public class ResponseFlow {
     @EmbeddedId
     private ResponseFlowPK id;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_FLUXO", insertable = false, updatable = false)
+    private Flow flow;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_RESPOSTA", insertable = false, updatable = false)
+    private Response response;
 
     @ManyToOne
     @JoinColumn(name = "ID_FLUXO_DESTINO", insertable = false, updatable = false)

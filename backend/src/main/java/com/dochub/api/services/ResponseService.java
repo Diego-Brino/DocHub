@@ -5,8 +5,8 @@ import com.dochub.api.dtos.response.ResponseResponseDTO;
 import com.dochub.api.dtos.response.UpdateResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Response;
-import com.dochub.api.exceptions.CannotDeleteResponseException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.ResponseInUseException;
 import com.dochub.api.repositories.ResponseRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -45,17 +45,24 @@ public class ResponseService {
     }
 
     public Integer create (final UserRoleResponseDTO userRoles, final CreateResponseDTO createResponseDTO) {
-        Utils.checkPermission(userRoles, Constants.CREATE_RESPONSE);
+        Utils.checkPermission(userRoles, Constants.CREATE_RESPONSE_PERMISSION);
 
         final Response response = new Response(createResponseDTO, userRoles.user().username());
 
         return responseRepository.save(response).getId();
     }
 
-    public void update (final UserRoleResponseDTO userRoles, final Integer responseId, final UpdateResponseDTO updateResponseDTO) {
-        Utils.checkPermission(userRoles, Constants.EDIT_RESPONSE);
+    public void update (final UserRoleResponseDTO userRoles,
+                        final Integer responseId, final UpdateResponseDTO updateResponseDTO,
+                        final Function<Response, Boolean> hasResponseFlowsAssignedToResponseFunc) {
+        Utils.checkPermission(userRoles, Constants.EDIT_RESPONSE_PERMISSION);
 
         final Response response = getById(responseId);
+        final Boolean hasResponseFlowsAssignedToResponse = hasResponseFlowsAssignedToResponseFunc.apply(response);
+
+        if (hasResponseFlowsAssignedToResponse) {
+            throw new ResponseInUseException();
+        }
 
         Utils.updateFieldIfPresent(updateResponseDTO.description(), response::setDescription);
 
@@ -66,14 +73,13 @@ public class ResponseService {
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer responseId,
                         final Function<Response, Boolean> hasResponseFlowsAssignedToResponseFunc) {
-        Utils.checkPermission(userRoles, Constants.DELETE_RESPONSE);
+        Utils.checkPermission(userRoles, Constants.DELETE_RESPONSE_PERMISSION);
 
         final Response response = getById(responseId);
+        final Boolean hasResponseFlowsAssignedToResponse = hasResponseFlowsAssignedToResponseFunc.apply(response);
 
-        final Boolean hasProcessAssignedToService = hasResponseFlowsAssignedToResponseFunc.apply(response);
-
-        if (hasProcessAssignedToService) {
-            throw new CannotDeleteResponseException();
+        if (hasResponseFlowsAssignedToResponse) {
+            throw new ResponseInUseException();
         }
 
         responseRepository.delete(response);

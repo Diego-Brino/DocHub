@@ -1,5 +1,6 @@
 package com.dochub.api.entities;
 
+import com.dochub.api.entities.response_flow.ResponseFlow;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -29,13 +31,30 @@ public class Process {
     private Date endDate;
 
     @ManyToOne
-    @JoinColumn(name = "ID_SERVICO", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "ID_SERVICO", nullable = false)
     private Service service;
 
     @ManyToOne
-    @JoinColumn(name = "ID_GRUPO", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "ID_GRUPO", nullable = false)
     private Group group;
+
+    @OneToMany(mappedBy = "process", cascade = { CascadeType.REMOVE })
+    private List<Flow> flows;
+
+    @OneToMany(mappedBy = "process", cascade = { CascadeType.REMOVE })
+    private List<Request> requests;
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Process (final Service service, final Group group, final String initiatorUsername) {
+        this.startDate = new Date();
+        this.service = service;
+        this.group = group;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

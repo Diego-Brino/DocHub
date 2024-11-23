@@ -21,7 +21,7 @@ public class ResourceHistoryService {
     private final ResourceHistoryRepository resourceHistoryRepository;
 
     public List<ResourceHistoryResponseDTO> getAllByGroup (final UserRoleResponseDTO userRoles, final Group group) {
-        Utils.checkPermission(userRoles, group.getId(), Constants.VIEW_RESOURCES_HISTORY);
+        Utils.checkPermission(userRoles, group.getId(), Constants.VIEW_RESOURCES_HISTORY_PERMISSION);
 
         final List<ResourceHistory> resourceHistories = resourceHistoryRepository
             .findAllByGroupOrderByActionDateDesc(group)

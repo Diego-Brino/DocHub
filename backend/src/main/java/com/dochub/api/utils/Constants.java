@@ -94,22 +94,27 @@ public interface Constants {
     String DELETE_USER_PERMISSION = "Deletar Usuário";
 
     // ResourceHistoryService Permissions
-    String VIEW_RESOURCES_HISTORY = "Visualizar histórico de Recursos";
+    String VIEW_RESOURCES_HISTORY_PERMISSION = "Visualizar histórico de Recursos";
 
     // ServiceService Permissions
-    String CREATE_SERVICE = "Criar Serviço";
-    String EDIT_SERVICE = "Editar Serviço";
-    String DELETE_SERVICE = "Deletar Serviço";
+    String CREATE_SERVICE_PERMISSION = "Criar Serviço";
+    String EDIT_SERVICE_PERMISSION = "Editar Serviço";
+    String DELETE_SERVICE_PERMISSION = "Deletar Serviço";
 
     // Activity Permissions
-    String CREATE_ACTIVITY = "Criar Atividade";
-    String EDIT_ACTIVITY = "Editar Atividade";
-    String DELETE_ACTIVITY = "Deletar Atividade";
+    String CREATE_ACTIVITY_PERMISSION = "Criar Atividade";
+    String EDIT_ACTIVITY_PERMISSION = "Editar Atividade";
+    String DELETE_ACTIVITY_PERMISSION = "Deletar Atividade";
 
     // Response Permissions
-    String CREATE_RESPONSE = "Criar Resposta";
-    String EDIT_RESPONSE = "Editar Resposta";
-    String DELETE_RESPONSE = "Deletar Resposta";
+    String CREATE_RESPONSE_PERMISSION = "Criar Resposta";
+    String EDIT_RESPONSE_PERMISSION = "Editar Resposta";
+    String DELETE_RESPONSE_PERMISSION = "Deletar Resposta";
+
+    // Process Permissions
+    String CREATE_PROCESS_PERMISSION = "Criar Processo";
+    String EDIT_PROCESS_PERMISSION = "Editar Processo";
+    String DELETE_PROCESS_PERMISSION = "Deletar Processo";
 
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
@@ -151,7 +156,6 @@ public interface Constants {
     String PERMISSION_DENIED_EXCEPTION_MESSAGE = "O usuário em questão não possui permissão para %s.";
     String USER_MISMATCH_EXCEPTION_MESSAGE = "O usuário autenticado não corresponde ao usuário que foi passado como parâmetro.";
     String ROLE_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O cargo não pode ser excluído porque existem usuários vinculados a ele.";
-    String GROUP_CANNOT_BE_DELETED_EXCEPTION_MESSAGE = "O grupo não pode ser excluído porque existem processos, recursos ou permissões de grupo vinculados a ele.";
     String CANNOT_DELETE_OWN_USER_EXCEPTION  = "Não é permitido deletar o próprio usuário.";
     String CANNOT_CREATE_ADMIN_ROLE_EXCEPTION  = "Não é possível criar um cargo com o nome 'ADMINISTRADOR', pois esse cargo já existe e é reservado pelo sistema.";
     String CANNOT_DELETE_ADMIN_ROLE_EXCEPTION  = "O cargo 'ADMINISTRADOR' não pode ser excluído, pois é um cargo protegido do sistema.";
@@ -161,9 +165,10 @@ public interface Constants {
     String INPUT_STREM_READ_EXCEPTION_MESSAGE = "Não foi possível ler o conteúdo do arquivo.";
     String INVALID_FOLDER_MOVE_EXCEPTION_MESSAGE = "Uma pasta não pode ser movida para ela mesma.";
     String ARCHIVE_ALREADY_EXISTS_EXCEPTION_MESSAGE = "Já existe um arquivo apontando para o s3Hash informado.";
-    String CANNOT_DELETE_SERVICE_EXCEPTION_MESSAGE = "Não é possível deletar o serviço informado, existem processos vinculados a ele.";
-    String CANNOT_DELETE_ACTIVITY_EXCEPTION_MESSAGE = "Não é possível deletar a atividade selecionada, existem fluxos vinculadas a ela.";
-    String CANNOT_DELETE_RESPONSE_EXCEPTION_MESSAGE = "Não é possível deletar a resposta selecionada, existem fluxos de resposta vinculadas a ela.";
+    String PROCESS_IN_PROGRESS_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo atual está em progresso.";
+    String ACTIVITY_IN_USE_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, a atividade selecionada está sendo utilizada em um fluxo.";
+    String RESPONSE_IN_USE_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, a resposta selecionada está sendo utilizada em um fluxo.";
+    String SERVICE_HAS_PROCESSES_IN_PROGRESS_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o serviço atual possui processos em andamento.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

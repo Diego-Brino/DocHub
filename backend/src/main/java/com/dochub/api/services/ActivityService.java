@@ -5,7 +5,7 @@ import com.dochub.api.dtos.activity.CreateActivityDTO;
 import com.dochub.api.dtos.activity.UpdateActivityDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Activity;
-import com.dochub.api.exceptions.CannotDeleteActivityException;
+import com.dochub.api.exceptions.ActivityInUseException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.repositories.ActivityRepository;
 import com.dochub.api.utils.Constants;
@@ -45,17 +45,24 @@ public class ActivityService {
     }
 
     public Integer create (final UserRoleResponseDTO userRoles, final CreateActivityDTO createActivityDTO) {
-        Utils.checkPermission(userRoles, Constants.CREATE_ACTIVITY);
+        Utils.checkPermission(userRoles, Constants.CREATE_ACTIVITY_PERMISSION);
 
         final Activity activity = new Activity(createActivityDTO, userRoles.user().username());
 
         return activityRepository.save(activity).getId();
     }
 
-    public void update (final UserRoleResponseDTO userRoles, final Integer activityId, final UpdateActivityDTO updateActivityDTO) {
-        Utils.checkPermission(userRoles, Constants.EDIT_ACTIVITY);
+    public void update (final UserRoleResponseDTO userRoles,
+                        final Integer activityId, final UpdateActivityDTO updateActivityDTO,
+                        final Function<Activity, Boolean> hasFlowsAssignedToActivityFunc) {
+        Utils.checkPermission(userRoles, Constants.EDIT_ACTIVITY_PERMISSION);
 
         final Activity activity = getById(activityId);
+        final Boolean hasFlowsAssignedToActivity = hasFlowsAssignedToActivityFunc.apply(activity);
+
+        if (hasFlowsAssignedToActivity) {
+            throw new ActivityInUseException();
+        }
 
         Utils.updateFieldIfPresent(updateActivityDTO.description(), activity::setDescription);
 
@@ -66,14 +73,13 @@ public class ActivityService {
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer activityId,
                         final Function<Activity, Boolean> hasFlowsAssignedToActivityFunc) {
-        Utils.checkPermission(userRoles, Constants.DELETE_ACTIVITY);
+        Utils.checkPermission(userRoles, Constants.DELETE_ACTIVITY_PERMISSION);
 
         final Activity activity = getById(activityId);
+        final Boolean hasFlowsAssignedToActivity = hasFlowsAssignedToActivityFunc.apply(activity);
 
-        final Boolean hasProcessAssignedToService = hasFlowsAssignedToActivityFunc.apply(activity);
-
-        if (hasProcessAssignedToService) {
-            throw new CannotDeleteActivityException();
+        if (hasFlowsAssignedToActivity) {
+            throw new ActivityInUseException();
         }
 
         activityRepository.delete(activity);
