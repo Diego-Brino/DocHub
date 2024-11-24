@@ -125,7 +125,8 @@ public class GroupService {
                         final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc,
                         final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllArchivesAssignedToGroupFunc,
                         final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllFoldersAssignedToGroupFunc,
-                        final Consumer<Group> deleteAllResourceHistoriesAssignedToGroupFunc) {
+                        final Consumer<Group> deleteAllResourceHistoriesAssignedToGroupFunc,
+                        final Consumer<Group> deleteAllProcessAssignedToGroup) {
         final Group group = getById(groupId);
 
         Utils.checkPermission(userRoles, groupId, Constants.DELETE_GROUP_PERMISSION);
@@ -135,6 +136,7 @@ public class GroupService {
         deleteAllArchivesAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
         deleteAllFoldersAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
         deleteAllResourceHistoriesAssignedToGroupFunc.accept(group);
+        deleteAllProcessAssignedToGroup.accept(group);
 
         groupRepository.delete(group);
     }

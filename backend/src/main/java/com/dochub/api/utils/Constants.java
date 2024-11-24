@@ -116,6 +116,11 @@ public interface Constants {
     String EDIT_PROCESS_PERMISSION = "Editar Processo";
     String DELETE_PROCESS_PERMISSION = "Deletar Processo";
 
+    // Flow Permissions
+    String CREATE_FLOW_PERMISSION = "Criar Fluxo";
+    String EDIT_FLOW_PERMISSION = "Editar Fluxo";
+    String DELETE_FLOW_PERMISSION = "Deletar Fluxo";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
@@ -169,6 +174,8 @@ public interface Constants {
     String ACTIVITY_IN_USE_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, a atividade selecionada está sendo utilizada em um fluxo.";
     String RESPONSE_IN_USE_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, a resposta selecionada está sendo utilizada em um fluxo.";
     String SERVICE_HAS_PROCESSES_IN_PROGRESS_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o serviço atual possui processos em andamento.";
+    String FLOW_WITH_ORDER_ONE_ALREADY_REGISTER_EXCEPTION_MESSAGE = "Já existe um fluxo inicial (ordem 1) registrado para este processo.";
+    String PROCESS_ALREADY_STARTED_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo a qual este fluxo está vinculado já foi iniciado.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

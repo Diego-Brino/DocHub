@@ -1,5 +1,6 @@
 package com.dochub.api.entities;
 
+import com.dochub.api.dtos.flow.CreateFlowDTO;
 import com.dochub.api.entities.flow_user_role.FlowUserRole;
 import com.dochub.api.entities.response_flow.ResponseFlow;
 import jakarta.persistence.*;
@@ -49,4 +50,17 @@ public class Flow {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Flow (final CreateFlowDTO createFlowDTO, final Process process, final Activity activity, final String initiatorUsername) {
+        this.order = createFlowDTO.order();
+        this.time = createFlowDTO.time();
+        this.limitDate = createFlowDTO.limitDate();
+        this.process = process;
+        this.activity = activity;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

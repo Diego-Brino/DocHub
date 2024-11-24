@@ -288,6 +288,22 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
+    @ExceptionHandler(FlowWithOrderOneAlreadyRegisterException.class)
+    public ResponseEntity<ErrorDTO> handleFlowWithOrderOneAlreadyRegisterException (FlowWithOrderOneAlreadyRegisterException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(ProcessAlreadyStartedException.class)
+    public ResponseEntity<ErrorDTO> handleProcessAlreadyStartedException (ProcessAlreadyStartedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
     @ExceptionHandler(BucketAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handleBucketAlreadyExistsException (BucketAlreadyExistsException e) {
         log.error(e.getMessage(), e);

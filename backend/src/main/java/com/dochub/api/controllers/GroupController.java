@@ -203,7 +203,8 @@ public class GroupController {
             resourceRolePermissionService::delete,
             archiveService::deleteAllArchivesAssignedToGroup,
             folderService::deleteAllFoldersAssignedToGroup,
-            resourceHistoryService::deleteAllAssignedToGroup
+            resourceHistoryService::deleteAllAssignedToGroup,
+            processService::deleteAllProcessAssignedToGroup
         );
 
         return ResponseEntity

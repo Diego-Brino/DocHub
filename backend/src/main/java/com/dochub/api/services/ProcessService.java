@@ -13,6 +13,7 @@ import com.dochub.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -92,6 +93,14 @@ public class ProcessService {
         }
 
         processRepository.delete(process);
+    }
+
+    public void deleteAllProcessAssignedToGroup (final Group group) {
+        final List<Process> processes = processRepository
+            .findByGroup(group)
+            .orElse(Collections.emptyList());
+
+        processRepository.deleteAll(processes);
     }
 
     private void _updateEndDateIfPresent (final Process process, final Date endDate) {
