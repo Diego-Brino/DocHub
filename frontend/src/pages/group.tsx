@@ -10,15 +10,30 @@ import {
   FileUploaderItem,
 } from "@/components/extensions/file-input.tsx";
 import { useState } from "react";
-import { FilePlus, Paperclip } from "lucide-react";
+import { ArrowLeft, FilePlus, Paperclip } from "lucide-react";
 import { usePresignedUrlMutation } from "@/services/archives/use-get-archive-presigned-url-create.ts";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/custom/button.tsx";
 import axios from "axios";
 import queryClient from "@/lib/react-query";
 import axiosClient from "@/lib/axios";
 import { useAuthContext } from "@/contexts/auth";
 import { toast } from "sonner";
+import { useGetGroup } from "@/services/groups/use-get-group.ts";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb.tsx";
+import { Separator } from "@/components/ui/separator.tsx";
+import {
+  Archive,
+  Folder,
+  useGetGroupRootResources,
+} from "@/services/groups/use-get-group-root-resources.ts";
+import { useGetGroupFolderContentsResources } from "@/services/groups/use-get-group-folder-contents.ts";
 
 function Group() {
   const { token } = useAuthContext();
@@ -26,6 +41,17 @@ function Group() {
   const [files, setFiles] = useState<File[]>([]);
 
   const { id } = useParams();
+
+  const { data: dataGroup } = useGetGroup(Number(id));
+
+  const { data: dataRoot } = useGetGroupRootResources(Number(id));
+
+  const [currentPath, setCurrentPath] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -36,7 +62,7 @@ function Group() {
 
   const dropZoneConfig = {
     maxFiles: 1,
-    maxSize: 1024 * 1024 * 4,
+    maxSize: 1024 * 1024 * 50,
     multiple: false,
   };
 
@@ -64,7 +90,10 @@ function Group() {
                 name: file.name.split(".")[0],
                 description: "",
                 groupId: id,
-                folderId: null,
+                folderId:
+                  currentPath.length > 0
+                    ? currentPath[currentPath.length - 1].id
+                    : null,
                 contentType: file.type,
                 length: file.size,
               },
@@ -99,10 +128,63 @@ function Group() {
     }
   };
 
+  const { data: dataFolderContents } = useGetGroupFolderContentsResources(
+    Number(id),
+    currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null,
+  );
+
+  const navigate = useNavigate();
+
   return (
-    <div className="flex flex-col w-full h-[calc(100vh_-_73px)] md:h-[calc(100vh_-_73px-2rem)]">
+    <div className="flex gap-4 flex-col w-full h-[calc(100vh_-_73px)] md:h-[calc(100vh_-_73px-2rem)]">
       <GroupToolbarProvider>
-        <GroupToolbar />
+        <div className="flex gap-4 items-center">
+          <Button
+            size={`icon`}
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <ArrowLeft />
+          </Button>
+          <h1 className="text-xl md:text-3xl font-semibold">
+            {dataGroup?.name}
+          </h1>
+          <Separator orientation="vertical" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setCurrentPath([]);
+                  }}
+                >
+                  Raiz
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {currentPath.map((path, i) => (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem key={i}>
+                    <BreadcrumbLink
+                      className="cursor-pointer"
+                      onClick={() => {
+                        setCurrentPath([...currentPath.slice(0, i + 1)]);
+                      }}
+                    >
+                      {path.name}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                </>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <GroupToolbar
+          currentPath={currentPath}
+          setCurrentPath={setCurrentPath}
+        />
         <div className="flex flex-col items-end justify-center w-full pb-4 gap-2">
           <FileUploader
             value={files}
@@ -137,7 +219,21 @@ function Group() {
             Enviar
           </Button>
         </div>
-        <GroupResources />
+        <GroupResources
+          data={
+            currentPath.length > 0
+              ? (dataFolderContents as {
+                  archives: Archive[];
+                  folders: Folder[];
+                })
+              : (dataRoot as {
+                  archives: Archive[];
+                  folders: Folder[];
+                })
+          }
+          currentPath={currentPath}
+          setCurrentPath={setCurrentPath}
+        />
       </GroupToolbarProvider>
     </div>
   );

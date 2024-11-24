@@ -6,6 +6,6 @@ import java.util.List;
 
 public record FolderContentsResponseDTO (
     List<ArchiveResponseDTO> archives,
-    List<FolderResponseDTO> subFolders
+    List<FolderResponseDTO> folders
 ) {
 }

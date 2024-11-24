@@ -399,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo_fluxo` (
 CREATE TABLE IF NOT EXISTS `dochub`.`arquivo` (
                            `ID_ARQUIVO` int NOT NULL,
                            `ID_S3_OBJECT` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                           `TIPO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                           `TIPO` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `TAMANHO` bigint NOT NULL,
                            `ID_PASTA` int DEFAULT NULL,
                            `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,

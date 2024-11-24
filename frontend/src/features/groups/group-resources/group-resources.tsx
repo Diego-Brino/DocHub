@@ -1,13 +1,21 @@
-import {Archive, Folder, useGetGroupRootResources,} from "@/services/groups/use-get-group-root-resources.ts";
-import {useParams} from "react-router-dom";
-import {Card, CardTitle} from "@/components/ui/card.tsx";
-import {File, Folder as FolderIcon} from "lucide-react";
-import {Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle,} from "@/components/ui/sheet.tsx";
-import {MouseEventHandler, useEffect, useState} from "react";
-import {useGetArchive} from "@/services/archives/use-get-archive.ts";
-import {useGetArchiveFile} from "@/services/archives/use-get-archive-file.ts";
-import {Button} from "@/components/custom/button.tsx";
-import {useDeleteArchive} from "@/services/archives/use-delete-archive.ts";
+import {
+  Archive,
+  Folder,
+} from "@/services/groups/use-get-group-root-resources.ts";
+import { Card, CardTitle } from "@/components/ui/card.tsx";
+import { File, Folder as FolderIcon } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet.tsx";
+import { MouseEventHandler, useEffect, useState } from "react";
+import { useGetArchive } from "@/services/archives/use-get-archive.ts";
+import { useGetArchiveFile } from "@/services/archives/use-get-archive-file.ts";
+import { Button } from "@/components/custom/button.tsx";
+import { useDeleteArchive } from "@/services/archives/use-delete-archive.ts";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
+import { useGroupToolbarContext } from "@/features/groups/group-toolbar/group-toolbar.tsx";
 
 function getFileExtension(mimeType: string) {
   switch (mimeType) {
@@ -50,7 +59,9 @@ function ArchiveCard({
       <div className="p-4 flex gap-4 items-center">
         <File className="size-8 min-h-8 min-w-8" />
         <div className="overflow-hidden">
-          <CardTitle className="text-xl">{archive.name}</CardTitle>
+          <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap">
+            {archive.name}
+          </CardTitle>
         </div>
       </div>
     </Card>
@@ -69,19 +80,30 @@ const FolderCard = ({
       <div className="p-4 flex gap-4 items-center">
         <FolderIcon className="size-8 min-h-8 min-w-8" />
         <div className="overflow-hidden">
-          <CardTitle className="text-xl">{folder.name}</CardTitle>
+          <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap">
+            {folder.name}
+          </CardTitle>
         </div>
       </div>
     </Card>
   );
 };
 
-function GroupResources() {
-  const { id } = useParams();
+function GroupResources({
+  data,
+  currentPath,
+  setCurrentPath,
+}: {
+  data: {
+    folders: Folder[];
+    archives: Archive[];
+  };
+  currentPath: { id: number; name: string }[];
+  setCurrentPath: (path: { id: number; name: string }[]) => void;
+}) {
+  //const { id } = useParams();
 
   const { mutateAsync } = useDeleteArchive();
-
-  const { data } = useGetGroupRootResources(Number(id));
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -105,28 +127,49 @@ function GroupResources() {
     }
   }, [fileBlob]);
 
+  const { appliedFilter } = useGroupToolbarContext();
+
   return (
     <>
       <div className="w-full h-full gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 overflow-y-scroll content-start relative mb-8 md:mb-0">
-        {data?.folders.map((folder) => (
-          <FolderCard key={folder.id} folder={folder} onClick={() => {}} />
-        ))}
-        {data?.archives.map((archive) => (
-          <ArchiveCard
-            key={archive.id}
-            archive={archive}
-            onClick={() => {
-              setIsOpen(true);
-              setSelectedResource(archive.id);
-            }}
-          />
-        ))}
+        {data?.folders
+          .filter((f) =>
+            f.name.toLowerCase().includes(appliedFilter.toLowerCase()),
+          )
+          .map((folder) => (
+            <FolderCard
+              key={folder.id}
+              folder={folder}
+              onClick={() => {
+                setCurrentPath([
+                  ...currentPath,
+                  {
+                    id: folder.id,
+                    name: folder.name,
+                  },
+                ]);
+              }}
+            />
+          ))}
+        {data?.archives
+          .filter((f) =>
+            f.name.toLowerCase().includes(appliedFilter.toLowerCase()),
+          )
+          .map((archive) => (
+            <ArchiveCard
+              key={archive.id}
+              archive={archive}
+              onClick={() => {
+                setIsOpen(true);
+                setSelectedResource(archive.id);
+              }}
+            />
+          ))}
       </div>
       <Sheet open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetHeader>
-            <SheetTitle>{dataArchive?.name}</SheetTitle>
-            <SheetDescription>{dataArchive?.description}</SheetDescription>
+            <SheetTitle className={"text-wrap"}>{dataArchive?.name}</SheetTitle>
           </SheetHeader>
           <div className="py-4 flex flex-col gap-4">
             {fileBlob &&

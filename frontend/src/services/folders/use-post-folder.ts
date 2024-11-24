@@ -31,6 +31,7 @@ function usePostFolder(groupId: number) {
     onSuccess: () => {
       queryClient.invalidateQueries(["folders"]);
       queryClient.invalidateQueries(["groups", groupId, "root-resources"]);
+      queryClient.invalidateQueries(["groups", groupId]);
       toast.success("Pasta criada com sucesso");
     },
   });

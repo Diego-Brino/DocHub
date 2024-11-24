@@ -1,5 +1,5 @@
 import { Input } from "@/components/custom/input.tsx";
-import {FolderMinus, FolderPlus, Search} from "lucide-react";
+import { FolderMinus, FolderPlus, Search } from "lucide-react";
 import {
   createContext,
   ReactNode,
@@ -35,10 +35,12 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
+import { useDeleteFolder } from "@/services/folders/use-delete-folder.ts";
 
 type GroupToolbarContext = {
   filter: string;
@@ -94,8 +96,14 @@ const schema = z.object({
   parentFolderId: z.number().nullable(),
 });
 
-function GroupToolbar() {
-  const [isAlertOpen, setIsAlertOpen] = useState(false)
+function GroupToolbar({
+  currentPath,
+  setCurrentPath,
+}: {
+  currentPath: { id: number; name: string }[];
+  setCurrentPath: (path: { id: number; name: string }[]) => void;
+}) {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { filter, setFilter, applyFilter } = useGroupToolbarContext();
 
@@ -116,6 +124,8 @@ function GroupToolbar() {
   });
 
   const submitForm = (values: z.infer<typeof schema>) => {
+    values.parentFolderId =
+      currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null;
     mutateAsync(values).then(() => {
       setOpenNewFolderModal(false);
     });
@@ -126,6 +136,13 @@ function GroupToolbar() {
       form.reset();
     }
   }, [form, openNewFolderModal]);
+
+  const { mutateAsync: deleteFolder } = useDeleteFolder({
+    id:
+      currentPath.length > 0
+        ? Number(currentPath[currentPath.length - 1].id)
+        : null,
+  });
 
   return (
     <>
@@ -144,11 +161,12 @@ function GroupToolbar() {
         />
         <div className="flex gap-4">
           <Button
-              variant='destructive'
-              className="gap-2"
-              onClick={() => {
-                setIsAlertOpen(true)
-              }}
+            disabled={currentPath.length === 0}
+            variant="destructive"
+            className="gap-2"
+            onClick={() => {
+              setIsAlertOpen(true);
+            }}
           >
             <FolderMinus />
             Remover Pasta Atual
@@ -225,8 +243,8 @@ function GroupToolbar() {
         </DialogContent>
       </Dialog>
       <AlertDialog
-          open={isAlertOpen}
-          onOpenChange={(open) => setIsAlertOpen(open)}
+        open={isAlertOpen}
+        onOpenChange={(open) => setIsAlertOpen(open)}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -238,9 +256,12 @@ function GroupToolbar() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-                onClick={() => {
-                  console.log("Remover pasta atual")
-                }}
+              onClick={() => {
+                deleteFolder().finally(() => {
+                  setIsAlertOpen(false);
+                  setCurrentPath(currentPath?.slice(0, -1));
+                });
+              }}
             >
               Confirmar
             </AlertDialogAction>
