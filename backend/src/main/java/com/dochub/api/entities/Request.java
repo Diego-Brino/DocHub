@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -39,4 +40,15 @@ public class Request {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Request (final User user, final Process process, final String initiatorUsername) {
+        this.user = user;
+        this.process = process;
+        this.status = RequestStatus.IN_PROGRESS;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

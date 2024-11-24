@@ -130,6 +130,9 @@ public interface Constants {
     String CREATE_FLOW_USER_PERMISSION = "Vincular Usuário ao Fluxo";
     String DELETE_FLOW_USER_PERMISSION = "Desvincular Usuário de Fluxo";
 
+    // RequestService Permissions
+    String CREATE_REQUEST_PERMISSION = "Solicitar Processo";
+
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
     String PASSWORD_IS_REQUIRED_MESSAGE = "O campo 'Senha' é obrigatório.";
