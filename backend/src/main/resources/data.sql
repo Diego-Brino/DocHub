@@ -178,12 +178,12 @@ VALUES
     (1, 9, 3,'DocHub', CURRENT_DATE),
     (1, 10, 3,'DocHub', CURRENT_DATE);
 
-INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, USUARIO_INSERCAO, DATA_INSERCAO)
+INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, ORIGEM, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
-    ('PDF', 'Documento PDF na Raiz', 1, 'DocHub', CURRENT_DATE),
-    ('DOCX', 'Documento DOCX na Raiz', 1, 'DocHub', CURRENT_DATE),
-    ('Logo Unaerp', 'Logo da Unaerp na Raiz', 2, 'DocHub', CURRENT_DATE),
-    ('PDF', 'Documento PDF na Raiz', 3, 'DocHub', CURRENT_DATE);
+    ('PDF', 'Documento PDF na Raiz', 1, 'GRUPO', 'DocHub', CURRENT_DATE),
+    ('DOCX', 'Documento DOCX na Raiz', 1, 'GRUPO','DocHub', CURRENT_DATE),
+    ('Logo Unaerp', 'Logo da Unaerp na Raiz', 2, 'GRUPO', 'DocHub', CURRENT_DATE),
+    ('PDF', 'Documento PDF na Raiz', 3, 'GRUPO', 'DocHub', CURRENT_DATE);
 
 INSERT INTO arquivo (ID_ARQUIVO, ID_S3_OBJECT, TIPO, TAMANHO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
