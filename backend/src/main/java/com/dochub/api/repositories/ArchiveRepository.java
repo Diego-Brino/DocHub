@@ -17,8 +17,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
     @Query("""
         SELECT a
           FROM Archive a
-        WHERE a.resource.group = :group
-          AND a.id = :idArchive
+        WHERE a.id = :idArchive
           AND (
                 EXISTS        (
                                 SELECT uc

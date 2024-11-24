@@ -7,16 +7,14 @@ import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Activity;
 import com.dochub.api.entities.Flow;
 import com.dochub.api.entities.Process;
-import com.dochub.api.exceptions.EntityNotFoundByIdException;
-import com.dochub.api.exceptions.FlowWithOrderOneAlreadyRegisterException;
-import com.dochub.api.exceptions.ProcessAlreadyStartedException;
-import com.dochub.api.exceptions.ProcessInProgressException;
+import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.FlowRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -49,17 +47,26 @@ public class FlowService {
             .collect(Collectors.toList());
     }
 
+    public Boolean hasFlowsAssignedToActivity (final Activity activity) {
+        final List<Flow> flows = flowRepository
+            .findByActivity(activity)
+            .orElse(Collections.emptyList());
+
+        return !flows.isEmpty();
+    }
+
     public Integer create (final UserRoleResponseDTO userRoles,
                            final Function<Process, Boolean> hasRequestAssignedToProcessFunc,
+                           final Function<Process, Boolean> isProcessFinishedFunc,
                            final CreateFlowDTO createFlowDTO,
                            final Process process, final Activity activity) {
         Utils.checkPermission(userRoles, process.getGroup().getId(), Constants.CREATE_FLOW_PERMISSION);
 
+        final Boolean isProcessFinished = isProcessFinishedFunc.apply(process);
         final Boolean hasRequestAssignedToProcess = hasRequestAssignedToProcessFunc.apply(process);
 
-        if (hasRequestAssignedToProcess) {
-            throw new ProcessAlreadyStartedException();
-        }
+        if (isProcessFinished) throw new ProcessAlreadyFinishedException();
+        if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
 
         final Flow flow = new Flow(createFlowDTO, process, activity, userRoles.user().username());
 
@@ -73,17 +80,18 @@ public class FlowService {
     public void update (final UserRoleResponseDTO userRoles,
                         final Integer flowId,
                         final Function<Process, Boolean> hasRequestAssignedToProcessFunc,
+                        final Function<Process, Boolean> isProcessFinishedFunc,
                         final UpdateFlowDTO updateFlowDTO,
                         final Activity activity) {
         final Flow flow = getById(flowId);
 
         Utils.checkPermission(userRoles, flow.getProcess().getGroup().getId(), Constants.EDIT_FLOW_PERMISSION);
 
+        final Boolean isProcessFinished = isProcessFinishedFunc.apply(flow.getProcess());
         final Boolean hasRequestAssignedToProcess = hasRequestAssignedToProcessFunc.apply(flow.getProcess());
 
-        if (hasRequestAssignedToProcess) {
-            throw new ProcessInProgressException();
-        }
+        if (isProcessFinished) throw new ProcessAlreadyFinishedException();
+        if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
 
         _updateOrderIfPresent(flow, updateFlowDTO.order());
         _updateTimeIfPresent(flow, updateFlowDTO.time());
@@ -101,16 +109,17 @@ public class FlowService {
 
     public void delete (final UserRoleResponseDTO userRoles,
                         final Integer flowId,
-                        final Function<Process, Boolean> hasRequestAssignedToProcessFunc) {
+                        final Function<Process, Boolean> hasRequestAssignedToProcessFunc,
+                        final Function<Process, Boolean> isProcessFinishedFunc) {
         final Flow flow = getById(flowId);
 
         Utils.checkPermission(userRoles, flow.getProcess().getGroup().getId(), Constants.DELETE_FLOW_PERMISSION);
 
+        final Boolean isProcessFinished = isProcessFinishedFunc.apply(flow.getProcess());
         final Boolean hasRequestAssignedToProcess = hasRequestAssignedToProcessFunc.apply(flow.getProcess());
 
-        if (hasRequestAssignedToProcess) {
-            throw new ProcessInProgressException();
-        }
+        if (isProcessFinished) throw new ProcessAlreadyFinishedException();
+        if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
 
         flowRepository.delete(flow);
     }

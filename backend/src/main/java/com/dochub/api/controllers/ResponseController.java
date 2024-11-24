@@ -1,11 +1,9 @@
 package com.dochub.api.controllers;
 
-import com.dochub.api.dtos.flow.CreateFlowDTO;
-import com.dochub.api.dtos.flow.FlowResponseDTO;
-import com.dochub.api.dtos.flow.UpdateFlowDTO;
+import com.dochub.api.dtos.response.CreateResponseDTO;
+import com.dochub.api.dtos.response.ResponseResponseDTO;
+import com.dochub.api.dtos.response.UpdateResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entities.Activity;
-import com.dochub.api.entities.Process;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.*;
 import com.dochub.api.utils.Constants;
@@ -18,77 +16,65 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
-@RequestMapping("/flows")
+@RequestMapping("/responses")
 @RequiredArgsConstructor
-public class FlowController {
+public class ResponseController {
     private final JwtService jwtService;
     private final UserService userService;
     private final UserRoleService userRoleService;
-    private final RequestService requestService;
-    private final ProcessService processService;
-    private final ActivityService activityService;
-    private final FlowService flowService;
+    private final ResponseFlowService responseFlowService;
+    private final ResponseService responseService;
 
     @GetMapping
-    public ResponseEntity<List<FlowResponseDTO>> getAll () {
+    public ResponseEntity<List<ResponseResponseDTO>> getAll () {
         return ResponseEntity
             .ok()
-            .body(flowService.getAll());
+            .body(responseService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FlowResponseDTO> getOne (@PathVariable("id") @NonNull final Integer id) {
+    public ResponseEntity<ResponseResponseDTO> getOne (@PathVariable("id") @NonNull final Integer id) {
         return ResponseEntity
             .ok()
-            .body(flowService.getDtoById(id));
+            .body(responseService.getDtoById(id));
     }
 
     @PostMapping
     public ResponseEntity<Integer> create (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                           @RequestBody @Valid @NonNull final CreateFlowDTO createFlowDTO) {
+                                           @RequestBody @Valid @NonNull final CreateResponseDTO createResponseDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
-        final Process process = processService.getById(createFlowDTO.processId());
-        final Activity activity = activityService.getById(createFlowDTO.activityId());
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(flowService.create(
+            .body(responseService.create(
                 userRoles,
-                requestService::hasRequestAssignedToProcess,
-                processService::isProcessFinished,
-                createFlowDTO,
-                process,
-                activity
+                createResponseDTO
             ));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                         @PathVariable("id") @NonNull final Integer id,
-                                        @RequestBody @Valid @NonNull final UpdateFlowDTO updateFlowDTO) {
+                                        @RequestBody @Valid @NonNull final UpdateResponseDTO updateResponseDTO) {
         final String userEmail = jwtService.extractUserEmail(Utils.removeBearerPrefix(token));
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
-        final Activity activity = Objects.nonNull(updateFlowDTO.activityId()) ? activityService.getById(updateFlowDTO.activityId()) : null;
 
-        flowService.update(
+        responseService.update(
             userRoles,
             id,
-            requestService::hasRequestAssignedToProcess,
-            processService::isProcessFinished,
-            updateFlowDTO,
-            activity
+            updateResponseDTO,
+            responseFlowService::hasResponseFlowsAssignedToResponse
         );
 
         return ResponseEntity
             .ok()
             .build();
-}
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
@@ -97,7 +83,7 @@ public class FlowController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        flowService.delete(userRoles, id, requestService::hasRequestAssignedToProcess, processService::isProcessFinished);
+        responseService.delete(userRoles, id, responseFlowService::hasResponseFlowsAssignedToResponse);
 
         return ResponseEntity
             .noContent()

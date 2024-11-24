@@ -376,21 +376,19 @@ CREATE TABLE IF NOT EXISTS `dochub`.`pasta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- dochub.usuario_cargo_fluxo definition
+-- dochub.usuario_fluxo definition
 
-CREATE TABLE IF NOT EXISTS `dochub`.`usuario_cargo_fluxo` (
-                                       `ID_USUARIO` int NOT NULL,
-                                       `ID_CARGO` int NOT NULL,
-                                       `ID_FLUXO` int NOT NULL,
-                                       `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                                       `DATA_INSERCAO` datetime NOT NULL,
-                                       `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-                                       `DATA_ALTERACAO` datetime DEFAULT NULL,
-                                       PRIMARY KEY (`ID_USUARIO`,`ID_CARGO`,`ID_FLUXO`),
-                                       KEY `usuario_cargo_fluxo_cargo_FK` (`ID_CARGO`),
-                                       KEY `usuario_cargo_fluxo_fluxo_FK` (`ID_FLUXO`),
-                                       CONSTRAINT `usuario_cargo_fluxo_fluxo_FK` FOREIGN KEY (`ID_FLUXO`) REFERENCES `fluxo` (`ID_FLUXO`),
-                                       CONSTRAINT `usuario_cargo_fluxo_usuario_cargo_FK` FOREIGN KEY (`ID_USUARIO`, `ID_CARGO`) REFERENCES `usuario_cargo` (`ID_USUARIO`, `ID_CARGO`)
+CREATE TABLE IF NOT EXISTS `dochub`.`usuario_fluxo` (
+                                 `ID_USUARIO` int NOT NULL,
+                                 `ID_FLUXO` int NOT NULL,
+                                 `USUARIO_INSERCAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                 `DATA_INSERCAO` datetime NOT NULL,
+                                 `USUARIO_ALTERACAO` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+                                 `DATA_ALTERACAO` datetime DEFAULT NULL,
+                                 PRIMARY KEY (`ID_USUARIO`,`ID_FLUXO`),
+                                 KEY `usuario_fluxo_fluxo_FK` (`ID_FLUXO`),
+                                 CONSTRAINT `usuario_fluxo_fluxo_FK` FOREIGN KEY (`ID_FLUXO`) REFERENCES `fluxo` (`ID_FLUXO`),
+                                 CONSTRAINT `usuario_fluxo_usuario_FK` FOREIGN KEY (`ID_USUARIO`) REFERENCES `usuario` (`ID_USUARIO`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

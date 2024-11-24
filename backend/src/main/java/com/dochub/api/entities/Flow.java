@@ -1,7 +1,7 @@
 package com.dochub.api.entities;
 
 import com.dochub.api.dtos.flow.CreateFlowDTO;
-import com.dochub.api.entities.flow_user_role.FlowUserRole;
+import com.dochub.api.entities.flow_user.FlowUser;
 import com.dochub.api.entities.response_flow.ResponseFlow;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -46,7 +46,7 @@ public class Flow {
     private List<ResponseFlow> responseFlows;
 
     @OneToMany(mappedBy = "flow", cascade = { CascadeType.REMOVE })
-    private List<FlowUserRole> flowUserRoles;
+    private List<FlowUser> flowUsers;
 
     @Embedded
     private AuditRecord auditRecord;

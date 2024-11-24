@@ -101,25 +101,34 @@ public interface Constants {
     String EDIT_SERVICE_PERMISSION = "Editar Serviço";
     String DELETE_SERVICE_PERMISSION = "Deletar Serviço";
 
-    // Activity Permissions
+    // ActivityService Permissions
     String CREATE_ACTIVITY_PERMISSION = "Criar Atividade";
     String EDIT_ACTIVITY_PERMISSION = "Editar Atividade";
     String DELETE_ACTIVITY_PERMISSION = "Deletar Atividade";
 
-    // Response Permissions
+    // ResponseService Permissions
     String CREATE_RESPONSE_PERMISSION = "Criar Resposta";
     String EDIT_RESPONSE_PERMISSION = "Editar Resposta";
     String DELETE_RESPONSE_PERMISSION = "Deletar Resposta";
 
-    // Process Permissions
+    // ProcessService Permissions
     String CREATE_PROCESS_PERMISSION = "Criar Processo";
     String EDIT_PROCESS_PERMISSION = "Editar Processo";
     String DELETE_PROCESS_PERMISSION = "Deletar Processo";
 
-    // Flow Permissions
+    // FlowService Permissions
     String CREATE_FLOW_PERMISSION = "Criar Fluxo";
     String EDIT_FLOW_PERMISSION = "Editar Fluxo";
     String DELETE_FLOW_PERMISSION = "Deletar Fluxo";
+
+    // ResponseFlowService Permissions
+    String CREATE_RESPONSE_FLOW_PERMISSION = "Criar Fluxo de Resposta";
+    String EDIT_RESPONSE_FLOW_PERMISSION = "Editar Fluxo de Resposta";
+    String DELETE_RESPONSE_FLOW_PERMISSION = "Deletar Fluxo de Resposta";
+
+    // FlowUserService Permissions
+    String CREATE_FLOW_USER_PERMISSION = "Vincular Usuário ao Fluxo";
+    String DELETE_FLOW_USER_PERMISSION = "Desvincular Usuário de Fluxo";
 
     // Validation Messages
     String NAME_IS_REQUIRED_MESSAGE = "O campo 'Nome' é obrigatório.";
@@ -176,6 +185,7 @@ public interface Constants {
     String SERVICE_HAS_PROCESSES_IN_PROGRESS_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o serviço atual possui processos em andamento.";
     String FLOW_WITH_ORDER_ONE_ALREADY_REGISTER_EXCEPTION_MESSAGE = "Já existe um fluxo inicial (ordem 1) registrado para este processo.";
     String PROCESS_ALREADY_STARTED_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo a qual este fluxo está vinculado já foi iniciado.";
+    String PROCESS_ALREADY_FINISHED_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo atual já foi finalizado.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

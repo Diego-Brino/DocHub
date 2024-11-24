@@ -1,4 +1,4 @@
-package com.dochub.api.entities.flow_user_role;
+package com.dochub.api.entities.flow_user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -12,12 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class FlowUserRolePK {
+public class FlowUserPK {
     @Column(name = "ID_USUARIO")
     private Integer idUser;
-
-    @Column(name = "ID_CARGO")
-    private Integer idRole;
 
     @Column(name = "ID_FLUXO")
     private Integer idFlow;
