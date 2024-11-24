@@ -46,6 +46,14 @@ public class ProcessService {
             .collect(Collectors.toList());
     }
 
+    public Boolean isProcessFinished (final Process process) {
+        if (Objects.isNull(process.getEndDate())) {
+            return Boolean.FALSE;
+        }
+
+        return Boolean.TRUE;
+    }
+
     public Integer create (final UserRoleResponseDTO userRoles,
                            final com.dochub.api.entities.Service service, final Group group) {
         Utils.checkPermission(userRoles, group.getId(), Constants.CREATE_PROCESS_PERMISSION);
