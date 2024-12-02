@@ -3,7 +3,7 @@ import {
   Folder,
 } from "@/services/groups/use-get-group-root-resources.ts";
 import { Card, CardTitle } from "@/components/ui/card.tsx";
-import { File, Folder as FolderIcon } from "lucide-react";
+import { File, Folder as FolderIcon, MoreVertical, Undo2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,6 +27,16 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
 import { useGroupToolbarContext } from "@/features/groups/group-toolbar/group-toolbar.tsx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu.tsx";
+import { useDeleteFolder } from "@/services/folders/use-delete-folder.ts";
+import { usePutFolder } from "@/services/folders/use-put-folder.ts";
+import { useParams } from "react-router-dom";
+import { usePutArchive } from "@/services/archives/use-put-archive.ts";
 
 function getFileExtension(mimeType: string) {
   switch (mimeType) {
@@ -54,38 +64,176 @@ function ArchiveCard({
   archive: Archive;
   onClick: MouseEventHandler<HTMLDivElement> | undefined;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { mutateAsync: deleteFile } = useDeleteArchive();
+
   return (
-    <Card className="hover:bg-muted hover:cursor-pointer" onClick={onClick}>
-      <div className="p-4 flex gap-4 items-center">
-        <File className="size-8 min-h-8 min-w-8" />
-        <div className="overflow-hidden">
-          <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap">
-            {archive.name}
-          </CardTitle>
+    <>
+      <Card
+        className="hover:bg-muted hover:cursor-pointer"
+        onClick={onClick}
+        draggable
+        onDragStart={(e) => {
+          e.dataTransfer.setData(
+            "application/json",
+            JSON.stringify({ type: "archive", id: archive.id }),
+          );
+        }}
+      >
+        <div className="p-4 flex gap-4 items-center justify-between overflow-hidden relative">
+          <div className="flex gap-4 items-center">
+            <File className="size-8 min-h-8 min-w-8" />
+            <div className="overflow-hidden">
+              <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-40">
+                {archive.name}
+              </CardTitle>
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="min-h-[40px] min-w-[58px] absolute right-2 bg-background"
+              >
+                <MoreVertical />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Acessar</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                }}
+              >
+                Excluir
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
-    </Card>
+      </Card>
+      <AlertDialog
+        open={isOpen}
+        onOpenChange={() => {
+          setIsOpen(false);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja excluir este arquivo?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteFile(archive.id)}>
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
 
 const FolderCard = ({
   folder,
   onClick,
+  onDropFile,
 }: {
   folder: Folder;
   onClick: MouseEventHandler<HTMLDivElement> | undefined;
+  onDropFile: (
+    resource: {
+      type: "folder" | "archive";
+      id: number;
+    },
+    folderId: number,
+  ) => void;
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { mutateAsync: deleteFolder } = useDeleteFolder({
+    id: folder.id,
+  });
+
   return (
-    <Card className="hover:bg-muted hover:cursor-pointer" onClick={onClick}>
-      <div className="p-4 flex gap-4 items-center">
-        <FolderIcon className="size-8 min-h-8 min-w-8" />
-        <div className="overflow-hidden">
-          <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap">
-            {folder.name}
-          </CardTitle>
+    <>
+      <Card
+        className="hover:bg-muted hover:cursor-pointer"
+        onClick={onClick}
+        draggable
+        onDragStart={(e) => {
+          e.dataTransfer.setData(
+            "application/json",
+            JSON.stringify({ type: "folder", id: folder.id }),
+          );
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          const data = JSON.parse(e.dataTransfer.getData("application/json"));
+          onDropFile(data, folder.id);
+        }}
+      >
+        <div className="p-4 flex gap-4 items-center justify-between overflow-hidden relative">
+          <div className="flex gap-4 items-center">
+            <FolderIcon className="size-8 min-h-8 min-w-8" />
+            <div className="overflow-hidden">
+              <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-40">
+                {folder.name}
+              </CardTitle>
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="min-h-[40px] min-w-[58px] absolute right-2 bg-background"
+              >
+                <MoreVertical />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Acessar</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                }}
+              >
+                Excluir
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
-    </Card>
+      </Card>
+      <AlertDialog
+        open={isOpen}
+        onOpenChange={() => {
+          setIsOpen(false);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja excluir esta pasta?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteFolder()}>
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
@@ -101,7 +249,38 @@ function GroupResources({
   currentPath: { id: number; name: string }[];
   setCurrentPath: (path: { id: number; name: string }[]) => void;
 }) {
-  //const { id } = useParams();
+  const { id } = useParams();
+
+  const { mutateAsync: mutateAsyncPutFolder } = usePutFolder(Number(id));
+  const { mutateAsync: mutateAsyncPutArchive } = usePutArchive(Number(id));
+
+  const onMoveResource = (
+    resource: {
+      type: "folder" | "archive";
+      id: number;
+    },
+    folderId: number | null,
+  ) => {
+    console.log("onMoveResource", resource, folderId);
+
+    if (resource.type === "folder") {
+      mutateAsyncPutFolder({
+        id: resource.id,
+        name: data.folders.find((f) => f.id === resource.id)?.name || "",
+        description: "",
+        parentFolderId: folderId,
+      });
+    } else {
+      mutateAsyncPutArchive({
+        id: resource.id,
+        name: data.archives.find((a) => a.id === resource.id)?.name || "",
+        description: "",
+        folderId: folderId,
+        contentType: "",
+        length: 0,
+      });
+    }
+  };
 
   const { mutateAsync } = useDeleteArchive();
 
@@ -129,9 +308,45 @@ function GroupResources({
 
   const { appliedFilter } = useGroupToolbarContext();
 
+  const parentFolderId = currentPath[currentPath.length - 1]?.id || null;
+
   return (
     <>
       <div className="w-full h-full gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 overflow-y-scroll content-start relative mb-8 md:mb-0">
+        {parentFolderId && (
+          <Card
+            className="hover:bg-muted hover:cursor-pointer"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const data = JSON.parse(
+                e.dataTransfer.getData("application/json"),
+              );
+              onMoveResource(
+                data,
+                currentPath[currentPath.length - 2]?.id || null,
+              );
+            }}
+            onClick={
+              currentPath.length > 0
+                ? () => {
+                    setCurrentPath(currentPath.slice(0, -1));
+                  }
+                : undefined
+            }
+          >
+            <div className="p-4 flex gap-4 items-center justify-between overflow-hidden relative">
+              <div className="flex gap-4 items-center">
+                <Undo2 className="size-8 min-h-8 min-w-8" />
+                <div className="overflow-hidden">
+                  <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-40">
+                    Voltar
+                  </CardTitle>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
         {data?.folders
           .filter((f) =>
             f.name.toLowerCase().includes(appliedFilter.toLowerCase()),
@@ -149,6 +364,7 @@ function GroupResources({
                   },
                 ]);
               }}
+              onDropFile={onMoveResource}
             />
           ))}
         {data?.archives
