@@ -2,7 +2,7 @@ package com.dochub.api.controllers;
 
 import com.dochub.api.dtos.process.CreateProcessDTO;
 import com.dochub.api.dtos.process.ProcessResponseDTO;
-import com.dochub.api.dtos.process.UpdateProcessDTO;
+import com.dochub.api.dtos.process.UpdateEndDateDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Service;
@@ -18,10 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
-@RequestMapping("/process")
+@RequestMapping("/processes")
 @RequiredArgsConstructor
 public class ProcessController {
     private final JwtService jwtService;
@@ -64,23 +63,19 @@ public class ProcessController {
             ));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                        @PathVariable("id") @NonNull final Integer id,
-                                        @RequestBody @Valid @NonNull final UpdateProcessDTO updateProcessDTO) {
+    @PatchMapping("/{id}/end-date")
+    public ResponseEntity<Void> updateEndDate (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                               @PathVariable("id") @NonNull final Integer id,
+                                               @RequestBody @Valid @NonNull final UpdateEndDateDTO updateEndDateDTO) {
         final String userEmail = jwtService.extractUserEmail(Utils.removeBearerPrefix(token));
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
-        final Service service = Objects.nonNull(updateProcessDTO.serviceId()) ? serviceService.getById(updateProcessDTO.serviceId()) : null;
-        final Group group = Objects.nonNull(updateProcessDTO.groupId()) ? groupService.getById(updateProcessDTO.groupId()) : null;
 
-        processService.update(
+        processService.updateEndDate(
             userRoles,
             id,
             requestService::hasRequestInProgressAssignedToProcess,
-            updateProcessDTO,
-            service,
-            group
+            updateEndDateDTO
         );
 
         return ResponseEntity

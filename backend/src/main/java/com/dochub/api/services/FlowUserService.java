@@ -1,5 +1,6 @@
 package com.dochub.api.services;
 
+import com.dochub.api.dtos.flow.FlowResponseDTO;
 import com.dochub.api.dtos.flow_user.FlowUserResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Flow;
@@ -7,16 +8,20 @@ import com.dochub.api.entities.Process;
 import com.dochub.api.entities.User;
 import com.dochub.api.entities.flow_user.FlowUser;
 import com.dochub.api.entities.flow_user.FlowUserPK;
+import com.dochub.api.exceptions.CannotRemoveUserFromFlowException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
 import com.dochub.api.exceptions.ProcessAlreadyFinishedException;
 import com.dochub.api.exceptions.ProcessAlreadyStartedException;
+import com.dochub.api.repositories.FlowRepository;
 import com.dochub.api.repositories.FlowUserRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FlowUserService {
     private final FlowUserRepository flowUserRepository;
+    private final FlowRepository flowRepository;
 
     public FlowUser getById (final Integer userId, final Integer flowId) {
         final FlowUserPK flowUserPK = new FlowUserPK(userId, flowId);
@@ -46,6 +52,35 @@ public class FlowUserService {
             .stream()
             .map(FlowUserResponseDTO::new)
             .collect(Collectors.toList());
+    }
+
+    public List<FlowResponseDTO> getFlowsInProgressByUser (final User user) {
+        final List<Flow> flows = flowUserRepository
+            .findFlowsInProgressByUser(user)
+            .orElse(Collections.emptyList());
+
+        return flows
+            .stream()
+            .map(FlowResponseDTO::new)
+            .collect(Collectors.toList());
+    }
+
+    public Boolean isSingleUserLinkedToFlow (final Flow flow) {
+        final List<FlowUser> flowUsers = flowUserRepository
+            .findByFlow(flow)
+            .orElse(Collections.emptyList());
+
+        if (Objects.equals(flowUsers.size(), 1)) {
+            return Boolean.TRUE;
+        }
+
+        return Boolean.FALSE;
+    }
+
+    public void create (final User user, final Flow flow) {
+        final FlowUser flowUser = new FlowUser(flow, user, Constants.SYSTEM_NAME);
+
+        flowUserRepository.save(flowUser);
     }
 
     public FlowUserPK create (final UserRoleResponseDTO userRoles,
@@ -78,6 +113,7 @@ public class FlowUserService {
 
         if (isProcessFinished) throw new ProcessAlreadyFinishedException();
         if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
+        if (isSingleUserLinkedToFlow(flowUser.getFlow())) throw new CannotRemoveUserFromFlowException();
 
         flowUserRepository.delete(flowUser);
     }

@@ -7,10 +7,12 @@ import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Activity;
 import com.dochub.api.entities.Flow;
 import com.dochub.api.entities.Process;
+import com.dochub.api.entities.User;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.FlowRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,11 +58,14 @@ public class FlowService {
         return !flows.isEmpty();
     }
 
+    @Transactional
     public Integer create (final UserRoleResponseDTO userRoles,
+                           final User user,
                            final Function<Process, Boolean> hasRequestAssignedToProcessFunc,
                            final Function<Process, Boolean> isProcessFinishedFunc,
                            final CreateFlowDTO createFlowDTO,
-                           final Process process, final Activity activity) {
+                           final Process process, final Activity activity,
+                           final BiConsumer<User, Flow> assignedUserToFlow) {
         Utils.checkPermission(userRoles, process.getGroup().getId(), Constants.CREATE_FLOW_PERMISSION);
 
         final Boolean isProcessFinished = isProcessFinishedFunc.apply(process);
@@ -74,7 +80,11 @@ public class FlowService {
             throw new FlowWithOrderOneAlreadyRegisterException();
         }
 
-        return flowRepository.save(flow).getId();
+        final Flow flowSync = flowRepository.save(flow);
+
+        assignedUserToFlow.accept(user, flowSync);
+
+        return flow.getId();
     }
 
     public void update (final UserRoleResponseDTO userRoles,

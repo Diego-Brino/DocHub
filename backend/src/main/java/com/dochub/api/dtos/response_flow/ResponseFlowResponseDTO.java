@@ -4,6 +4,8 @@ import com.dochub.api.dtos.flow.ResponseFlowFlowResponseDTO;
 import com.dochub.api.dtos.response.ResponseResponseDTO;
 import com.dochub.api.entities.response_flow.ResponseFlow;
 
+import java.util.Objects;
+
 public record ResponseFlowResponseDTO (
     ResponseFlowFlowResponseDTO flow,
     ResponseResponseDTO response,
@@ -13,7 +15,7 @@ public record ResponseFlowResponseDTO (
         this (
             new ResponseFlowFlowResponseDTO(responseFlow.getFlow()),
             new ResponseResponseDTO(responseFlow.getResponse()),
-            new ResponseFlowFlowResponseDTO(responseFlow.getDestinationFlow())
+            Objects.nonNull(responseFlow.getDestinationFlow()) ? new ResponseFlowFlowResponseDTO(responseFlow.getDestinationFlow()) : null
         );
     }
 }

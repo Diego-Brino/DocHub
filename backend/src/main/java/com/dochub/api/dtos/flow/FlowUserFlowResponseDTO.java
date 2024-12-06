@@ -1,7 +1,6 @@
 package com.dochub.api.dtos.flow;
 
 import com.dochub.api.dtos.activity.ActivityResponseDTO;
-import com.dochub.api.dtos.flow_user.FlowUserResponseDTO;
 import com.dochub.api.dtos.process.FlowProcessResponseDTO;
 import com.dochub.api.dtos.response_flow.ResponseFlowResponseDTO;
 import com.dochub.api.entities.Flow;
@@ -10,17 +9,16 @@ import com.dochub.api.utils.Utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record FlowResponseDTO (
+public record FlowUserFlowResponseDTO (
     Integer id,
     Integer order,
     Integer time,
     String limitDate,
     FlowProcessResponseDTO process,
     ActivityResponseDTO activity,
-    List<ResponseFlowResponseDTO> responseFlows,
-    List<FlowUserResponseDTO> flowUsers
+    List<ResponseFlowResponseDTO> responseFlows
 ) {
-    public FlowResponseDTO (final Flow flow) {
+    public FlowUserFlowResponseDTO (final Flow flow) {
         this (
             flow.getId(),
             flow.getOrder(),
@@ -31,10 +29,6 @@ public record FlowResponseDTO (
             flow.getResponseFlows()
                 .stream()
                 .map(ResponseFlowResponseDTO::new)
-                .collect(Collectors.toList()),
-            flow.getFlowUsers()
-                .stream()
-                .map(FlowUserResponseDTO::new)
                 .collect(Collectors.toList())
         );
     }

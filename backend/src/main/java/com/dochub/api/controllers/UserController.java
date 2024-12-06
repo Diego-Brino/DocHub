@@ -1,10 +1,12 @@
 package com.dochub.api.controllers;
 
+import com.dochub.api.dtos.flow.FlowResponseDTO;
 import com.dochub.api.dtos.user.UpdatePasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user.UpdateUserResponseDTO;
 import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.entities.User;
+import com.dochub.api.services.FlowUserService;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserController {
     private final JwtService jwtService;
     private final UserService userService;
+    private final FlowUserService flowUserService;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAll () {
@@ -47,6 +50,15 @@ public class UserController {
         return ResponseEntity
             .ok()
             .body(userService.getAvatar(id));
+    }
+
+    @GetMapping("/{id}/flows")
+    public ResponseEntity<List<FlowResponseDTO>> getFlows (@PathVariable("id") @NonNull final Integer id) {
+        final User user = userService.getById(id);
+
+        return ResponseEntity
+            .ok()
+            .body(flowUserService.getFlowsInProgressByUser(user));
     }
 
     @PutMapping("/{id}")
@@ -75,8 +87,8 @@ public class UserController {
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<UpdateUserResponseDTO> updatePassword (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
-                                                @PathVariable("id") @NonNull final Integer id,
-                                                @RequestBody @NonNull @Valid final UpdatePasswordDTO updatePasswordDTO) {
+                                                                 @PathVariable("id") @NonNull final Integer id,
+                                                                 @RequestBody @NonNull @Valid final UpdatePasswordDTO updatePasswordDTO) {
         final String userEmail = jwtService.extractUserEmail(token);
 
         final User user = userService.updatePassword(id, userEmail, updatePasswordDTO);

@@ -31,6 +31,7 @@ public class FlowController {
     private final ProcessService processService;
     private final ActivityService activityService;
     private final FlowService flowService;
+    private final FlowUserService flowUserService;
 
     @GetMapping
     public ResponseEntity<List<FlowResponseDTO>> getAll () {
@@ -59,11 +60,13 @@ public class FlowController {
             .status(HttpStatus.CREATED)
             .body(flowService.create(
                 userRoles,
+                user,
                 requestService::hasRequestAssignedToProcess,
                 processService::isProcessFinished,
                 createFlowDTO,
                 process,
-                activity
+                activity,
+                flowUserService::create
             ));
     }
 

@@ -1,7 +1,7 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.process.ProcessResponseDTO;
-import com.dochub.api.dtos.process.UpdateProcessDTO;
+import com.dochub.api.dtos.process.UpdateEndDateDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Process;
@@ -46,6 +46,17 @@ public class ProcessService {
             .collect(Collectors.toList());
     }
 
+    public List<ProcessResponseDTO> getAllByGroup (final Group group) {
+        final List<Process> processes = processRepository
+            .findByGroup(group)
+            .orElse(Collections.emptyList());
+
+        return processes
+            .stream()
+            .map(ProcessResponseDTO::new)
+            .collect(Collectors.toList());
+    }
+
     public Boolean isProcessFinished (final Process process) {
         if (Objects.isNull(process.getEndDate())) {
             return Boolean.FALSE;
@@ -63,11 +74,10 @@ public class ProcessService {
         return processRepository.save(process).getId();
     }
 
-    public void update (final UserRoleResponseDTO userRoles,
-                        final Integer processId,
-                        final Function<Process, Boolean> hasRequestInProgressAssignedToProcessFunc,
-                        final UpdateProcessDTO updateProcessDTO,
-                        final com.dochub.api.entities.Service service, final Group group) {
+    public void updateEndDate (final UserRoleResponseDTO userRoles,
+                               final Integer processId,
+                               final Function<Process, Boolean> hasRequestInProgressAssignedToProcessFunc,
+                               final UpdateEndDateDTO updateEndDateDTO) {
         final Process process = getById(processId);
 
         Utils.checkPermission(userRoles, process.getGroup().getId(), Constants.EDIT_PROCESS_PERMISSION);
@@ -78,9 +88,7 @@ public class ProcessService {
             throw new ProcessInProgressException();
         }
 
-        _updateEndDateIfPresent(process, updateProcessDTO.endDate());
-        _updateServiceIfPresent(process, service);
-        _updateGroupIfPresent(process, group);
+        _updateEndDateIfPresent(process, updateEndDateDTO.endDate());
 
         _logAuditForChange(process, userRoles.user().username());
 
@@ -114,18 +122,6 @@ public class ProcessService {
     private void _updateEndDateIfPresent (final Process process, final Date endDate) {
         if (Objects.nonNull(endDate)) {
             process.setEndDate(endDate);
-        }
-    }
-
-    private void _updateServiceIfPresent (final Process process, final com.dochub.api.entities.Service service) {
-        if (Objects.nonNull(service)) {
-            process.setService(service);
-        }
-    }
-
-    private void _updateGroupIfPresent (final Process process, final Group group) {
-        if (Objects.nonNull(group)) {
-            process.setGroup(group);
         }
     }
 

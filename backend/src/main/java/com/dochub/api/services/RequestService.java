@@ -66,6 +66,16 @@ public class RequestService {
         return Boolean.TRUE;
     }
 
+    public Boolean hasRequestAssignedToService (final com.dochub.api.entities.Service service) {
+        final List<Request> requests = requestRepository
+            .findByProcess_Service(service)
+            .orElse(Collections.emptyList());
+
+        if (requests.isEmpty()) return Boolean.FALSE;
+
+        return Boolean.TRUE;
+    }
+
     public Boolean hasRequestAssignedToProcess (final Process process) {
         final List<Request> requests = requestRepository
             .findByProcess(process)

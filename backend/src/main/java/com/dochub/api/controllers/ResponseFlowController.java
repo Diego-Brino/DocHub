@@ -57,7 +57,7 @@ public class ResponseFlowController {
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
         final Flow flow = flowService.getById(createResponseFlowDTO.flowId());
         final Response response = responseService.getById(createResponseFlowDTO.responseId());
-        final Flow destinationFlow = flowService.getById(createResponseFlowDTO.destinationFlowId());
+        final Flow destinationFlow = Objects.nonNull(createResponseFlowDTO.destinationFlowId()) ? flowService.getById(createResponseFlowDTO.destinationFlowId()) : null;
 
         return ResponseEntity
             .status(HttpStatus.CREATED)

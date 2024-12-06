@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Integer> {
     Optional<List<Request>> findByProcess (Process process);
+    Optional<List<Request>> findByProcess_Service (Service service);
 
     @Query("""
         SELECT r
