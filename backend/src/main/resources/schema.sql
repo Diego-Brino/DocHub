@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `dochub`.`historico` (
                              `ID_HISTORICO` int NOT NULL AUTO_INCREMENT,
                              `ID_GRUPO` int NOT NULL,
                              `TIPO_MOVIMENTACAO` enum('CRIADO','EDITADO','DELETADO') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-                             `DESCRICAO` varchar(256) DEFAULT NULL,
+                             `DESCRICAO` varchar(4000) DEFAULT NULL,
                              `USUARIO_MOVIMENTACAO` varchar(100) NOT NULL,
                              `DATA_MOVIMENTACAO` datetime NOT NULL,
                              PRIMARY KEY (`ID_HISTORICO`),

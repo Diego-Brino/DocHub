@@ -2,7 +2,7 @@ package com.dochub.api.utils;
 
 public interface Constants {
     // Token Expiration Times
-    long TOKEN_EXPIRATION_TIME_MILLIS = 1000 * 60 * 20; // 20 minutes
+    long TOKEN_EXPIRATION_TIME_MILLIS = 1000 * 60 * 60; // 60 minutes
     long RECOVER_PASSWORD_TOKEN_EXPIRATION_TIME_MILLIS = 24 * 60 * 60 * 1000; // 24 hours
 
     // System Information
