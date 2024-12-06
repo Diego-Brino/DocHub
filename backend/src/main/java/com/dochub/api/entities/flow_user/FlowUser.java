@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "DOCHUB", name = "USUARIO_CARGO_FLUXO")
+@Table(schema = "DOCHUB", name = "USUARIO_FLUXO")
 public class FlowUser {
     @EmbeddedId
     private FlowUserPK id;
