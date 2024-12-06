@@ -20,7 +20,7 @@ TRUNCATE TABLE `dochub`.`fluxo`;
 TRUNCATE TABLE `dochub`.`fluxo_resposta`;
 TRUNCATE TABLE `dochub`.`historico`;
 TRUNCATE TABLE `dochub`.`pasta`;
-TRUNCATE TABLE `dochub`.`usuario_cargo_fluxo`;
+TRUNCATE TABLE `dochub`.`usuario_fluxo`;
 TRUNCATE TABLE `dochub`.`arquivo`;
 TRUNCATE TABLE `dochub`.`solicitacao`;
 TRUNCATE TABLE `dochub`.`movimento`;
