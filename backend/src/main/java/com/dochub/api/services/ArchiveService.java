@@ -133,7 +133,7 @@ public class ArchiveService {
             throw new ObjectNotFoundException(archive.getResource().getGroup().getIdS3Bucket(), archive.getS3Hash());
         }
 
-        Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.EDIT_ARCHIVE_PERMISSION);
+        Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.MOVE_ARCHIVE_PERMISSION);
 
         _logEditHistory(archive, updateArchiveDTO, getFolderByIdFunc, userRoles.user().username(), logEditResourceHistoryFunc);
 

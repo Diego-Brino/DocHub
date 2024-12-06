@@ -80,12 +80,12 @@ public interface Constants {
 
     // ArchiveService Permissions
     String CREATE_ARCHIVE_PERMISSION = "Criar Arquivo";
-    String EDIT_ARCHIVE_PERMISSION = "Editar Arquivo";
+    String MOVE_ARCHIVE_PERMISSION = "Mover Arquivo";
     String DELETE_ARCHIVE_PERMISSION = "Deletar Arquivo";
 
     // FolderService Permissions
     String CREATE_FOLDER_PERMISSION = "Criar Pasta";
-    String EDIT_FOLDER_PERMISSION = "Editar Pasta";
+    String MOVE_FOLDER_PERMISSION = "Mover Pasta";
     String DELETE_FOLDER_PERMISSION = "Deletar Pasta";
 
     // Profile Permissions

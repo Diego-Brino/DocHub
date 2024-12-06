@@ -51,10 +51,10 @@ VALUES
    ('Vincular permissão de recurso á Cargo', 'DocHub', CURRENT_DATE),
    ('Desvincular permissão de recurso de Cargo', 'DocHub', CURRENT_DATE),
    ('Criar Arquivo', 'DocHub', CURRENT_DATE),
-   ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+   ('Mover Arquivo', 'DocHub', CURRENT_DATE),
    ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
    ('Criar Pasta', 'DocHub', CURRENT_DATE),
-   ('Editar Pasta', 'DocHub', CURRENT_DATE),
+   ('Mover Pasta', 'DocHub', CURRENT_DATE),
    ('Deletar Pasta', 'DocHub', CURRENT_DATE),
    ('Criar Usuário', 'DocHub', CURRENT_DATE),
    ('Atualizar perfil de Usuário', 'DocHub', CURRENT_DATE),
@@ -76,18 +76,20 @@ VALUES
     ('Editar Grupo', 'DocHub', CURRENT_DATE),
     ('Deletar Grupo', 'DocHub', CURRENT_DATE),
     ('Criar Arquivo', 'DocHub', CURRENT_DATE),
-    ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Mover Arquivo', 'DocHub', CURRENT_DATE),
     ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
     ('Criar Pasta', 'DocHub', CURRENT_DATE),
-    ('Editar Pasta', 'DocHub', CURRENT_DATE),
+    ('Mover Pasta', 'DocHub', CURRENT_DATE),
     ('Deletar Pasta', 'DocHub', CURRENT_DATE),
     ('Visualizar histórico de Recursos', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_recurso (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
-    ('Editar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Visualizar Arquivo', 'DocHub', CURRENT_DATE),
+    ('Mover Arquivo', 'DocHub', CURRENT_DATE),
     ('Deletar Arquivo', 'DocHub', CURRENT_DATE),
-    ('Editar Pasta', 'DocHub', CURRENT_DATE),
+    ('Visualizar Pasta', 'DocHub', CURRENT_DATE),
+    ('Mover Pasta', 'DocHub', CURRENT_DATE),
     ('Deletar Pasta', 'DocHub', CURRENT_DATE);
 
 INSERT INTO cargo (NOME, DESCRICAO, COR, USUARIO_INSERCAO, DATA_INSERCAO)

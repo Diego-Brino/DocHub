@@ -85,7 +85,7 @@ public class FolderService {
                         final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
         final Folder folder = getById(folderId);
 
-        Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.EDIT_FOLDER_PERMISSION);
+        Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.MOVE_FOLDER_PERMISSION);
 
         _logEditHistory(folder, updateFolderDTO, parentFolder, userRoles.user().username(), logEditResourceHistoryFunc);
 
