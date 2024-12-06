@@ -57,6 +57,17 @@ public class ProcessService {
             .collect(Collectors.toList());
     }
 
+    public List<ProcessResponseDTO> getAllByService (final com.dochub.api.entities.Service service) {
+        final List<Process> processes = processRepository
+            .findByService(service)
+            .orElse(Collections.emptyList());
+
+        return processes
+            .stream()
+            .map(ProcessResponseDTO::new)
+            .collect(Collectors.toList());
+    }
+
     public Boolean isProcessFinished (final Process process) {
         if (Objects.isNull(process.getEndDate())) {
             return Boolean.FALSE;

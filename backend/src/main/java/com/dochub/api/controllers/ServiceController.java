@@ -1,9 +1,11 @@
 package com.dochub.api.controllers;
 
+import com.dochub.api.dtos.process.ProcessResponseDTO;
 import com.dochub.api.dtos.service.CreateServiceDTO;
 import com.dochub.api.dtos.service.ServiceResponseDTO;
 import com.dochub.api.dtos.service.UpdateServiceDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
+import com.dochub.api.entities.Service;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.*;
 import com.dochub.api.utils.Constants;
@@ -26,6 +28,7 @@ public class ServiceController {
     private final UserRoleService userRoleService;
     private final RequestService requestService;
     private final ServiceService serviceService;
+    private final ProcessService processService;
 
     @GetMapping
     public ResponseEntity<List<ServiceResponseDTO>> getAll () {
@@ -39,6 +42,15 @@ public class ServiceController {
         return ResponseEntity
             .ok()
             .body(serviceService.getDtoById(serviceId));
+    }
+
+    @GetMapping("/{id}/processes")
+    public ResponseEntity<List<ProcessResponseDTO>> getAllProcessesByService (@PathVariable("id") final Integer idService) {
+        final Service service = serviceService.getById(idService);
+
+        return ResponseEntity
+            .ok()
+            .body(processService.getAllByService(service));
     }
 
     @PostMapping

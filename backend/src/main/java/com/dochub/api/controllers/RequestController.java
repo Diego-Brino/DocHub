@@ -46,7 +46,6 @@ public class RequestController {
         final String userEmail = jwtService.extractUserEmail(token);
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
-        final User userRequest = userService.getById(createRequestDTO.userId());
         final Process process = processService.getById(createRequestDTO.processId());
 
         return ResponseEntity
@@ -54,7 +53,7 @@ public class RequestController {
             .body(requestService.create(
                 userRoles,
                 processService::isProcessFinished,
-                userRequest,
+                user,
                 process
             ));
     }
