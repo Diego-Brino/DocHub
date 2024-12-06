@@ -37,6 +37,9 @@ type RolePermissionsDialogContext = {
   isOpen: boolean;
   open: (id: number | null) => void;
   close: () => void;
+  resourceFlag: boolean;
+  selectedResource: Archive | Folder | null;
+  setSelectedResource: (resource: Archive | Folder | null) => void;
 };
 
 const RolePermissionsDialogContext =
@@ -45,14 +48,19 @@ const RolePermissionsDialogContext =
     isOpen: false,
     open: () => {},
     close: () => {},
+    resourceFlag: false,
+    selectedResource: null,
+    setSelectedResource: () => {},
   });
 
 type RolePermissionsDialogProviderProps = {
   children: ReactNode;
+  resourceFlag?: boolean;
 };
 
 function RolePermissionsDialogProvider({
   children,
+  resourceFlag = false,
 }: RolePermissionsDialogProviderProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
@@ -69,7 +77,15 @@ function RolePermissionsDialogProvider({
 
   return (
     <RolePermissionsDialogContext.Provider
-      value={{ isOpen, open, close, selectedRoleId }}
+      value={{
+        isOpen,
+        open,
+        close,
+        selectedRoleId,
+        resourceFlag,
+        selectedResource: null,
+        setSelectedResource: () => {},
+      }}
     >
       {children}
     </RolePermissionsDialogContext.Provider>
@@ -89,7 +105,8 @@ function useRolePermissionsDialogContext() {
 }
 
 function RolePermissionsDialog() {
-  const { isOpen, close, selectedRoleId } = useRolePermissionsDialogContext();
+  const { isOpen, close, selectedRoleId, resourceFlag } =
+    useRolePermissionsDialogContext();
 
   const { open } = useRolePermissionDeleteConfirmationAlertContext();
   const { open: openRoleAddPermissionSheet } =
@@ -266,77 +283,149 @@ function RolePermissionsDialog() {
     },
   ];
 
+  const columnsResource2: ColumnDef<{
+    role: { id: number; name: string; description: string };
+    resource: Archive | Folder;
+    permission: { id: number; description: string };
+  }>[] = [
+    {
+      header: "Cargo",
+      accessorKey: "description",
+      accessorFn: (row) => row.resource.description,
+      cell: ({ row }) => (
+        <p className="text-nowrap">{row.original.resource.description}</p>
+      ),
+    },
+    {
+      header: "Permissão",
+      accessorKey: "permission",
+      accessorFn: (row) => row.permission.description,
+      cell: ({ row }) => (
+        <p className="text-nowrap">{row.original.permission.description}</p>
+      ),
+    },
+    {
+      header: "Ações",
+      accessorKey: "id",
+      enableColumnFilter: false,
+      cell: ({ row }) => (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() =>
+                open(() =>
+                  handleDeleteResourcePermission(
+                    row.original.permission.id,
+                    row.original.resource.id,
+                  ),
+                )
+              }
+            >
+              <TrashIcon className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Excluir</TooltipContent>
+        </Tooltip>
+      ),
+    },
+  ];
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="min-w-[500px] max-w-min">
         <DialogHeader>
           <DialogTitle>Permissões</DialogTitle>
-          <DialogDescription>Lista de permissões do cargo.</DialogDescription>
+          <DialogDescription>
+            Lista de permissões do {resourceFlag ? "Recurso" : "Cargo"}.
+          </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="system" className="w-full">
-          <TabsList className="w-full">
-            <TabsTrigger className="w-full" value="system">
-              Sistema
-            </TabsTrigger>
-            <TabsTrigger className="w-full" value="group">
-              Grupo
-            </TabsTrigger>
-            <TabsTrigger className="w-full" value="resource">
-              Recursos
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="system">
-            <div className="flex flex-col gap-4 pt-2">
-              <Button onClick={() => openRoleAddPermissionSheet("system")}>
-                Adicionar permissão de sistema
-              </Button>
-              <DataTable
-                columns={columnsSystem}
-                data={data?.systemPermissions || []}
-              />
-            </div>
-          </TabsContent>
-          <TabsContent value="group">
-            <div className="flex flex-col gap-4 pt-2">
-              <Button onClick={() => openRoleAddPermissionSheet("group")}>
-                Adicionar permissão de grupo
-              </Button>
-              <DataTable
-                columns={columnsGroup}
-                data={(() => {
-                  const flattenedArray = data?.groupPermissions.flatMap(
-                    (group) =>
-                      group.permissions.map((permission) => ({
-                        group: group.group,
-                        permission,
-                      })),
-                  );
-                  return flattenedArray || [];
-                })()}
-              />
-            </div>
-          </TabsContent>
-          <TabsContent value="resource">
-            <div className="flex flex-col gap-4 pt-2">
-              <Button onClick={() => openRoleAddPermissionSheet("resource")}>
-                Adicionar permissão de recurso
-              </Button>
-              <DataTable
-                columns={columnsResource}
-                data={(() => {
-                  const flattenedArray = data?.resourcePermissions.flatMap(
-                    (resource) =>
-                      resource.permissions.map((permission) => ({
-                        resource: resource.resource,
-                        permission,
-                      })),
-                  );
-                  return flattenedArray || [];
-                })()}
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
+        {!resourceFlag ? (
+          <Tabs defaultValue="system" className="w-full">
+            <TabsList className="w-full">
+              <TabsTrigger className="w-full" value="system">
+                Sistema
+              </TabsTrigger>
+              <TabsTrigger className="w-full" value="group">
+                Grupo
+              </TabsTrigger>
+              <TabsTrigger className="w-full" value="resource">
+                Recursos
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="system">
+              <div className="flex flex-col gap-4 pt-2">
+                <Button onClick={() => openRoleAddPermissionSheet("system")}>
+                  Adicionar permissão de sistema
+                </Button>
+                <DataTable
+                  columns={columnsSystem}
+                  data={data?.systemPermissions || []}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="group">
+              <div className="flex flex-col gap-4 pt-2">
+                <Button onClick={() => openRoleAddPermissionSheet("group")}>
+                  Adicionar permissão de grupo
+                </Button>
+                <DataTable
+                  columns={columnsGroup}
+                  data={(() => {
+                    const flattenedArray = data?.groupPermissions.flatMap(
+                      (group) =>
+                        group.permissions.map((permission) => ({
+                          group: group.group,
+                          permission,
+                        })),
+                    );
+                    return flattenedArray || [];
+                  })()}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="resource">
+              <div className="flex flex-col gap-4 pt-2">
+                <Button onClick={() => openRoleAddPermissionSheet("resource")}>
+                  Adicionar permissão de recurso
+                </Button>
+                <DataTable
+                  columns={columnsResource}
+                  data={(() => {
+                    const flattenedArray = data?.resourcePermissions.flatMap(
+                      (resource) =>
+                        resource.permissions.map((permission) => ({
+                          resource: resource.resource,
+                          permission,
+                        })),
+                    );
+                    return flattenedArray || [];
+                  })()}
+                />
+              </div>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="flex flex-col gap-4 pt-2">
+            <Button onClick={() => openRoleAddPermissionSheet("resource")}>
+              Adicionar permissão de recurso
+            </Button>
+            <DataTable
+              columns={columnsResource2}
+              data={(() => {
+                const flattenedArray = data?.resourcePermissions.flatMap(
+                  (resource) =>
+                    resource.permissions.map((permission) => ({
+                      resource: resource.resource,
+                      permission,
+                    })),
+                );
+                return flattenedArray || [];
+              })()}
+            />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

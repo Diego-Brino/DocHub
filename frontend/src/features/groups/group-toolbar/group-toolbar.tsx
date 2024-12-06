@@ -1,5 +1,5 @@
 import { Input } from "@/components/custom/input.tsx";
-import { FolderMinus, FolderPlus, Search } from "lucide-react";
+import { FolderMinus, FolderPlus, GitBranchPlus, Search } from "lucide-react";
 import {
   createContext,
   ReactNode,
@@ -41,6 +41,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
 import { useDeleteFolder } from "@/services/folders/use-delete-folder.ts";
+import { useMutation } from "react-query";
+import axiosClient from "@/lib/axios";
+import { useAuthContext } from "@/contexts/auth";
+import { toast } from "sonner";
 
 type GroupToolbarContext = {
   filter: string;
@@ -96,13 +100,21 @@ const schema = z.object({
   parentFolderId: z.number().nullable(),
 });
 
+const schemaProcess = z.object({
+  description: z.string().min(1, "Nome é obrigatório"),
+});
+
 function GroupToolbar({
   currentPath,
   setCurrentPath,
+  showFolderButtons = true,
 }: {
   currentPath: { id: number; name: string }[];
   setCurrentPath: (path: { id: number; name: string }[]) => void;
+  showFolderButtons?: boolean;
 }) {
+  const { token } = useAuthContext();
+
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { filter, setFilter, applyFilter } = useGroupToolbarContext();
@@ -110,6 +122,7 @@ function GroupToolbar({
   const { id } = useParams();
 
   const [openNewFolderModal, setOpenNewFolderModal] = useState(false);
+  const [openNewFlowModal, setOpenNewFlowModal] = useState(false);
 
   const { mutateAsync, isLoading } = usePostFolder(Number(id));
 
@@ -123,11 +136,34 @@ function GroupToolbar({
     },
   });
 
+  const formProcess = useForm<z.infer<typeof schemaProcess>>({
+    resolver: zodResolver(schemaProcess),
+    defaultValues: {
+      description: "",
+    },
+  });
+
   const submitForm = (values: z.infer<typeof schema>) => {
     values.parentFolderId =
       currentPath.length > 0 ? currentPath[currentPath.length - 1].id : null;
     mutateAsync(values).then(() => {
       setOpenNewFolderModal(false);
+    });
+  };
+
+  const { mutateAsync: mutateAsyncPostServices } = useMutation({
+    mutationFn: (values: { description: string }) =>
+      axiosClient.post(`/services`, values, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+  });
+
+  const submitFormProcess = (values: z.infer<typeof schemaProcess>) => {
+    mutateAsyncPostServices(values).then(() => {
+      setOpenNewFlowModal(false);
+      toast.success("Fluxo criado com sucesso");
     });
   };
 
@@ -146,7 +182,7 @@ function GroupToolbar({
 
   return (
     <>
-      <div className="flex justify-between items-center gap-4 mb-4 bg-muted/60 p-4 rounded-lg border">
+      <div className="flex justify-between items-center gap-4 bg-muted/60 p-4 rounded-lg border">
         <Input
           value={filter}
           placeholder="Filtrar..."
@@ -160,26 +196,43 @@ function GroupToolbar({
           }}
         />
         <div className="flex gap-4">
-          <Button
-            disabled={currentPath.length === 0}
-            variant="destructive"
-            className="gap-2"
-            onClick={() => {
-              setIsAlertOpen(true);
-            }}
-          >
-            <FolderMinus />
-            Remover Pasta Atual
-          </Button>
-          <Button
-            className="gap-2"
-            onClick={() => {
-              setOpenNewFolderModal(true);
-            }}
-          >
-            <FolderPlus />
-            Nova Pasta
-          </Button>
+          {showFolderButtons && (
+            <>
+              <Button
+                disabled={currentPath.length === 0}
+                variant="destructive"
+                className="gap-2"
+                onClick={() => {
+                  setIsAlertOpen(true);
+                }}
+              >
+                <FolderMinus />
+                Remover Pasta Atual
+              </Button>
+              <Button
+                className="gap-2"
+                onClick={() => {
+                  setOpenNewFolderModal(true);
+                }}
+              >
+                <FolderPlus />
+                Nova Pasta
+              </Button>
+            </>
+          )}
+          {!showFolderButtons && (
+            <>
+              <Button
+                className="gap-2"
+                onClick={() => {
+                  setOpenNewFlowModal(true);
+                }}
+              >
+                <GitBranchPlus />
+                Criar Novo Fluxo
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <Dialog
@@ -268,6 +321,51 @@ function GroupToolbar({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Dialog
+        open={openNewFlowModal}
+        onOpenChange={(open) => {
+          setOpenNewFlowModal(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Novo Fluxo</DialogTitle>
+            <DialogDescription>
+              Crie um novo fluxo para gerenciar seus arquivos.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...formProcess}>
+            <form onSubmit={formProcess.handleSubmit(submitFormProcess)}>
+              <div className="pb-6 space-y-4">
+                <FormField
+                  control={formProcess.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome do Fluxo</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          error={
+                            formProcess.formState.errors.description?.message
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter>
+                <Button loading={isLoading} disabled={isLoading}>
+                  Confirmar
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

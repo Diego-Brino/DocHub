@@ -126,7 +126,7 @@ function RoleAddResourcePermissionSheetForm() {
                             key={permission.id}
                             value={permission.id.toString()}
                           >
-                            {permission.description}
+                            {permission.name}
                           </SelectItem>
                         ))}
                       </SelectGroup>

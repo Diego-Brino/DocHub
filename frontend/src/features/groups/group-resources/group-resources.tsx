@@ -3,7 +3,7 @@ import {
   Folder,
 } from "@/services/groups/use-get-group-root-resources.ts";
 import { Card, CardTitle } from "@/components/ui/card.tsx";
-import { File, Folder as FolderIcon, MoreVertical, Undo2 } from "lucide-react";
+import { File, Folder as FolderIcon, Undo2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,16 +27,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
 import { useGroupToolbarContext } from "@/features/groups/group-toolbar/group-toolbar.tsx";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu.tsx";
 import { useDeleteFolder } from "@/services/folders/use-delete-folder.ts";
 import { usePutFolder } from "@/services/folders/use-put-folder.ts";
 import { useParams } from "react-router-dom";
 import { usePutArchive } from "@/services/archives/use-put-archive.ts";
+import {
+  RolePermissionsDialog,
+  RolePermissionsDialogProvider,
+} from "@/features/roles/role-permissions-dialog/role-permissions-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
 
 function getFileExtension(mimeType: string) {
   switch (mimeType) {
@@ -52,6 +55,18 @@ function getFileExtension(mimeType: string) {
       return "doc";
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
       return "docx";
+    case "application/vnd.ms-excel":
+      return "xls";
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+      return "xlsx";
+    case "application/vnd.ms-powerpoint":
+      return "ppt";
+    case "application/x-zip-compressed":
+      return "zip";
+    case "application/x-rar-compressed":
+      return "rar";
+    case "application/x-7z-compressed":
+      return "7z";
     default:
       return "bin";
   }
@@ -82,35 +97,17 @@ function ArchiveCard({
         }}
       >
         <div className="p-4 flex gap-4 items-center justify-between overflow-hidden relative">
-          <div className="flex gap-4 items-center">
-            <File className="size-8 min-h-8 min-w-8" />
-            <div className="overflow-hidden">
+          <File className="size-8 min-h-8 min-w-8" />
+          <Tooltip>
+            <TooltipTrigger className={"overflow-hidden"}>
               <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-40">
-                {archive.name}
+                {archive.name + "." + getFileExtension(archive.type)}
               </CardTitle>
-            </div>
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="min-h-[40px] min-w-[58px] absolute right-2 bg-background"
-              >
-                <MoreVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Acessar</DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen(true);
-                }}
-              >
-                Excluir
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </TooltipTrigger>
+            <TooltipContent>
+              {archive.name + "." + getFileExtension(archive.type)}
+            </TooltipContent>
+          </Tooltip>
         </div>
       </Card>
       <AlertDialog
@@ -159,6 +156,8 @@ const FolderCard = ({
     id: folder.id,
   });
 
+  //const { open, setSelectedResource } = useRolePermissionsDialogContext();
+
   return (
     <>
       <Card
@@ -189,27 +188,6 @@ const FolderCard = ({
               </CardTitle>
             </div>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="min-h-[40px] min-w-[58px] absolute right-2 bg-background"
-              >
-                <MoreVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Acessar</DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen(true);
-                }}
-              >
-                Excluir
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </Card>
       <AlertDialog
@@ -233,6 +211,7 @@ const FolderCard = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <RolePermissionsDialog />
     </>
   );
 };
@@ -261,8 +240,6 @@ function GroupResources({
     },
     folderId: number | null,
   ) => {
-    console.log("onMoveResource", resource, folderId);
-
     if (resource.type === "folder") {
       mutateAsyncPutFolder({
         id: resource.id,
@@ -311,7 +288,7 @@ function GroupResources({
   const parentFolderId = currentPath[currentPath.length - 1]?.id || null;
 
   return (
-    <>
+    <RolePermissionsDialogProvider resourceFlag>
       <div className="w-full h-full gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 overflow-y-scroll content-start relative mb-8 md:mb-0">
         {parentFolderId && (
           <Card
@@ -385,7 +362,11 @@ function GroupResources({
       <Sheet open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         <SheetContent onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetHeader>
-            <SheetTitle className={"text-wrap"}>{dataArchive?.name}</SheetTitle>
+            <SheetTitle className={"text-wrap"}>
+              {dataArchive?.name +
+                "." +
+                getFileExtension(dataArchive?.type as string)}
+            </SheetTitle>
           </SheetHeader>
           <div className="py-4 flex flex-col gap-4">
             {fileBlob &&
@@ -473,7 +454,7 @@ function GroupResources({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </RolePermissionsDialogProvider>
   );
 }
 

@@ -65,7 +65,9 @@ function UserCard({
           <CardContent>
             <div className="flex justify-between items-center">
               <p className="text-muted-foreground text-sm">
-                {lastAccess ? lastAccess : "Sem último acesso"}
+                {lastAccess
+                  ? "Último acesso: " + lastAccess
+                  : "Sem último acesso"}
               </p>
               <div className="flex items-center gap-2">
                 <Tooltip>

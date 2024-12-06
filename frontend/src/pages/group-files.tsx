@@ -9,8 +9,8 @@ import {
   FileUploaderContent,
   FileUploaderItem,
 } from "@/components/extensions/file-input.tsx";
-import { useState } from "react";
-import { ArrowLeft, FilePlus, Paperclip } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, FilePlus, Loader, Paperclip } from "lucide-react";
 import { usePresignedUrlMutation } from "@/services/archives/use-get-archive-presigned-url-create.ts";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/custom/button.tsx";
@@ -35,7 +35,7 @@ import {
 } from "@/services/groups/use-get-group-root-resources.ts";
 import { useGetGroupFolderContentsResources } from "@/services/groups/use-get-group-folder-contents.ts";
 
-function Group() {
+function GroupFiles() {
   const { token } = useAuthContext();
 
   const [files, setFiles] = useState<File[]>([]);
@@ -53,80 +53,83 @@ function Group() {
     }[]
   >([]);
 
-  const [isUploading, setIsUploading] = useState(false);
-
   const { mutateAsync } = usePresignedUrlMutation(
     Number(id),
     files.length > 0 ? files[0].type : "",
   );
 
   const dropZoneConfig = {
-    maxFiles: 1,
-    maxSize: 1024 * 1024 * 50,
-    multiple: false,
+    maxFiles: 99,
+    multiple: true,
   };
 
   const handleUpload = async () => {
     if (!files || files.length === 0) return;
 
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+
     try {
-      setIsUploading(true);
-      const { url, hashS3 } = await mutateAsync();
-      const file = files[0];
+      for (const file of files) {
+        const toastId = toast.loading(
+          <div className="flex items-center gap-2">
+            <Loader className="animate-spin h-5 w-5" />
+            <span>Enviando arquivos...</span>
+          </div>,
+        );
 
-      const req = axios.put(url, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
+        const { url, hashS3 } = await mutateAsync();
 
-      req
-        .then(() => {
-          axiosClient
-            .post(
-              `/archives`,
-              {
-                hashS3,
-                name: file.name.split(".")[0],
-                description: "",
-                groupId: id,
-                folderId:
-                  currentPath.length > 0
-                    ? currentPath[currentPath.length - 1].id
-                    : null,
-                contentType: file.type,
-                length: file.size,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              },
-            )
-            .then(() => {
-              queryClient.invalidateQueries(["archives"]);
-              queryClient.invalidateQueries(["folders"]);
-              queryClient.invalidateQueries(["groups"]);
-              toast.success("Arquivo enviado com sucesso!");
-
-              setFiles([]);
-
-              setIsUploading(false);
-            })
-            .catch((error) => {
-              setIsUploading(false);
-              console.error("Error uploading file:", error);
-            });
-        })
-        .catch((error) => {
-          setIsUploading(false);
-          console.error("Error uploading file:", error);
+        await axios.put(url, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
         });
+
+        await axiosClient.post(
+          `/archives`,
+          {
+            hashS3,
+            name: file.name.split(".")[0],
+            description: "",
+            groupId: id,
+            folderId:
+              currentPath.length > 0
+                ? currentPath[currentPath.length - 1].id
+                : null,
+            contentType: file.type,
+            length: file.size,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        toast.success(`Arquivo "${file.name}" enviado com sucesso.`, {
+          id: toastId,
+        });
+
+        await delay(1000);
+      }
+
+      queryClient.invalidateQueries(["archives"]);
+      queryClient.invalidateQueries(["folders"]);
+      queryClient.invalidateQueries(["groups"]);
+
+      setFiles([]); // Clear the file list
     } catch (error) {
-      setIsUploading(false);
-      console.error("Error uploading file:", error);
+      toast.error("Erro ao enviar arquivos."); // Notify overall failure
+      setFiles([]); // Remove the file that failed
     }
   };
+
+  useEffect(() => {
+    if (files.length > 0) {
+      handleUpload();
+    }
+  }, [files]);
 
   const { data: dataFolderContents } = useGetGroupFolderContentsResources(
     Number(id),
@@ -185,7 +188,7 @@ function Group() {
           currentPath={currentPath}
           setCurrentPath={setCurrentPath}
         />
-        <div className="flex flex-col items-end justify-center w-full pb-4 gap-2">
+        <div className="flex flex-col items-end justify-center w-full gap-2">
           <FileUploader
             value={files}
             onValueChange={(value: File[] | null) => setFiles(value as File[])}
@@ -211,13 +214,6 @@ function Group() {
                 ))}
             </FileUploaderContent>
           </FileUploader>
-          <Button
-            disabled={files?.length === 0 || isUploading}
-            onClick={handleUpload}
-            loading={isUploading}
-          >
-            Enviar
-          </Button>
         </div>
         <GroupResources
           data={
@@ -239,6 +235,6 @@ function Group() {
   );
 }
 
-Group.displayName = "Group";
+GroupFiles.displayName = "GroupFiles";
 
-export { Group };
+export { GroupFiles };

@@ -102,10 +102,20 @@ function GroupCard({
               className="gap-2"
               variant="outline"
               onClick={() => {
-                navigate(`/groups/${id}`);
+                navigate(`/groups/${id}/flows`);
               }}
             >
-              Acessar
+              Fluxos
+              <ArrowRight className="size-5" />
+            </Button>
+            <Button
+              className="gap-2"
+              variant="outline"
+              onClick={() => {
+                navigate(`/groups/${id}/files`);
+              }}
+            >
+              Arquivos
               <ArrowRight className="size-5" />
             </Button>
           </CardFooter>

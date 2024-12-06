@@ -24,7 +24,7 @@ function useDeleteGroup() {
     mutationFn: (groupId: number) => deleteGroup({ token, groupId }),
     onSuccess: () => {
       queryClient.invalidateQueries(["groups"]);
-      toast.success("Group deleted successfully");
+      toast.success("GroupFiles deleted successfully");
     },
   });
 }

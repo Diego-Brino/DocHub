@@ -35,7 +35,7 @@ function usePostGroup() {
       postGroup({ token, group }),
     onSuccess: () => {
       queryClient.invalidateQueries(["groups"]);
-      toast.success("Group created successfully");
+      toast.success("GroupFiles created successfully");
     },
   });
 }
