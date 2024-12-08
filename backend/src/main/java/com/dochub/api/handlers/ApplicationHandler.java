@@ -320,6 +320,22 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
+    @ExceptionHandler(FlowInteractionNotAuthorizedException.class)
+    public ResponseEntity<ErrorDTO> handleFlowInteractionNotAuthorizedException (FlowInteractionNotAuthorizedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorDTO);
+    }
+
+    @ExceptionHandler(RequestAlreadyFinishedException.class)
+    public ResponseEntity<ErrorDTO> handleRequestAlreadyFinishedException (RequestAlreadyFinishedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
     @ExceptionHandler(BucketAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handleBucketAlreadyExistsException (BucketAlreadyExistsException e) {
         log.error(e.getMessage(), e);

@@ -189,7 +189,9 @@ public interface Constants {
     String FLOW_WITH_ORDER_ONE_ALREADY_REGISTER_EXCEPTION_MESSAGE = "Já existe um fluxo inicial (ordem 1) registrado para este processo.";
     String PROCESS_ALREADY_STARTED_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo a qual este fluxo está vinculado já foi iniciado.";
     String PROCESS_ALREADY_FINISHED_EXCEPTION_MESSAGE = "Não é possível realizar essa ação, o processo atual já foi finalizado.";
-    String CANNOT_REMOVE_USER_FROM_FLOW_EXCEPTION = "Não é possível remover esta pessoa do fluxo. É necessário que pelo menos uma pessoa esteja vinculada ao fluxo.";
+    String CANNOT_REMOVE_USER_FROM_FLOW_EXCEPTION_MESSAGE = "Não é possível remover esta pessoa do fluxo. É necessário que pelo menos uma pessoa esteja vinculada ao fluxo.";
+    String FLOW_INTERACTION_NOT_AUTHORIZED_EXCEPTION_MESSAGE = "Usuário não está autorizado a interagir com este fluxo.";
+    String REQUEST_ALREADY_FINISHED_EXCEPTION_MESSAGE = "Não é possível realizar esse movimento, a solicitação já foi finalizada.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";

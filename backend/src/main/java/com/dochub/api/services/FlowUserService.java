@@ -1,6 +1,5 @@
 package com.dochub.api.services;
 
-import com.dochub.api.dtos.flow.FlowResponseDTO;
 import com.dochub.api.dtos.flow_user.FlowUserResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Flow;
@@ -51,17 +50,6 @@ public class FlowUserService {
         return flowUsers
             .stream()
             .map(FlowUserResponseDTO::new)
-            .collect(Collectors.toList());
-    }
-
-    public List<FlowResponseDTO> getFlowsInProgressByUser (final User user) {
-        final List<Flow> flows = flowUserRepository
-            .findFlowsInProgressByUser(user)
-            .orElse(Collections.emptyList());
-
-        return flows
-            .stream()
-            .map(FlowResponseDTO::new)
             .collect(Collectors.toList());
     }
 

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -41,4 +42,16 @@ public class Movement {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public Movement (final Request request, final ResponseFlow responseFlow, final Integer order, final String initiatorUsername) {
+        this.request = request;
+        this.responseFlow = responseFlow;
+        this.order = order;
+
+        this.auditRecord = AuditRecord
+            .builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

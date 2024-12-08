@@ -6,7 +6,7 @@ import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user.UpdateUserResponseDTO;
 import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.entities.User;
-import com.dochub.api.services.FlowUserService;
+import com.dochub.api.services.FlowService;
 import com.dochub.api.services.JwtService;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;
@@ -26,7 +26,7 @@ import java.util.List;
 public class UserController {
     private final JwtService jwtService;
     private final UserService userService;
-    private final FlowUserService flowUserService;
+    private final FlowService flowService;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAll () {
@@ -58,7 +58,7 @@ public class UserController {
 
         return ResponseEntity
             .ok()
-            .body(flowUserService.getFlowsInProgressByUser(user));
+            .body(flowService.getAllFlowsInProgressAssignedToUser(user.getId()));
     }
 
     @PutMapping("/{id}")

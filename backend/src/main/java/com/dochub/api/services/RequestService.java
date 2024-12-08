@@ -2,6 +2,7 @@ package com.dochub.api.services;
 
 import com.dochub.api.dtos.request.RequestResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
+import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Process;
 import com.dochub.api.entities.Request;
 import com.dochub.api.entities.User;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,16 +68,6 @@ public class RequestService {
         return Boolean.TRUE;
     }
 
-    public Boolean hasRequestAssignedToService (final com.dochub.api.entities.Service service) {
-        final List<Request> requests = requestRepository
-            .findByProcess_Service(service)
-            .orElse(Collections.emptyList());
-
-        if (requests.isEmpty()) return Boolean.FALSE;
-
-        return Boolean.TRUE;
-    }
-
     public Boolean hasRequestAssignedToProcess (final Process process) {
         final List<Request> requests = requestRepository
             .findByProcess(process)
@@ -84,6 +76,34 @@ public class RequestService {
         if (requests.isEmpty()) return Boolean.FALSE;
 
         return Boolean.TRUE;
+    }
+
+    public Boolean isRequestFinished (final Integer requestId) {
+        final Request request = getById(requestId);
+
+        if (Objects.equals(request.getStatus(), RequestStatus.FINISHED)) {
+            return Boolean.TRUE;
+        }
+
+        return Boolean.FALSE;
+    }
+
+    public List<RequestResponseDTO> getAllRequestAssignedToGroup (final Group group, final RequestStatus requestStatus) {
+        if (Objects.nonNull(requestStatus)) {
+            return requestRepository
+                .findByProcess_GroupAndStatus(group,requestStatus)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(RequestResponseDTO::new)
+                .collect(Collectors.toList());
+        }
+
+        return requestRepository
+            .findByProcess_Group(group)
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(RequestResponseDTO::new)
+            .collect(Collectors.toList());
     }
 
     public Integer create (final UserRoleResponseDTO userRoles,

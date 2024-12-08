@@ -57,6 +57,17 @@ public class FlowService {
 
         return !flows.isEmpty();
     }
+    
+    public List<FlowResponseDTO> getAllFlowsInProgressAssignedToUser (final Integer userId) {
+        final List<Flow> flows = flowRepository
+            .findAssignedFlowsByUser(userId)
+            .orElse(Collections.emptyList());
+
+        return flows
+            .stream()
+            .map(FlowResponseDTO::new)
+            .collect(Collectors.toList());
+    }
 
     @Transactional
     public Integer create (final UserRoleResponseDTO userRoles,
