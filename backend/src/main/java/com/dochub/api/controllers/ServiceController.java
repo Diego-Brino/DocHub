@@ -87,7 +87,7 @@ public class ServiceController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        serviceService.delete(userRoles, id, requestService::hasRequestInProgressAssignedToService);
+        serviceService.delete(userRoles, id, processService::getAllByService);
 
         return ResponseEntity
             .noContent()

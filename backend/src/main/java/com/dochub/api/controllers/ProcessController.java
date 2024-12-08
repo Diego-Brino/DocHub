@@ -90,7 +90,7 @@ public class ProcessController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        processService.delete(userRoles, id, requestService::hasRequestInProgressAssignedToProcess);
+        processService.delete(userRoles, id, requestService::hasRequestAssignedToProcess);
 
         return ResponseEntity
             .noContent()

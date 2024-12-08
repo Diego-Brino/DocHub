@@ -48,16 +48,14 @@ public class MovementService {
             .collect(Collectors.toList());
     }
 
-    public Integer getOrderForCreateMovement (final Integer requestId) {
-        final List<Movement> movement = movementRepository
-            .findMovementByRequest_IdOrderByOrderDesc(requestId)
-            .orElse(Collections.emptyList());
-
-        if (movement.isEmpty()) {
-            return 1;
+    public Boolean isUserAuthorized (final Flow flow, final Integer userId) {
+        for (FlowUser flowUser : flow.getFlowUsers()) {
+            if (Objects.equals(flowUser.getUser().getId(), userId)) {
+                return Boolean.TRUE;
+            }
         }
 
-        return movement.getFirst().getOrder() + 1;
+        return Boolean.FALSE;
     }
 
     @Transactional
@@ -68,9 +66,9 @@ public class MovementService {
         final Boolean isRequestFinished = isRequestFinishedFunc.apply(request.getId());
 
         if (isRequestFinished) throw new RequestAlreadyFinishedException();
-        if (!_isUserAuthorized(responseFlow.getFlow(), userRoles.user().id())) throw new FlowInteractionNotAuthorizedException();
+        if (!isUserAuthorized(responseFlow.getFlow(), userRoles.user().id())) throw new FlowInteractionNotAuthorizedException();
 
-        final Integer order = getOrderForCreateMovement(request.getId());
+        final Integer order = _getOrderForCreateMovement(request.getId());
         final Movement movement = new Movement(request, responseFlow, order, userRoles.user().username());
 
         if (Objects.isNull(responseFlow.getDestinationFlow())) setRequestAsFinishedFunc.accept(request.getId());
@@ -78,13 +76,15 @@ public class MovementService {
         return movementRepository.save(movement).getId();
     }
 
-    private Boolean _isUserAuthorized (final Flow flow, final Integer userId) {
-        for (FlowUser flowUser : flow.getFlowUsers()) {
-            if (Objects.equals(flowUser.getUser().getId(), userId)) {
-                return Boolean.TRUE;
-            }
+    public Integer _getOrderForCreateMovement (final Integer requestId) {
+        final List<Movement> movement = movementRepository
+                .findMovementByRequest_IdOrderByOrderDesc(requestId)
+                .orElse(Collections.emptyList());
+
+        if (movement.isEmpty()) {
+            return 1;
         }
 
-        return Boolean.FALSE;
+        return movement.getFirst().getOrder() + 1;
     }
 }

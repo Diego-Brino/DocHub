@@ -1,6 +1,5 @@
 package com.dochub.api.entities;
 
-import com.dochub.api.entities.response_flow.ResponseFlow;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

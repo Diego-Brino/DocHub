@@ -33,4 +33,6 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
           AND r.status = 'EM ANDAMENTO'  
     """)
     Optional<List<Request>> findByProcess_ServiceAndStatus_InProgress (Service service);
+
+    Optional<List<Request>> findByProcess_Service (Service service);
 }

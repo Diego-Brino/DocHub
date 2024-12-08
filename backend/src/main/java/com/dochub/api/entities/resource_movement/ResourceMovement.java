@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,4 +31,18 @@ public class ResourceMovement {
 
     @Embedded
     private AuditRecord auditRecord;
+
+    public ResourceMovement (final ResourceMovementPK resourceMovementId,
+                             final Movement movement, final Resource resource,
+                             final String initiatorUsername) {
+        this.id = resourceMovementId;
+        this.movement = movement;
+        this.resource = resource;
+
+        this.auditRecord = AuditRecord
+            .builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
 }

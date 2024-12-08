@@ -24,7 +24,6 @@ public class MovementController {
     private final JwtService jwtService;
     private final UserService userService;
     private final UserRoleService userRoleService;
-    private final ProcessService processService;
     private final RequestService requestService;
     private final MovementService movementService;
     private final ResponseFlowService responseFlowService;

@@ -336,6 +336,22 @@ public class ApplicationHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
     }
 
+    @ExceptionHandler(ServiceHasProcessAssignedException.class)
+    public ResponseEntity<ErrorDTO> handleServiceHasProcessAssignedException (ServiceHasProcessAssignedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
+    @ExceptionHandler(ProcessHasRequestAssignedException.class)
+    public ResponseEntity<ErrorDTO> handleProcessHasRequestAssignedException (ProcessHasRequestAssignedException e) {
+        log.error(e.getMessage(), e);
+
+        final ErrorDTO errorDTO = new ErrorDTO(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDTO);
+    }
+
     @ExceptionHandler(BucketAlreadyExistsException.class)
     public ResponseEntity<ErrorDTO> handleBucketAlreadyExistsException (BucketAlreadyExistsException e) {
         log.error(e.getMessage(), e);

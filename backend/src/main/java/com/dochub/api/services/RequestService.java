@@ -48,6 +48,16 @@ public class RequestService {
             .collect(Collectors.toList());
     }
 
+    public Boolean hasRequestAssignedToProcess (final Process process) {
+        final List<Request> requests = requestRepository
+                .findByProcess(process)
+                .orElse(Collections.emptyList());
+
+        if (requests.isEmpty()) return Boolean.FALSE;
+
+        return Boolean.TRUE;
+    }
+
     public Boolean hasRequestInProgressAssignedToService (final com.dochub.api.entities.Service service) {
         final List<Request> requests = requestRepository
                 .findByProcess_ServiceAndStatus_InProgress(service)
@@ -61,16 +71,6 @@ public class RequestService {
     public Boolean hasRequestInProgressAssignedToProcess (final Process process) {
         final List<Request> requests = requestRepository
             .findByProcessAndStatus_InProgress(process)
-            .orElse(Collections.emptyList());
-
-        if (requests.isEmpty()) return Boolean.FALSE;
-
-        return Boolean.TRUE;
-    }
-
-    public Boolean hasRequestAssignedToProcess (final Process process) {
-        final List<Request> requests = requestRepository
-            .findByProcess(process)
             .orElse(Collections.emptyList());
 
         if (requests.isEmpty()) return Boolean.FALSE;

@@ -1,6 +1,7 @@
 package com.dochub.api.entities;
 
 import com.dochub.api.dtos.archive.CreateArchiveDTO;
+import com.dochub.api.dtos.resource_movement.CreateResourceMovementDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,6 +51,17 @@ public class Archive {
         if (Objects.nonNull(folder)) {
             this.folder = folder;
         }
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
+
+    public Archive (final CreateResourceMovementDTO createResourceMovementDTO, final String initiatorUsername) {
+        this.s3Hash = createResourceMovementDTO.hashS3();
+        this.type = createResourceMovementDTO.contentType();
+        this.length = createResourceMovementDTO.length();
 
         this.auditRecord = AuditRecord.builder()
             .insertionUser(initiatorUsername)

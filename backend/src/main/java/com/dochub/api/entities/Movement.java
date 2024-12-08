@@ -29,8 +29,8 @@ public class Movement {
 
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "ID_FLUXO", referencedColumnName = "ID_FLUXO", nullable = false),
-        @JoinColumn(name = "ID_RESPOSTA", referencedColumnName = "ID_RESPOSTA", nullable = false)
+        @JoinColumn(name = "ID_FLUXO", referencedColumnName = "ID_FLUXO"),
+        @JoinColumn(name = "ID_RESPOSTA", referencedColumnName = "ID_RESPOSTA")
     })
     private ResponseFlow responseFlow;
 
