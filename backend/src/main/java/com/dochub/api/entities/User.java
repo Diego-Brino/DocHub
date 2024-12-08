@@ -2,6 +2,7 @@ package com.dochub.api.entities;
 
 import com.dochub.api.dtos.user.CreateUserDTO;
 import com.dochub.api.dtos.user.ProfileCreateUserDTO;
+import com.dochub.api.entities.flow_user.FlowUser;
 import com.dochub.api.entities.user_role.UserRole;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
@@ -51,6 +52,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = { CascadeType.REMOVE })
     private List<UserRole> userRoles;
+
+    @OneToMany(mappedBy = "user")
+    private List<FlowUser> flowUsers;
 
     @Embedded
     private AuditRecord auditRecord;

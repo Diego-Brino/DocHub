@@ -194,6 +194,7 @@ public interface Constants {
     String REQUEST_ALREADY_FINISHED_EXCEPTION_MESSAGE = "Não é possível realizar esse movimento, a solicitação já foi finalizada.";
     String SERVICE_HAS_PROCESS_ASSIGNED_EXCEPTION_MESSAGE = "Não é possível deletar esse serviço, já existem processos vinculados a ele.";
     String PROCESS_HAS_REQUEST_ASSIGNED_EXCEPTION_MESSAGE = "Não é possível deletar esse processo, já existem solicitações vinculados a ele.";
+    String CANNOT_DELETE_USER_ASSIGNED_TO_FLOW_EXCEPTION_MESSAGE = "Não é possível deletar esse usuário, o mesmo está vinculado a um fluxo.";
 
     // S3 Exception Messages
     String BUCKET_ALREADY_EXISTS_EXCEPTION_MESSAGE = "O bucket '%s' já existe!";
