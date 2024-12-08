@@ -68,7 +68,19 @@ VALUES
    ('Deletar Atividade', 'DocHub', CURRENT_DATE),
    ('Criar Resposta', 'DocHub', CURRENT_DATE),
    ('Editar Resposta', 'DocHub', CURRENT_DATE),
-   ('Deletar Resposta', 'DocHub', CURRENT_DATE);
+   ('Deletar Resposta', 'DocHub', CURRENT_DATE),
+   ('Criar Processo', 'DocHub', CURRENT_DATE),
+   ('Editar Processo', 'DocHub', CURRENT_DATE),
+   ('Deletar Processo', 'DocHub', CURRENT_DATE),
+   ('Criar Fluxo', 'DocHub', CURRENT_DATE),
+   ('Editar Fluxo', 'DocHub', CURRENT_DATE),
+   ('Deletar Fluxo', 'DocHub', CURRENT_DATE),
+   ('Criar Fluxo de Resposta', 'DocHub', CURRENT_DATE),
+   ('Editar Fluxo de Resposta', 'DocHub', CURRENT_DATE),
+   ('Deletar Fluxo de Resposta', 'DocHub', CURRENT_DATE),
+   ('Vincular Usuário ao Fluxo', 'DocHub', CURRENT_DATE),
+   ('Desvincular Usuário de Fluxo', 'DocHub', CURRENT_DATE),
+   ('Solicitar Processo', 'DocHub', CURRENT_DATE);
 
 INSERT INTO permissao_grupo (DESCRICAO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
@@ -134,7 +146,19 @@ VALUES
     (1, 30, 'DocHub', CURRENT_DATE),
     (1, 31, 'DocHub', CURRENT_DATE),
     (1, 32, 'DocHub', CURRENT_DATE),
-    (1, 33, 'DocHub', CURRENT_DATE);
+    (1, 33, 'DocHub', CURRENT_DATE),
+    (1, 34, 'DocHub', CURRENT_DATE),
+    (1, 35, 'DocHub', CURRENT_DATE),
+    (1, 36, 'DocHub', CURRENT_DATE),
+    (1, 37, 'DocHub', CURRENT_DATE),
+    (1, 38, 'DocHub', CURRENT_DATE),
+    (1, 39, 'DocHub', CURRENT_DATE),
+    (1, 40, 'DocHub', CURRENT_DATE),
+    (1, 41, 'DocHub', CURRENT_DATE),
+    (1, 42, 'DocHub', CURRENT_DATE),
+    (1, 43, 'DocHub', CURRENT_DATE),
+    (1, 44, 'DocHub', CURRENT_DATE),
+    (1, 45, 'DocHub', CURRENT_DATE);
 
 INSERT INTO usuario_cargo (ID_USUARIO, ID_CARGO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
