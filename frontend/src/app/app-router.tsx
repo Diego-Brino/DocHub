@@ -15,6 +15,8 @@ import { Roles } from "@/pages/roles.tsx";
 import { Users } from "@/pages/users.tsx";
 import { GroupFiles } from "@/pages/group-files.tsx";
 import { GroupFlows } from "@/pages/group-flows.tsx";
+import { Flow } from "@/pages/flow.tsx";
+import { ProcessPage } from "@/pages/process.tsx";
 
 const AuthenticatedRoute = ({ children }: { children: ReactNode }) => {
   const { token } = useAuthContext();
@@ -91,6 +93,22 @@ const AppBrowserRouter = createBrowserRouter([
             element: (
               <AuthenticatedRoute>
                 <GroupFlows />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: "/groups/:id/flows/:flowId",
+            element: (
+              <AuthenticatedRoute>
+                <Flow />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: "/groups/:id/flows/:flowId/processes/:processId",
+            element: (
+              <AuthenticatedRoute>
+                <ProcessPage />
               </AuthenticatedRoute>
             ),
           },

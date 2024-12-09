@@ -7,11 +7,11 @@ export type Request = {
   token: string;
   archive: {
     id: number;
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
     folderId: number | null;
-    contentType: string;
-    length: number | null;
+    contentType?: string;
+    length?: number | null;
   };
 };
 
