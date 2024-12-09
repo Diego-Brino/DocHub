@@ -222,23 +222,6 @@ function GroupToolbar({
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Descrição</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          error={form.formState.errors.description?.message}
-                        />
-                      </FormControl>
-                      <FormDescription />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
               <DialogFooter>
                 <Button loading={isLoading} disabled={isLoading}>
