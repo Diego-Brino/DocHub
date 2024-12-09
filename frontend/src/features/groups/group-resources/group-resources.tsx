@@ -99,7 +99,9 @@ function ArchiveCard({
         <div className="p-4 flex gap-4 items-center justify-between overflow-hidden relative">
           <File className="size-8 min-h-8 min-w-8" />
           <Tooltip>
-            <TooltipTrigger className={"overflow-hidden"}>
+            <TooltipTrigger
+              className={"overflow-hidden flex justify-start w-full"}
+            >
               <CardTitle className="text-xl text-ellipsis overflow-hidden whitespace-nowrap max-w-40">
                 {archive.name + "." + getFileExtension(archive.type)}
               </CardTitle>
@@ -243,18 +245,12 @@ function GroupResources({
     if (resource.type === "folder") {
       mutateAsyncPutFolder({
         id: resource.id,
-        name: data.folders.find((f) => f.id === resource.id)?.name || "",
-        description: "",
         parentFolderId: folderId,
       });
     } else {
       mutateAsyncPutArchive({
         id: resource.id,
-        name: data.archives.find((a) => a.id === resource.id)?.name || "",
-        description: "",
         folderId: folderId,
-        contentType: "",
-        length: 0,
       });
     }
   };

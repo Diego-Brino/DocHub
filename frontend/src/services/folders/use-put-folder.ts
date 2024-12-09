@@ -7,8 +7,8 @@ export type Request = {
   token: string;
   folder: {
     id: number;
-    name: string;
-    description: string;
+    name?: string;
+    description?: string;
     parentFolderId: number | null;
   };
 };
