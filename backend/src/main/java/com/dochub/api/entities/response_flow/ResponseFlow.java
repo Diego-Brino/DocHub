@@ -29,7 +29,7 @@ public class ResponseFlow {
     private Response response;
 
     @ManyToOne
-    @JoinColumn(name = "ID_FLUXO_DESTINO", insertable = false, updatable = false)
+    @JoinColumn(name = "ID_FLUXO_DESTINO")
     private Flow destinationFlow;
 
     @Embedded
