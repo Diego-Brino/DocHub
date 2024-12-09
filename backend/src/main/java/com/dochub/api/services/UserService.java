@@ -186,6 +186,10 @@ public class UserService {
             throw new CannotDeleteOwnUserException();
         }
 
+        if (!user.getFlowUsers().isEmpty()) {
+            throw new CannotDeleteUserAssignedToFlowException();
+        }
+
         userRepository.delete(user);
     }
 

@@ -6,6 +6,7 @@ import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Process;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.ProcessHasRequestAssignedException;
 import com.dochub.api.exceptions.ProcessInProgressException;
 import com.dochub.api.repositories.ProcessRepository;
 import com.dochub.api.utils.Constants;
@@ -108,15 +109,15 @@ public class ProcessService {
 
     public void delete (final UserRoleResponseDTO userRoles,
                         final Integer processId,
-                        final Function<Process, Boolean> hasRequestInProgressAssignedToProcessFunc) {
+                        final Function<Process, Boolean> hasRequestAssignedToProcessFunc) {
         final Process process = getById(processId);
 
         Utils.checkPermission(userRoles, process.getGroup().getId(), Constants.DELETE_PROCESS_PERMISSION);
 
-        final Boolean hasRequestInProgressAssignedToProcess = hasRequestInProgressAssignedToProcessFunc.apply(process);
+        final Boolean hasRequestAssignedToProcess = hasRequestAssignedToProcessFunc.apply(process);
 
-        if (hasRequestInProgressAssignedToProcess) {
-            throw new ProcessInProgressException();
+        if (hasRequestAssignedToProcess) {
+            throw new ProcessHasRequestAssignedException();
         }
 
         processRepository.delete(process);

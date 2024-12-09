@@ -3,10 +3,9 @@ package com.dochub.api.controllers;
 import com.dochub.api.dtos.movement.CreateMovementDTO;
 import com.dochub.api.dtos.movement.MovementResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
-import com.dochub.api.entities.Flow;
 import com.dochub.api.entities.Request;
-import com.dochub.api.entities.Response;
 import com.dochub.api.entities.User;
+import com.dochub.api.entities.response_flow.ResponseFlow;
 import com.dochub.api.services.*;
 import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
@@ -25,11 +24,9 @@ public class MovementController {
     private final JwtService jwtService;
     private final UserService userService;
     private final UserRoleService userRoleService;
-    private final ProcessService processService;
     private final RequestService requestService;
-    private final FlowService flowService;
-    private final ResponseService responseService;
     private final MovementService movementService;
+    private final ResponseFlowService responseFlowService;
 
     @GetMapping
     public ResponseEntity<List<MovementResponseDTO>> getAll () {
@@ -52,18 +49,16 @@ public class MovementController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
         final Request request = requestService.getById(createMovementDTO.requestId());
-        final Flow flow = flowService.getById(createMovementDTO.flowId());
-        final Response response = responseService.getById(createMovementDTO.responseId());
+        final ResponseFlow responseFlow = responseFlowService.getById(createMovementDTO.flowId(), createMovementDTO.responseId());
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(movementService.create(
                 userRoles,
-                processService::isProcessFinished,
+                requestService::isRequestFinished,
                 requestService::setRequestAsFinished,
                 request,
-                flow,
-                response
+                responseFlow
             ));
     }
 }

@@ -1,11 +1,13 @@
 package com.dochub.api.services;
 
 import com.dochub.api.dtos.archive.*;
+import com.dochub.api.dtos.resource_movement.CreateResourceMovementDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.*;
 import com.dochub.api.entities.resource_role_permission.ResourceRolePermission;
 import com.dochub.api.exceptions.ArchiveAlreadyExistsException;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.FlowInteractionNotAuthorizedException;
 import com.dochub.api.exceptions.s3.ObjectNotFoundException;
 import com.dochub.api.repositories.ArchiveRepository;
 import com.dochub.api.utils.Constants;
@@ -84,6 +86,21 @@ public class ArchiveService {
         return new ArchivePresignedUrlResponseDTO(presignedUrl, fileName);
     }
 
+    public ArchivePresignedUrlResponseDTO getPresignedUrlForCreate (final UserRoleResponseDTO userRoles,
+                                                                    final Movement movement,
+                                                                    final BiFunction<Flow, Integer, Boolean> isUserAuthorizedFunc,
+                                                                    final TriFunction<String, String, String, String> generatePresignedUrlFunc,
+                                                                    final String contentType) {
+        final Boolean isUserAuthorized = isUserAuthorizedFunc.apply(movement.getResponseFlow().getFlow(), userRoles.user().id());
+
+        if (!isUserAuthorized) throw new FlowInteractionNotAuthorizedException();
+
+        final String fileName = S3Utils.generateFileName();
+        final String presignedUrl = generatePresignedUrlFunc.apply(movement.getRequest().getProcess().getGroup().getIdS3Bucket(), fileName, contentType);
+
+        return new ArchivePresignedUrlResponseDTO(presignedUrl, fileName);
+    }
+
     public ArchivePresignedUrlResponseDTO getPresignedUrlForUpdate (final UserRoleResponseDTO userRoles, final Group group, final String fileName,
                                                                     final TriFunction<String, String, String, String> generatePresignedUrlFunc,
                                                                     final String contentType) {
@@ -118,6 +135,36 @@ public class ArchiveService {
         _logCreationHistory(resource.getName(), folder, group, userRoles.user().username(), logCreationResourceHistoryFunc);
 
         return archiveRepository.save(archive).getId();
+    }
+
+    @Transactional
+    public Resource create (final UserRoleResponseDTO userRoles,
+                            final Movement movement,
+                            final BiFunction<Flow, Integer, Boolean> isUserAuthorizedFunc,
+                            final BiFunction<String, String, Boolean> doesObjectExistsFunc,
+                            final CreateResourceMovementDTO createResourceMovementDTO,
+                            final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
+        final Boolean isUserAuthorized = isUserAuthorizedFunc.apply(movement.getResponseFlow().getFlow(), userRoles.user().id());
+
+        if (!isUserAuthorized) throw new FlowInteractionNotAuthorizedException();
+
+        if (!doesObjectExistsFunc.apply(movement.getRequest().getProcess().getGroup().getIdS3Bucket(), createResourceMovementDTO.hashS3())) {
+            throw new ObjectNotFoundException(movement.getRequest().getProcess().getGroup().getIdS3Bucket(), createResourceMovementDTO.hashS3());
+        }
+
+        if (archiveRepository.findByS3Hash(createResourceMovementDTO.hashS3()).isPresent()) {
+            throw new ArchiveAlreadyExistsException();
+        }
+
+        final Resource resource = new Resource(createResourceMovementDTO, movement.getRequest().getProcess().getGroup(), userRoles.user().username());
+        final Archive archive = new Archive(createResourceMovementDTO, userRoles.user().username());
+
+        resource.setArchive(archive);
+        archive.setResource(resource);
+
+        _logCreationHistory(resource.getName(), null, movement.getRequest().getProcess().getGroup(), userRoles.user().username(), logCreationResourceHistoryFunc);
+
+        return archiveRepository.save(archive).getResource();
     }
 
     @Transactional

@@ -5,6 +5,7 @@ import com.dochub.api.dtos.group.CreateGroupDTO;
 import com.dochub.api.dtos.group.GroupResponseDTO;
 import com.dochub.api.dtos.group.UpdateGroupDTO;
 import com.dochub.api.dtos.process.ProcessResponseDTO;
+import com.dochub.api.dtos.request.RequestResponseDTO;
 import com.dochub.api.dtos.resource.ResourceResponseDTO;
 import com.dochub.api.dtos.resource.RootGroupResourcesResponseDTO;
 import com.dochub.api.dtos.resource_history.ResourceHistoryResponseDTO;
@@ -12,9 +13,11 @@ import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Folder;
 import com.dochub.api.entities.Group;
 import com.dochub.api.entities.User;
+import com.dochub.api.enums.RequestStatus;
 import com.dochub.api.services.*;
 import com.dochub.api.services.s3.BucketService;
 import com.dochub.api.utils.Constants;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,7 @@ public class GroupController {
     private final BucketService bucketService;
     private final ResourceRolePermissionService resourceRolePermissionService;
     private final ResourceHistoryService resourceHistoryService;
+    private final RequestService requestService;
 
     @GetMapping
     public ResponseEntity<List<GroupResponseDTO>> getAll (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
@@ -135,6 +139,16 @@ public class GroupController {
         return ResponseEntity
             .ok()
             .body(resourceHistoryService.getAllByGroup(userRoles, group));
+    }
+
+    @GetMapping("/{id}/requests")
+    public ResponseEntity<List<RequestResponseDTO>> getAllRequests (@PathVariable("id") @NonNull final Integer groupId,
+                                                                    @RequestParam("status") @Nullable final RequestStatus requestStatus) {
+        final Group group = groupService.getById(groupId);
+
+        return ResponseEntity
+            .ok()
+            .body(requestService.getAllRequestAssignedToGroup(group, requestStatus));
     }
 
     @GetMapping("/{id}/process")

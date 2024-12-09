@@ -3,6 +3,7 @@ package com.dochub.api.entities;
 import com.dochub.api.converters.ResourceOriginConverter;
 import com.dochub.api.dtos.archive.CreateArchiveDTO;
 import com.dochub.api.dtos.folder.CreateFolderDTO;
+import com.dochub.api.dtos.resource_movement.CreateResourceMovementDTO;
 import com.dochub.api.enums.ResourceOrigin;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -63,6 +64,18 @@ public class Resource {
         this.name = createFolderDTO.name();
         this.description = createFolderDTO.description();
         this.group = group;
+
+        this.auditRecord = AuditRecord.builder()
+            .insertionUser(initiatorUsername)
+            .insertionDate(new Date())
+            .build();
+    }
+
+    public Resource (final CreateResourceMovementDTO createResourceMovementDTO, final Group group, final String initiatorUsername) {
+        this.name = createResourceMovementDTO.name();
+        this.description = createResourceMovementDTO.description();
+        this.group = group;
+        this.origin = ResourceOrigin.FLOW;
 
         this.auditRecord = AuditRecord.builder()
             .insertionUser(initiatorUsername)

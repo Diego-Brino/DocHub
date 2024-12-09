@@ -1,10 +1,12 @@
 package com.dochub.api.services;
 
+import com.dochub.api.dtos.process.ProcessResponseDTO;
 import com.dochub.api.dtos.service.CreateServiceDTO;
 import com.dochub.api.dtos.service.ServiceResponseDTO;
 import com.dochub.api.dtos.service.UpdateServiceDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.exceptions.EntityNotFoundByIdException;
+import com.dochub.api.exceptions.ServiceHasProcessAssignedException;
 import com.dochub.api.exceptions.ServiceHasProcessesInProgressException;
 import com.dochub.api.repositories.ServiceRepository;
 import com.dochub.api.utils.Constants;
@@ -71,14 +73,14 @@ public class ServiceService {
     }
 
     public void delete (final UserRoleResponseDTO userRoles, final Integer serviceId,
-                        final Function<com.dochub.api.entities.Service, Boolean> hasRequestInProgressAssignedToServiceFunc) {
+                        final Function<com.dochub.api.entities.Service, List<ProcessResponseDTO>> getAllByServiceFunc) {
         Utils.checkPermission(userRoles, Constants.DELETE_SERVICE_PERMISSION);
 
         final com.dochub.api.entities.Service service = getById(serviceId);
-        final Boolean hasRequestInProgressAssignedToService = hasRequestInProgressAssignedToServiceFunc.apply(service);
+        final List<ProcessResponseDTO> getAllByService = getAllByServiceFunc.apply(service);
 
-        if (hasRequestInProgressAssignedToService) {
-            throw new ServiceHasProcessesInProgressException();
+        if (!getAllByService.isEmpty()) {
+            throw new ServiceHasProcessAssignedException();
         }
 
         serviceRepository.delete(service);
