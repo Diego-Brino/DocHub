@@ -51,6 +51,12 @@ public class ResponseFlowService {
             .collect(Collectors.toList());
     }
 
+    public List<ResponseFlow> getResponseFlowsByDestionationFlow (final Flow flow) {
+        return responseFlowRepository
+            .findByDestinationFlow(flow)
+            .orElse(Collections.emptyList());
+    }
+
     public Boolean hasResponseFlowsAssignedToResponse (final Response response) {
         final List<ResponseFlow> responseFlows = responseFlowRepository
             .findByResponse(response)
@@ -113,6 +119,12 @@ public class ResponseFlowService {
         if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
 
         responseFlowRepository.delete(responseFlow);
+    }
+
+    public void deleteAllResponseFlowsWithDestinationFlow (final Flow flow) {
+        final List<ResponseFlow> responseFlows = getResponseFlowsByDestionationFlow(flow);
+
+        responseFlowRepository.deleteAll(responseFlows);
     }
 
     private void _updateDestinationFlowIfPresent (final ResponseFlow responseFlow, final Flow destinationFlow) {

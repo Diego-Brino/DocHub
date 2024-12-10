@@ -13,7 +13,7 @@ import axiosClient from "@/lib/axios";
 import { Process, ResponseFlow } from "@/pages/flow.tsx";
 import {
   NodeMouseHandler,
-  ReactFlow,
+  ReactFlow, ReactFlowInstance,
   useEdgesState,
   useNodesState,
 } from "@xyflow/react";
@@ -122,7 +122,7 @@ function ProcessPage() {
 
   const { data: dataProcess } = useQuery(
     ["processes", processId],
-    async (): Promise<Process[]> => {
+    async (): Promise<Process> => {
       const response = await axiosClient.get(`/processes/${processId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -215,8 +215,24 @@ function ProcessPage() {
     },
   );
 
+  const { mutateAsync: mutateAsyncDeleteFlow } = useMutation(
+    async (data: { idFlow: number }) => {
+      const response = await axiosClient.delete(
+        `/flows/${data.idFlow}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+  );
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const [instance, setInstance] = useState<ReactFlowInstance | null>(null);
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -250,6 +266,9 @@ function ProcessPage() {
   const [mountTrigger, setMountTrigger] = useState(false);
 
   useEffect(() => {
+    setNodes([])
+    setEdges([])
+
     if (!dataProcess) {
       return;
     }
@@ -261,20 +280,25 @@ function ProcessPage() {
         ...nodes,
         {
           id: flow.id.toString(),
-          position: { x: 0, y: 100 * (i + 1) },
-          data: { label: flow?.activity.description },
+          position: { x: 100 * i, y: 100 * flow?.order},
+          data: { label: flow?.order + " - " + flow?.activity.description }
         },
       ]);
-      setEdges((edges) => [
-        ...edges,
-        ...flow?.responseFlows.map((response) => ({
-          id: `${flow.id}-${response.flow.id}`,
-          source: flow.id.toString(),
-          target: response.destinationFlow?.id?.toString(),
-        })),
-      ]);
+
+      flow.responseFlows.forEach((responseFlow) => {
+        setEdges((edges) => [
+          ...edges,
+          {
+            id: responseFlow.response.id.toString(),
+            source: flow.id.toString(),
+            target: responseFlow.destinationFlow?.id.toString() as string,
+          }
+        ]);
+      });
     }
-  }, [dataService, dataProcess, mountTrigger]);
+
+    console.log(nodes);
+  }, [dataService, mountTrigger]);
 
   const [selectedNode, setSelectedNode] = useState<{
     id: string;
@@ -334,8 +358,6 @@ function ProcessPage() {
                 toast.error("ID de resposta não encontrado.");
                 return;
               }
-
-              console.log(responseFlow);
 
               mutateAsyncDeleteResponseFlow({
                 idFlow: Number(selectedNode?.id),
@@ -447,7 +469,7 @@ function ProcessPage() {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onNodeClick={handleNodeClick}
-              // onConnect={onConnect}
+              onInit={(instance) => setInstance(instance)}
             />
           </div>
         </GroupToolbarProvider>
@@ -561,7 +583,7 @@ function ProcessPage() {
           <div className="pt-4">
             <DataTable columns={columns} data={connectedFlows} />
           </div>
-          <div className="w-full">
+          <div className="w-full flex flex-col gap-2">
             <Popover>
               <PopoverTrigger className="w-full">
                 <Button className="w-full flex gap-2">
@@ -574,11 +596,8 @@ function ProcessPage() {
                   .filter(
                     (f) =>
                       f.id != selectedNode?.id &&
-                      f.order ===
-                        dataProcess?.flows.find(
-                          (flow) => flow.id.toString() === selectedNode?.id,
-                        )?.order +
-                          1,
+                      (f.order === dataProcess?.flows.find((flow) => flow.id.toString() === selectedNode?.id,)?.order + 1) &&
+                      !connectedFlows.find((flow) => flow.name === f.activity.description),
                   )
                   .map((flow) => (
                     <Button
@@ -606,6 +625,20 @@ function ProcessPage() {
                   ))}
               </PopoverContent>
             </Popover>
+            <Button variant='destructive' onClick={
+              () => {
+                mutateAsyncDeleteFlow({
+                  idFlow: Number(selectedNode?.id),
+                }).then(() => {
+                  toast.success("Etapa excluída com sucesso");
+                  queryClient.invalidateQueries(["processes"]);
+                  queryClient.invalidateQueries(["services"]);
+                  setMountTrigger(!mountTrigger);
+                setBottomSheetOpen(false);
+              });
+            }}>
+              Excluir
+            </Button>
           </div>
         </SheetContent>
       </Sheet>

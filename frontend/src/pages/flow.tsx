@@ -1,16 +1,18 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "@/contexts/auth";
 import { Button } from "@/components/custom/button.tsx";
-import { ArrowLeft } from "lucide-react";
+import {ArrowLeft, PackagePlus} from "lucide-react";
 import { Separator } from "@/components/ui/separator.tsx";
 import {
   GroupToolbar,
-  GroupToolbarProvider,
+  GroupToolbarProvider, useGroupToolbarContext,
 } from "@/features/groups/group-toolbar/group-toolbar.tsx";
 import { useGetGroup } from "@/services/groups/use-get-group.ts";
-import { useQuery } from "react-query";
+import {useMutation, useQuery} from "react-query";
 import axiosClient from "@/lib/axios";
 import { ProcessCard } from "@/features/flows/service-card/process-card.tsx";
+import queryClient from "@/lib/react-query";
+import {toast} from "sonner";
 
 export type Process = {
   id: number;
@@ -137,29 +139,47 @@ function Flow() {
     },
   );
 
-  // const { mutateAsync: mutateAsyncPostProcess, isLoading } = useMutation({
-  //   mutationFn: () =>
-  //     axiosClient.post(
-  //       `/processes`,
-  //       {
-  //         serviceId: flowId,
-  //         groupId: id,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       },
-  //     ),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries(["services"]);
-  //     toast.success("Processo criado com sucesso");
-  //   },
-  // });
+  const { mutateAsync: mutateAsyncPostProcess, isLoading } = useMutation({
+    mutationFn: () =>
+      axiosClient.post(
+        `/processes`,
+        {
+          serviceId: flowId,
+          groupId: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["services"]);
+      toast.success("Processo criado com sucesso");
+    },
+  });
 
-  // const submitFormProcess = () => {
-  //   mutateAsyncPostProcess();
-  // };
+  const submitFormProcess = () => {
+    mutateAsyncPostProcess();
+  };
+
+  const ProcessList = () => {
+    const {appliedFilter} = useGroupToolbarContext();
+
+    return (
+      <div className="flex flex-col items-start justify-start w-full pb-4 gap-4 overflow-scroll h-full">
+        {dataServiceProcesses?.filter(
+          (process, index) => ("Processo" + " - " + index).toLowerCase().includes(appliedFilter.toLowerCase())
+        ).map((process, index) => (
+          <ProcessCard
+            process={process}
+            order={index + 1}
+            key={process.id}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -187,29 +207,21 @@ function Flow() {
             setCurrentPath={() => {}}
             buttons={
               <>
-                {/*<Button*/}
-                {/*  disabled={isLoading}*/}
-                {/*  loading={isLoading}*/}
-                {/*  className="gap-2"*/}
-                {/*  onClick={() => {*/}
-                {/*    submitFormProcess();*/}
-                {/*  }}*/}
-                {/*>*/}
-                {/*  <PackagePlus />*/}
-                {/*  Criar Novo Processo*/}
-                {/*</Button>*/}
+                <Button
+                  disabled={isLoading}
+                  loading={isLoading}
+                  className="gap-2"
+                  onClick={() => {
+                    submitFormProcess();
+                  }}
+                >
+                  <PackagePlus />
+                  Criar Novo Processo
+                </Button>
               </>
             }
           />
-          <div className="flex flex-col items-start justify-start w-full pb-4 gap-4 overflow-scroll h-full">
-            {dataServiceProcesses?.map((process, index) => (
-              <ProcessCard
-                process={process}
-                order={index + 1}
-                key={process.id}
-              />
-            ))}
-          </div>
+        <ProcessList />
         </GroupToolbarProvider>
       </div>
     </>

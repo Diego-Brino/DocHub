@@ -28,7 +28,7 @@ function useDeleteFolder({ id }: Omit<DeleteRequest, "token">) {
     mutationFn: () => request({ token, id }),
     onSuccess: () => {
       queryClient.invalidateQueries(["groups"]);
-      queryClient.invalidateQueries(["folders"]);
+      //queryClient.invalidateQueries(["folders"]);
       toast.success("Pasta excluída com sucesso");
     },
   });

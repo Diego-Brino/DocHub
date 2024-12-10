@@ -23,9 +23,9 @@ function useDeleteArchive() {
   return useMutation({
     mutationFn: (archiveId: number) => request({ token, archiveId }),
     onSuccess: () => {
-      queryClient.invalidateQueries(["archives"]);
-      queryClient.invalidateQueries(["folders"]);
       queryClient.invalidateQueries(["groups"]);
+      //queryClient.invalidateQueries(["folders"]);
+      //queryClient.invalidateQueries(["archives"]);
       toast.success("Arquivo excluído com sucesso.");
     },
   });

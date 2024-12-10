@@ -13,6 +13,11 @@ const queryClient = new QueryClient({
       if (!axios.isAxiosError(error)) {
         return;
       }
+
+      if(error?.response?.data.message === 'Nenhuma entidade foi encontrada com o ID fornecido.'){
+        return;
+      }
+
       toast.error("Erro", {
         description: error?.response?.data.message || error.message,
       });
@@ -23,6 +28,11 @@ const queryClient = new QueryClient({
       if (!axios.isAxiosError(error)) {
         return;
       }
+
+      if(error?.response?.data.message === 'Nenhuma entidade foi encontrada com o ID fornecido.'){
+        return;
+      }
+
       toast.error("Erro", {
         description: error?.response?.data.message || error.message,
       });

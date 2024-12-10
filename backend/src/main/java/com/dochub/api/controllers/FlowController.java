@@ -32,6 +32,7 @@ public class FlowController {
     private final ActivityService activityService;
     private final FlowService flowService;
     private final FlowUserService flowUserService;
+    private final ResponseFlowService responseFlowService;
 
     @GetMapping
     public ResponseEntity<List<FlowResponseDTO>> getAll () {
@@ -100,7 +101,7 @@ public class FlowController {
         final User user = userService.getByEmail(userEmail);
         final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
 
-        flowService.delete(userRoles, id, requestService::hasRequestAssignedToProcess, processService::isProcessFinished);
+        flowService.delete(userRoles, id, requestService::hasRequestAssignedToProcess, processService::isProcessFinished, responseFlowService::deleteAllResponseFlowsWithDestinationFlow);
 
         return ResponseEntity
             .noContent()

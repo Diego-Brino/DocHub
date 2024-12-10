@@ -10,6 +10,8 @@ import com.dochub.api.entities.Process;
 import com.dochub.api.entities.User;
 import com.dochub.api.exceptions.*;
 import com.dochub.api.repositories.FlowRepository;
+import com.dochub.api.repositories.FlowUserRepository;
+import com.dochub.api.repositories.ResponseFlowRepository;
 import com.dochub.api.utils.Constants;
 import com.dochub.api.utils.Utils;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FlowService {
     private final FlowRepository flowRepository;
+    private final FlowUserRepository flowUserRepository;
+    private final ResponseFlowRepository responseFlowRepository;
 
     public Flow getById (final Integer flowId) {
         return flowRepository
@@ -128,10 +133,12 @@ public class FlowService {
         flowRepository.save(flow);
     }
 
+    @Transactional
     public void delete (final UserRoleResponseDTO userRoles,
                         final Integer flowId,
                         final Function<Process, Boolean> hasRequestAssignedToProcessFunc,
-                        final Function<Process, Boolean> isProcessFinishedFunc) {
+                        final Function<Process, Boolean> isProcessFinishedFunc,
+                        final Consumer<Flow> deleteAllResponseFlowsWithDestinationFlow) {
         final Flow flow = getById(flowId);
 
         Utils.checkPermission(userRoles, flow.getProcess().getGroup().getId(), Constants.DELETE_FLOW_PERMISSION);
@@ -141,6 +148,8 @@ public class FlowService {
 
         if (isProcessFinished) throw new ProcessAlreadyFinishedException();
         if (hasRequestAssignedToProcess) throw new ProcessAlreadyStartedException();
+
+        deleteAllResponseFlowsWithDestinationFlow.accept(flow);
 
         flowRepository.delete(flow);
     }
