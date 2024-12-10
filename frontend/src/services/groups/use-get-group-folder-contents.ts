@@ -48,6 +48,9 @@ function useGetGroupFolderContentsResources(
   return useQuery({
     queryKey: ["groups", id, "folder", idFolder, "contents"],
     queryFn: () => getGroupFolderContentsResources(token, id, idFolder),
+    onError: (error) => {
+      console.error(error);
+    },
     enabled: !!id && !!idFolder,
   });
 }

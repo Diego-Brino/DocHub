@@ -54,7 +54,7 @@ type User = {
   lastAccess: string;
 };
 
-type ResponseFlow = {
+export type ResponseFlow = {
   flow: ResponseFlowFlow;
   response: Response;
   destinationFlow: DestinationFlow;
