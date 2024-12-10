@@ -247,6 +247,8 @@ function ProcessPage() {
     });
   };
 
+  const [mountTrigger, setMountTrigger] = useState(false);
+
   useEffect(() => {
     if (!dataProcess) {
       return;
@@ -272,7 +274,7 @@ function ProcessPage() {
         })),
       ]);
     }
-  }, [dataService, dataProcess]);
+  }, [dataService, dataProcess, mountTrigger]);
 
   const [selectedNode, setSelectedNode] = useState<{
     id: string;
@@ -318,20 +320,31 @@ function ProcessPage() {
           <Button
             variant="ghost"
             onClick={() => {
-              console.log(dataResponseFlows);
+              const connectedFlow = dataProcess?.flows.find(
+                (flow) => flow.id.toString() === selectedNode?.id,
+              );
+
+              const responseFlow = connectedFlow?.responseFlows.find(
+                (response) =>
+                  response.destinationFlow?.activity.description.toString() ===
+                  row.original.name,
+              );
+
+              if (!responseFlow) {
+                toast.error("ID de resposta não encontrado.");
+                return;
+              }
+
+              console.log(responseFlow);
+
               mutateAsyncDeleteResponseFlow({
                 idFlow: Number(selectedNode?.id),
-                idResponse: Number(
-                  dataResponseFlows?.find(
-                    (response) =>
-                      response.destinationFlow.id.toString() ==
-                      row.getValue("id"),
-                  )?.response.id,
-                ),
+                idResponse: responseFlow.response.id,
               }).then(() => {
                 toast.success("Etapa desvinculada com sucesso");
                 queryClient.invalidateQueries(["processes"]);
                 queryClient.invalidateQueries(["services"]);
+                setMountTrigger(!mountTrigger);
                 setBottomSheetOpen(false);
               });
             }}
