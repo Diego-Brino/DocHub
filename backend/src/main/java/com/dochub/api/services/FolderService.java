@@ -74,7 +74,7 @@ public class FolderService {
         resource.setFolder(folder);
         folder.setResource(resource);
 
-        _logCreationHistory(resource.getName(), parentFolder, group, userRoles.user().username(), logCreationResourceHistoryFunc);
+        _logCreationHistory(resource, group, userRoles.user().username(), logCreationResourceHistoryFunc);
 
         return folderRepository.save(folder).getId();
     }
@@ -107,7 +107,7 @@ public class FolderService {
 
         Utils.checkPermission(userRoles, folder.getResource().getGroup().getId(), folderId, Constants.DELETE_FOLDER_PERMISSION);
 
-        _logDeletionHistory(folder, userRoles.user().username(), logDeletionResourceHistoryFunc);
+        _logDeletionHistory(folder.getResource(), userRoles.user().username(), logDeletionResourceHistoryFunc);
 
         _deleteResourceRolePermissionsIfPresent(folder.getResource(), getAllByResourceFunc, deleteResourceRolePermissionsFunc);
 
@@ -127,16 +127,12 @@ public class FolderService {
         folderRepository.deleteAll(folders);
     }
 
-    private void _logCreationHistory (final String folderName, final Folder parentFolder,
+    private void _logCreationHistory (final Resource folder,
                                       final Group group, final String actionUser,
                                       final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
-        final String createdIn = Objects.nonNull(parentFolder) ?
-            parentFolder.getResource().getName() :
-            Constants.ROOT;
-
         logCreationResourceHistoryFunc.accept(
             group,
-            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, folderName, createdIn),
+            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, folder.getName(), folder.getPath()),
             actionUser
         );
     }
@@ -146,73 +142,63 @@ public class FolderService {
                                   final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
         final StringBuilder description = new StringBuilder();
 
-        _appendUpdatedName(folder, updateFolderDTO, description);
-        _appendUpdatedDescription(folder, updateFolderDTO, description);
-        _appendUpdatedFolderLocation(folder, parentFolder, description);
+        _appendUpdatedName(folder.getResource(), updateFolderDTO, description);
+        _appendUpdatedDescription(folder.getResource(), updateFolderDTO, description);
+        _appendUpdatedFolderLocation(folder.getResource(), Objects.nonNull(parentFolder) ? parentFolder.getResource() : null, description);
 
         logEditResourceHistoryFunc.accept(folder.getResource().getGroup(), description.toString(), actionUser);
     }
 
-    private void _logDeletionHistory (final Folder folder,
+    private void _logDeletionHistory (final Resource folder,
                                       final String actionUser,
                                       final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc) {
-        final String resourceIn = Objects.nonNull(folder.getParentFolder()) ?
-            folder.getParentFolder().getResource().getName() :
-            Constants.ROOT;
-
         logDeletionResourceHistoryFunc.accept(
-            folder.getResource().getGroup(),
-            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, folder.getResource().getName(), resourceIn),
+            folder.getGroup(),
+            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, folder.getName(), folder.getPath()),
             actionUser
         );
     }
 
-    private void _appendUpdatedName (final Folder folder,
+    private void _appendUpdatedName (final Resource folder,
                                      final UpdateFolderDTO updateFolderDTO,
                                      final StringBuilder descriptionBuilder) {
         if (Objects.nonNull(updateFolderDTO.name()) && !updateFolderDTO.name().isBlank()) {
             final String message = String.format(
                 Constants.RESOURCE_NAME_UPDATED_MESSAGE,
-                folder.getResource().getName(), updateFolderDTO.name()
+                folder.getAbsolutePath(), folder.getPath() + "/" + updateFolderDTO.name()
             );
 
             descriptionBuilder.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedDescription (final Folder folder,
+    private void _appendUpdatedDescription (final Resource folder,
                                             final UpdateFolderDTO updateFolderDTO,
                                             final StringBuilder description) {
         if (Objects.nonNull(updateFolderDTO.description()) && !updateFolderDTO.description().isBlank()) {
             final String message = String.format(
                 Constants.RESOURCE_DESCRIPTION_UPDATED_MESSAGE,
-                folder.getResource().getDescription(), updateFolderDTO.description()
+                folder.getAbsolutePath(), folder.getDescription(), updateFolderDTO.description()
             );
 
             description.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedFolderLocation (final Folder folder,
-                                               final Folder parentFolder,
+    private void _appendUpdatedFolderLocation (final Resource folder,
+                                               final Resource parentFolder,
                                                final StringBuilder description) {
         if (Objects.nonNull(parentFolder)) {
-            final String oldParentName = Objects.nonNull(folder.getParentFolder()) ?
-                folder.getParentFolder().getResource().getName() :
-                Constants.ROOT;
-
-            final String newParentName = parentFolder.getResource().getName();
-
             final String message = String.format(
                 Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
-                oldParentName, newParentName
+                folder.getName(), folder.getPath(), parentFolder.getAbsolutePath()
             );
 
             description.append(message).append("\n");
-        }else if (Objects.nonNull(folder.getParentFolder())) {
+        }else if (Objects.nonNull(folder.getFolder().getParentFolder())) {
             final String message = String.format(
                 Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
-                folder.getParentFolder().getResource().getName(), Constants.ROOT
+                folder.getName(), folder.getPath(), Constants.ROOT
             );
 
             description.append(message).append("\n");

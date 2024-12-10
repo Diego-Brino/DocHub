@@ -69,6 +69,14 @@ public class Archive {
             .build();
     }
 
+    public String getPath () {
+        if (this.folder != null) {
+            return this.folder.getPath() + "/" + this.resource.getName();
+        } else {
+            return "Raiz/" + this.resource.getName();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

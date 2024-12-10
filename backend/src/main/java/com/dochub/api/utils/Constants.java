@@ -39,10 +39,10 @@ public interface Constants {
     String ROOT = "Raiz";
     String RESOURCE_CREATED_HISTORY_MESSAGE = "Um novo recurso chamado '%s' foi criado na pasta '%s'.";
     String RESOURCE_NAME_UPDATED_MESSAGE = "O nome do recurso foi alterado de '%s' para '%s'.";
-    String RESOURCE_DESCRIPTION_UPDATED_MESSAGE = "A descrição do recurso foi alterada de '%s' para '%s'.";
-    String RESOURCE_FOLDER_UPDATED_MESSAGE = "O recurso foi movido da pasta '%s' para a pasta '%s'.";
-    String RESOURCE_CONTENT_TYPE_UPDATED_MESSAGE = "O tipo do recurso foi alterado de '%s' para '%s'.";
-    String RESOURCE_LENGTH_UPDATED_MESSAGE = "O tamanho do recurso foi alterado de '%s' para '%s'.";
+    String RESOURCE_DESCRIPTION_UPDATED_MESSAGE = "A descrição do recurso '%s' foi alterada de '%s' para '%s'.";
+    String RESOURCE_FOLDER_UPDATED_MESSAGE = "O recurso '%s' foi movido da pasta '%s' para a pasta '%s'.";
+    String RESOURCE_CONTENT_TYPE_UPDATED_MESSAGE = "O tipo do recurso '%s' foi alterado de '%s' para '%s'.";
+    String RESOURCE_LENGTH_UPDATED_MESSAGE = "O tamanho do recurso '%s' foi alterado de '%s' para '%s'.";
     String RESOURCE_DELETED_HISTORY_MESSAGE = "O recurso '%s' foi deletado da pasta '%s'.";
 
     // Templates

@@ -50,6 +50,14 @@ public class Folder {
             .build();
     }
 
+    public String getPath () {
+        if (this.parentFolder != null) {
+            return this.parentFolder.getPath() + "/" + this.resource.getName();
+        } else {
+            return "Raiz/" + this.resource.getName();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

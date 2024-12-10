@@ -83,6 +83,31 @@ public class Resource {
             .build();
     }
 
+    public String getPath () {
+        final String absolutePath = getAbsolutePath();
+        final int lastSlashIndex = absolutePath.lastIndexOf('/');
+
+        return absolutePath.substring(0, lastSlashIndex);
+    }
+
+    public String getAbsolutePath () {
+        if (this.archive != null) {
+            Folder folder = this.archive.getFolder();
+
+            if (folder != null) {
+                return folder.getPath() + "/" + this.name;
+            } else {
+                return "Raiz/" + this.name;
+            }
+        }
+
+        if (this.folder.getParentFolder() != null) {
+            return this.folder.getParentFolder().getPath() + "/" + this.name;
+        } else {
+            return "Raiz/" + this.name;
+        }
+    }
+
     @PrePersist
     public void prePersist () {
         if (Objects.isNull(this.origin)) {

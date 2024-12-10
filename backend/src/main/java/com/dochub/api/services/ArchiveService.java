@@ -132,7 +132,7 @@ public class ArchiveService {
         resource.setArchive(archive);
         archive.setResource(resource);
 
-        _logCreationHistory(resource.getName(), folder, group, userRoles.user().username(), logCreationResourceHistoryFunc);
+        _logCreationHistory(resource, group, userRoles.user().username(), logCreationResourceHistoryFunc);
 
         return archiveRepository.save(archive).getId();
     }
@@ -162,7 +162,7 @@ public class ArchiveService {
         resource.setArchive(archive);
         archive.setResource(resource);
 
-        _logCreationHistory(resource.getName(), null, movement.getRequest().getProcess().getGroup(), userRoles.user().username(), logCreationResourceHistoryFunc);
+        _logCreationHistory(resource, movement.getRequest().getProcess().getGroup(), userRoles.user().username(), logCreationResourceHistoryFunc);
 
         return archiveRepository.save(archive).getResource();
     }
@@ -205,7 +205,7 @@ public class ArchiveService {
 
         Utils.checkPermission(userRoles, archive.getResource().getGroup().getId(), archiveId, Constants.DELETE_ARCHIVE_PERMISSION);
 
-        _logDeletionHistory(archive, userRoles.user().username(), logDeletionResourceHistoryFunc);
+        _logDeletionHistory(archive.getResource(), userRoles.user().username(), logDeletionResourceHistoryFunc);
 
         deleteS3ObjectFunc.accept(archive.getResource().getGroup().getIdS3Bucket(), archive.getS3Hash());
 
@@ -227,16 +227,12 @@ public class ArchiveService {
         archiveRepository.deleteAll(archives);
     }
 
-    private void _logCreationHistory (final String archiveName, final Folder folder,
+    private void _logCreationHistory (final Resource archive,
                                       final Group group, final String actionUser,
                                       final TriConsumer<Group, String, String> logCreationResourceHistoryFunc) {
-        final String createdIn = Objects.nonNull(folder) ?
-            folder.getResource().getName() :
-            Constants.ROOT;
-
         logCreationResourceHistoryFunc.accept(
             group,
-            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, archiveName, createdIn),
+            String.format(Constants.RESOURCE_CREATED_HISTORY_MESSAGE, archive.getName(), archive.getPath()),
             actionUser
         );
     }
@@ -248,102 +244,94 @@ public class ArchiveService {
                                   final TriConsumer<Group, String, String> logEditResourceHistoryFunc) {
         final StringBuilder description = new StringBuilder();
 
-        _appendUpdatedName(archive, updateArchiveDTO, description);
-        _appendUpdatedDescription(archive, updateArchiveDTO, description);
-        _appendUpdatedContentType(archive, updateArchiveDTO, description);
-        _appendUpdatedLength(archive, updateArchiveDTO, description);
-        _appendUpdatedFolder(archive, updateArchiveDTO, getFolderByIdFunc, description);
+        _appendUpdatedName(archive.getResource(), updateArchiveDTO, description);
+        _appendUpdatedDescription(archive.getResource(), updateArchiveDTO, description);
+        _appendUpdatedContentType(archive.getResource(), updateArchiveDTO, description);
+        _appendUpdatedLength(archive.getResource(), updateArchiveDTO, description);
+        _appendUpdatedFolder(archive.getResource(), updateArchiveDTO, getFolderByIdFunc, description);
 
         logEditResourceHistoryFunc.accept(archive.getResource().getGroup(), description.toString(), actionUser);
     }
 
-    private void _logDeletionHistory (final Archive archive,
+    private void _logDeletionHistory (final Resource archive,
                                       final String actionUser,
                                       final TriConsumer<Group, String, String> logDeletionResourceHistoryFunc) {
-        final String resourceIn = Objects.nonNull(archive.getFolder()) ?
-            archive.getFolder().getResource().getName() :
-            Constants.ROOT;
-
         logDeletionResourceHistoryFunc.accept(
-            archive.getResource().getGroup(),
-            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, archive.getResource().getName(), resourceIn),
+            archive.getGroup(),
+            String.format(Constants.RESOURCE_DELETED_HISTORY_MESSAGE, archive.getName(), archive.getPath()),
             actionUser
         );
     }
 
-    private void _appendUpdatedName (final Archive archive,
+    private void _appendUpdatedName (final Resource archive,
                                      final UpdateArchiveDTO updateArchiveDTO,
                                      final StringBuilder description) {
         if (Objects.nonNull(updateArchiveDTO.name()) && !updateArchiveDTO.name().isBlank()) {
             final String message = String.format(
                 Constants.RESOURCE_NAME_UPDATED_MESSAGE,
-                archive.getResource().getName(), updateArchiveDTO.name()
+                archive.getAbsolutePath(), archive.getPath() + "/" + updateArchiveDTO.name()
             );
 
             description.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedDescription (final Archive archive,
+    private void _appendUpdatedDescription (final Resource archive,
                                             final UpdateArchiveDTO updateArchiveDTO,
                                             final StringBuilder description) {
         if (Objects.nonNull(updateArchiveDTO.description()) && !updateArchiveDTO.description().isBlank()) {
             final String message = String.format(
                 Constants.RESOURCE_DESCRIPTION_UPDATED_MESSAGE,
-                archive.getResource().getDescription(), updateArchiveDTO.description()
+                archive.getAbsolutePath(), archive.getDescription(), updateArchiveDTO.description()
             );
 
             description.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedContentType (final Archive archive,
+    private void _appendUpdatedContentType (final Resource archive,
                                             final UpdateArchiveDTO updateArchiveDTO,
                                             final StringBuilder description) {
         if (Objects.nonNull(updateArchiveDTO.contentType()) && !updateArchiveDTO.contentType().isBlank()) {
             final String message = String.format(
                 Constants.RESOURCE_CONTENT_TYPE_UPDATED_MESSAGE,
-                archive.getType(), updateArchiveDTO.contentType()
+                archive.getAbsolutePath(), archive.getArchive().getType(), updateArchiveDTO.contentType()
             );
 
             description.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedLength (final Archive archive,
+    private void _appendUpdatedLength (final Resource archive,
                                        final UpdateArchiveDTO updateArchiveDTO,
                                        final StringBuilder description) {
         if (Objects.nonNull(updateArchiveDTO.length())) {
             final String message = String.format(
                 Constants.RESOURCE_LENGTH_UPDATED_MESSAGE,
-                archive.getLength(), updateArchiveDTO.length()
+                archive.getAbsolutePath(), archive.getArchive().getLength(), updateArchiveDTO.length()
             );
 
             description.append(message).append("\n");
         }
     }
 
-    private void _appendUpdatedFolder (final Archive archive,
+    private void _appendUpdatedFolder (final Resource archive,
                                        final UpdateArchiveDTO updateArchiveDTO,
                                        final Function<Integer, Folder> getFolderByIdFunc,
                                        final StringBuilder description) {
         if (Objects.nonNull(updateArchiveDTO.folderId())) {
             final Folder newFolder = getFolderByIdFunc.apply(updateArchiveDTO.folderId());
 
-            final String oldFolderName = archive.getFolder() != null ?
-                archive.getFolder().getResource().getName() :
-                Constants.ROOT;
-
             final String message = String.format(
                 Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
-                oldFolderName, newFolder.getResource().getName()
+                archive.getName(), archive.getPath(), newFolder.getResource().getAbsolutePath()
             );
 
             description.append(message).append("\n");
-        }else if (Objects.nonNull(archive.getFolder())) {
+        }else if (Objects.nonNull(archive.getArchive().getFolder())) {
             final String message = String.format(
                 Constants.RESOURCE_FOLDER_UPDATED_MESSAGE,
-                archive.getFolder().getResource().getName(), Constants.ROOT
+                archive.getName(), archive.getPath(), Constants.ROOT
             );
 
             description.append(message).append("\n");
