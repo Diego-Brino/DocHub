@@ -18,6 +18,10 @@ const queryClient = new QueryClient({
         return;
       }
 
+      if (error?.response?.data.message === 'O usuário em questão não possui permissão para Visualizar histórico de Recursos.') {
+        return;
+      }
+
       toast.error("Erro", {
         description: error?.response?.data.message || error.message,
       });
@@ -30,6 +34,10 @@ const queryClient = new QueryClient({
       }
 
       if(error?.response?.data.message === 'Nenhuma entidade foi encontrada com o ID fornecido.'){
+        return;
+      }
+
+      if (error?.response?.data.message === 'O usuário em questão não possui permissão para Visualizar histórico de Recursos.') {
         return;
       }
 

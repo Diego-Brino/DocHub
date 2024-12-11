@@ -73,6 +73,8 @@ function RoleAddResourcePermissionSheetForm() {
     });
   };
 
+  const watchIdResource = form.watch("idResource");
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
@@ -151,7 +153,23 @@ function RoleAddResourcePermissionSheetForm() {
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Permissões</SelectLabel>
-                        {dataResourcePermissions?.map((permission) => (
+                        {dataResourcePermissions?.filter(resourcePermission => {
+                          const resource = dataResources?.find(
+                            (resource) => resource.id === Number(watchIdResource),
+                          );
+
+                          console.log(resource)
+
+                          if (resource?.type === "ARCHIVE" && resourcePermission.description.includes("Arquivo")) {
+                            return true;
+                          }
+
+                          if (resource?.type === "FOLDER" && resourcePermission.description.includes("Pasta")) {
+                            return true;
+                          }
+
+                          return  false
+                        })?.map((permission) => (
                           <SelectItem
                             key={permission.id}
                             value={permission.description}

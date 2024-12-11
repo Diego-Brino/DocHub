@@ -1,24 +1,16 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useAuthContext } from "@/contexts/auth";
-import { Button } from "@/components/custom/button.tsx";
-import { ArrowLeft, Workflow } from "lucide-react";
-import { Separator } from "@/components/ui/separator.tsx";
-import {
-  GroupToolbar,
-  GroupToolbarProvider,
-} from "@/features/groups/group-toolbar/group-toolbar.tsx";
-import { useGetGroup } from "@/services/groups/use-get-group.ts";
-import { useMutation, useQuery } from "react-query";
+import {useNavigate, useParams} from "react-router-dom";
+import {useAuthContext} from "@/contexts/auth";
+import {Button} from "@/components/custom/button.tsx";
+import {ArrowLeft, TextCursorInput, Waypoints, Workflow} from "lucide-react";
+import {Separator} from "@/components/ui/separator.tsx";
+import {GroupToolbar, GroupToolbarProvider,} from "@/features/groups/group-toolbar/group-toolbar.tsx";
+import {useGetGroup} from "@/services/groups/use-get-group.ts";
+import {useMutation, useQuery} from "react-query";
 import axiosClient from "@/lib/axios";
-import { Process, ResponseFlow } from "@/pages/flow.tsx";
-import {
-  NodeMouseHandler,
-  ReactFlow, ReactFlowInstance,
-  useEdgesState,
-  useNodesState,
-} from "@xyflow/react";
+import {Process, ResponseFlow} from "@/pages/flow.tsx";
+import {NodeMouseHandler, ReactFlow, useEdgesState, useNodesState,} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useEffect, useState } from "react";
+import {SetStateAction, useEffect, useState} from "react";
 import {
   Dialog,
   DialogContent,
@@ -36,33 +28,25 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form.tsx";
-import { Input } from "@/components/custom/input.tsx";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Input} from "@/components/custom/input.tsx";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
-import { toast } from "sonner";
+import {toast} from "sonner";
 import queryClient from "@/lib/react-query";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet.tsx";
-import { DataTable } from "@/components/custom/data-table.tsx";
-import { ColumnDef } from "@tanstack/react-table";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover.tsx";
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,} from "@/components/ui/sheet.tsx";
+import {DataTable} from "@/components/custom/data-table.tsx";
+import {ColumnDef} from "@tanstack/react-table";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover.tsx";
 
 const getMaxFlowsOrder = (process: Process) => {
   const val = process.flows.reduce((acc, flow) => {
@@ -94,12 +78,17 @@ const schema = z.object({
   description: z.string().min(1, "Nome é obrigatório"),
 });
 
+const schemaResponse = z.object({
+  description: z.string().min(1, "Nome é obrigatório"),
+});
+
 function ProcessPage() {
   const { token } = useAuthContext();
 
   const { id, flowId, processId } = useParams();
 
   const [openNewFlowModal, setOpenNewFlowModal] = useState(false);
+  const [openNewResponseModal, setOpenNewResponseModal] = useState(false);
 
   const { data: dataGroup } = useGetGroup(Number(id));
 
@@ -136,6 +125,21 @@ function ProcessPage() {
     ["response-flows"],
     async (): Promise<ResponseFlow> => {
       const response = await axiosClient.get(`/response-flows`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+  );
+
+  const { data: dataResponses } = useQuery(
+    ["responses"],
+    async (): Promise<{
+      id: number;
+      description: string;
+    }[]> => {
+      const response = await axiosClient.get(`/responses`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -232,8 +236,6 @@ function ProcessPage() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const [instance, setInstance] = useState<ReactFlowInstance | null>(null);
-
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -297,7 +299,6 @@ function ProcessPage() {
       });
     }
 
-    console.log(nodes);
   }, [dataService, mountTrigger]);
 
   const [selectedNode, setSelectedNode] = useState<{
@@ -417,8 +418,27 @@ function ProcessPage() {
         ),
     );
 
-    setConnectedFlows(uniqueFlows);
+    setConnectedFlows(uniqueFlows as SetStateAction<{   name: string;   order: string;   time: string; }[]>);
   }, [selectedNode]);
+
+  const formResponse = useForm<z.infer<typeof schemaResponse>>({
+    resolver: zodResolver(schemaResponse),
+    defaultValues: {
+      description: "",
+    },
+  })
+
+  const submitFormResponse = (data: z.infer<typeof schemaResponse>) => {
+    mutateAsyncPostResponse({
+      description: data.description,
+    }).then((response) => {
+      queryClient.invalidateQueries(["responses"]);
+      toast.success("Resposta criada com sucesso");
+      setOpenNewResponseModal(false);
+    });
+  }
+
+  const [openNewLinkModal, setOpenNewLinkModal] = useState(false);
 
   return (
     <>
@@ -447,7 +467,18 @@ function ProcessPage() {
             currentPath={[]}
             setCurrentPath={() => {}}
             buttons={
-              <>
+              <div className='flex gap-4'>
+                <Button
+                  disabled={isLoading}
+                  loading={isLoading}
+                  className="gap-2"
+                  onClick={() => {
+                    setOpenNewResponseModal(true);
+                  }}
+                >
+                  <TextCursorInput className='size-5' />
+                  Criar Nova Resposta
+                </Button>
                 <Button
                   disabled={isLoading}
                   loading={isLoading}
@@ -459,7 +490,7 @@ function ProcessPage() {
                   <Workflow />
                   Criar Nova Etapa
                 </Button>
-              </>
+              </div>
             }
           />
           <div className="flex flex-col items-start justify-center w-full pb-4 gap-2 h-full">
@@ -469,11 +500,107 @@ function ProcessPage() {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onNodeClick={handleNodeClick}
-              onInit={(instance) => setInstance(instance)}
             />
           </div>
         </GroupToolbarProvider>
       </div>
+      <Dialog
+        open={openNewLinkModal}
+        onOpenChange={(open) => {
+          setOpenNewLinkModal(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Novo Vínculo</DialogTitle>
+            <DialogDescription>
+              Adicione uma nova opção de resposta para ser vinculada a uma etapa
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...formResponse}>
+            <form onSubmit={formResponse.handleSubmit(submitFormResponse)}>
+              <div className="pb-6 space-y-4">
+                <FormField
+                  control={formResponse.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder={"Selecione uma opção de descrição"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Descrição</SelectLabel>
+                              {dataResponses?.map((response) => (
+                                <SelectItem key={response.id} value={response.id.toString()}>
+                                  {response.description}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter>
+                <Button loading={isLoading} disabled={isLoading}>
+                  Confirmar
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openNewResponseModal}
+        onOpenChange={(open) => {
+          setOpenNewResponseModal(open);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nova Opção de Resposta</DialogTitle>
+            <DialogDescription>
+              Adicione uma nova opção de resposta para ser vinculada a uma etapa
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...formResponse}>
+            <form onSubmit={formResponse.handleSubmit(submitFormResponse)}>
+              <div className="pb-6 space-y-4">
+                <FormField
+                  control={formResponse.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Descrição</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          error={formResponse.formState.errors.description?.message}
+                        />
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <DialogFooter>
+                <Button loading={isLoading} disabled={isLoading}>
+                  Confirmar
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={openNewFlowModal}
         onOpenChange={(open) => {
@@ -586,9 +713,11 @@ function ProcessPage() {
           <div className="w-full flex flex-col gap-2">
             <Popover>
               <PopoverTrigger className="w-full">
-                <Button className="w-full flex gap-2">
-                  <Workflow />
-                  Vincular nova etapa
+                <Button className="w-full flex gap-2" onClick={
+                  () => setOpenNewLinkModal(true)
+                }>
+                  <Waypoints className='size-5'/>
+                  Criar novo vínculo
                 </Button>
               </PopoverTrigger>
               <PopoverContent>
