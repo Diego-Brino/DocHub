@@ -262,10 +262,10 @@ VALUES
 
 INSERT INTO recurso (NOME, DESCRICAO, ID_GRUPO, ORIGEM, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
-    ('relatorio_financeiro_2024.pdf', NULL, 1, 'GRUPO', 'DocHub', CURRENT_DATE),
-    ('planejamento_orcamentario.docx', NULL, 1, 'GRUPO','DocHub', CURRENT_DATE),
-    ('organograma_equipe_rh.png', NULL, 2, 'GRUPO', 'DocHub', CURRENT_DATE),
-    ('manual_procedimentos_dp.pdf', NULL, 3, 'GRUPO', 'DocHub', CURRENT_DATE);
+    ('relatorio_financeiro_2024', NULL, 1, 'GRUPO', 'DocHub', CURRENT_DATE),
+    ('planejamento_orcamentario', NULL, 1, 'GRUPO','DocHub', CURRENT_DATE),
+    ('organograma_equipe_rh', NULL, 2, 'GRUPO', 'DocHub', CURRENT_DATE),
+    ('manual_procedimentos_dp', NULL, 3, 'GRUPO', 'DocHub', CURRENT_DATE);
 
 INSERT INTO arquivo (ID_ARQUIVO, ID_S3_OBJECT, TIPO, TAMANHO, USUARIO_INSERCAO, DATA_INSERCAO)
 VALUES
