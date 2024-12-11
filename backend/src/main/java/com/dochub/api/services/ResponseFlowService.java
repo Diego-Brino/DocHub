@@ -3,6 +3,7 @@ package com.dochub.api.services;
 import com.dochub.api.dtos.response_flow.ResponseFlowResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Flow;
+import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Process;
 import com.dochub.api.entities.Response;
 import com.dochub.api.entities.response_flow.ResponseFlow;
@@ -123,6 +124,14 @@ public class ResponseFlowService {
 
     public void deleteAllResponseFlowsWithDestinationFlow (final Flow flow) {
         final List<ResponseFlow> responseFlows = getResponseFlowsByDestionationFlow(flow);
+
+        responseFlowRepository.deleteAll(responseFlows);
+    }
+
+    public void deleteAllResponseFlowsAssignedToGroup (final Group group) {
+        final List<ResponseFlow> responseFlows = responseFlowRepository
+            .findByFlow_Process_Group(group)
+            .orElse(Collections.emptyList());
 
         responseFlowRepository.deleteAll(responseFlows);
     }

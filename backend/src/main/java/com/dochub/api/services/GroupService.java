@@ -123,20 +123,28 @@ public class GroupService {
                         final Consumer<Group> deleteAllGroupRolePermissionsAssignedToGroupFunc,
                         final Function<Resource, List<ResourceRolePermission>> getAllByResourceFunc,
                         final Consumer<List<ResourceRolePermission>> deleteResourceRolePermissionsFunc,
-                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllArchivesAssignedToGroupFunc,
-                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllFoldersAssignedToGroupFunc,
                         final Consumer<Group> deleteAllResourceHistoriesAssignedToGroupFunc,
-                        final Consumer<Group> deleteAllProcessAssignedToGroup) {
+                        final Consumer<Group> deleteAllResourceMovementsAssignedToGroupFunc,
+                        final Consumer<Group> deleteAllMovementsAssignedToGroupFunc,
+                        final Consumer<Group> deleteAllRequestsAssignedToGroupFunc,
+                        final Consumer<Group> deleteAllResponseFlowsAssignedToGroupFunc,
+                        final Consumer<Group> deleteAllProcessAssignedToGroupFunc,
+                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllArchivesAssignedToGroupFunc,
+                        final TriConsumer<Group, Function<Resource, List<ResourceRolePermission>>, Consumer<List<ResourceRolePermission>>> deleteAllFoldersAssignedToGroupFunc) {
         final Group group = getById(groupId);
 
         Utils.checkPermission(userRoles, groupId, Constants.DELETE_GROUP_PERMISSION);
 
         deleteBucketWithContentsAsyncFunc.accept(group.getIdS3Bucket());
         deleteAllGroupRolePermissionsAssignedToGroupFunc.accept(group);
+        deleteAllResourceHistoriesAssignedToGroupFunc.accept(group);
+        deleteAllResourceMovementsAssignedToGroupFunc.accept(group);
+        deleteAllMovementsAssignedToGroupFunc.accept(group);
+        deleteAllRequestsAssignedToGroupFunc.accept(group);
+        deleteAllResponseFlowsAssignedToGroupFunc.accept(group);
+        deleteAllProcessAssignedToGroupFunc.accept(group);
         deleteAllArchivesAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
         deleteAllFoldersAssignedToGroupFunc.accept(group, getAllByResourceFunc, deleteResourceRolePermissionsFunc);
-        deleteAllResourceHistoriesAssignedToGroupFunc.accept(group);
-        deleteAllProcessAssignedToGroup.accept(group);
 
         groupRepository.delete(group);
     }

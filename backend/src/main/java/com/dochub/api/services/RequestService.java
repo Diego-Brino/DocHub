@@ -106,6 +106,17 @@ public class RequestService {
             .collect(Collectors.toList());
     }
 
+    public void setRequestAsFinished (final Integer requestId) {
+        final Request request = getById(requestId);
+
+        request.setStatus(RequestStatus.FINISHED);
+
+        request.getAuditRecord().setAlterationUser(Constants.SYSTEM_NAME);
+        request.getAuditRecord().setAlterationDate(new Date());
+
+        requestRepository.save(request);
+    }
+
     public Integer create (final UserRoleResponseDTO userRoles,
                            final Function<Process, Boolean> isProcessFinishedFunc,
                            final User user, final Process process) {
@@ -120,14 +131,11 @@ public class RequestService {
         return requestRepository.save(request).getId();
     }
 
-    public void setRequestAsFinished (final Integer requestId) {
-        final Request request = getById(requestId);
+    public void deleteAllRequestsAssignedToGroup (final Group group) {
+        final List<Request> requests = requestRepository
+            .findByProcess_Group(group)
+            .orElse(Collections.emptyList());
 
-        request.setStatus(RequestStatus.FINISHED);
-
-        request.getAuditRecord().setAlterationUser(Constants.SYSTEM_NAME);
-        request.getAuditRecord().setAlterationDate(new Date());
-
-        requestRepository.save(request);
+        requestRepository.deleteAll(requests);
     }
 }

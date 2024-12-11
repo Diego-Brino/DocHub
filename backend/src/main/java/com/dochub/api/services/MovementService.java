@@ -3,6 +3,7 @@ package com.dochub.api.services;
 import com.dochub.api.dtos.movement.MovementResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Flow;
+import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Movement;
 import com.dochub.api.entities.Request;
 import com.dochub.api.entities.flow_user.FlowUser;
@@ -76,7 +77,15 @@ public class MovementService {
         return movementRepository.save(movement).getId();
     }
 
-    public Integer _getOrderForCreateMovement (final Integer requestId) {
+    public void deleteAllMovementsAssignedToGroup (final Group group) {
+        final List<Movement> movements = movementRepository
+            .findByRequest_Process_Group(group)
+            .orElse(Collections.emptyList());
+
+        movementRepository.deleteAll(movements);
+    }
+
+    private Integer _getOrderForCreateMovement (final Integer requestId) {
         final List<Movement> movement = movementRepository
                 .findMovementByRequest_IdOrderByOrderDesc(requestId)
                 .orElse(Collections.emptyList());

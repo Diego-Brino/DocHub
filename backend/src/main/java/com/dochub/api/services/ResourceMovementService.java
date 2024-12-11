@@ -3,6 +3,7 @@ package com.dochub.api.services;
 import com.dochub.api.dtos.resource_movement.ResourceMovementResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
 import com.dochub.api.entities.Flow;
+import com.dochub.api.entities.Group;
 import com.dochub.api.entities.Movement;
 import com.dochub.api.entities.Resource;
 import com.dochub.api.entities.resource_movement.ResourceMovement;
@@ -13,6 +14,7 @@ import com.dochub.api.repositories.ResourceMovementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -56,5 +58,13 @@ public class ResourceMovementService {
         final ResourceMovement resourceMovement = new ResourceMovement(resourceMovementId, movement, resource, userRoles.user().username());
 
         return resourceMovementRepository.save(resourceMovement).getId();
+    }
+
+    public void deleteAllResourceMovementsAssignedToGroup (final Group group) {
+        final List<ResourceMovement> resourceMovements = resourceMovementRepository
+            .findByResource_Group(group)
+            .orElse(Collections.emptyList());
+
+        resourceMovementRepository.deleteAll(resourceMovements);
     }
 }

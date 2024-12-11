@@ -107,6 +107,19 @@ public class ProcessService {
         processRepository.save(process);
     }
 
+    public void putProcessInProgress (final UserRoleResponseDTO userRoles,
+                                      final Integer processId) {
+        final Process process = getById(processId);
+
+        Utils.checkPermission(userRoles, process.getGroup().getId(), Constants.EDIT_PROCESS_PERMISSION);
+
+        process.setEndDate(null);
+
+        _logAuditForChange(process, userRoles.user().username());
+
+        processRepository.save(process);
+    }
+
     public void delete (final UserRoleResponseDTO userRoles,
                         final Integer processId,
                         final Function<Process, Boolean> hasRequestAssignedToProcessFunc) {

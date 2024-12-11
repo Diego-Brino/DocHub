@@ -83,6 +83,20 @@ public class ProcessController {
             .build();
     }
 
+    @PatchMapping("/{id}/in-progress")
+    public ResponseEntity<Void> putProcessInProgress (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
+                                                      @PathVariable("id") @NonNull final Integer id) {
+        final String userEmail = jwtService.extractUserEmail(Utils.removeBearerPrefix(token));
+        final User user = userService.getByEmail(userEmail);
+        final UserRoleResponseDTO userRoles = userRoleService.getUserRolesByUser(user);
+
+        processService.putProcessInProgress(userRoles, id);
+
+        return ResponseEntity
+            .ok()
+            .build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token,
                                         @PathVariable("id") @NonNull final Integer id) {
