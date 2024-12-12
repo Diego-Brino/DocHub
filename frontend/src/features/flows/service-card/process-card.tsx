@@ -1,24 +1,25 @@
-import {ArrowRight, CircleOff} from "lucide-react";
+import { ArrowRight, CircleOff, Edit, PanelBottomOpen } from "lucide-react";
 import { Button } from "@/components/custom/button.tsx";
 import { Card } from "@/components/ui/card.tsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { Process } from "@/pages/flow.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
-import {useMutation} from "react-query";
+import { useMutation } from "react-query";
 import axiosClient from "@/lib/axios";
 import queryClient from "@/lib/react-query";
-import {toast} from "sonner";
-import {useAuthContext} from "@/contexts/auth";
+import { toast } from "sonner";
+import { useAuthContext } from "@/contexts/auth";
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter,
+  AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog.tsx";
-import {useState} from "react";
+import { useState } from "react";
 
 function formatDateBrazil(date: Date) {
   const brasilOffset = -3;
@@ -27,8 +28,8 @@ function formatDateBrazil(date: Date) {
 
   const brasilDate = new Date(localTime + offsetInMs);
 
-  const day = String(brasilDate.getUTCDate()).padStart(2, '0');
-  const month = String(brasilDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(brasilDate.getUTCDate()).padStart(2, "0");
+  const month = String(brasilDate.getUTCMonth() + 1).padStart(2, "0");
   const year = brasilDate.getUTCFullYear();
 
   return `${day}/${month}/${year}`;
@@ -41,17 +42,17 @@ function ProcessCard({ process, order }: { process: Process; order: number }) {
 
   const { id, flowId } = useParams();
 
-  const { mutateAsync: finishProcess,} = useMutation(
-    async ({idProcess, endDate}: {
-      idProcess: number;
-      endDate: string;
-    }) => {
-      const response = await axiosClient.patch(`/processes/${idProcess}/end-date`, {endDate},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+  const { mutateAsync: finishProcess } = useMutation(
+    async ({ idProcess, endDate }: { idProcess: number; endDate: string }) => {
+      const response = await axiosClient.patch(
+        `/processes/${idProcess}/end-date`,
+        { endDate },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return response.data;
     },
     {
@@ -60,9 +61,53 @@ function ProcessCard({ process, order }: { process: Process; order: number }) {
         toast.success("Processo finalizado com sucesso");
       },
     },
-  )
+  );
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const {
+    mutateAsync: mutateAsyncPatchProcessInProgress,
+    isLoading: isLoadingPatchProcessInProgress,
+  } = useMutation({
+    mutationFn: () =>
+      axiosClient.patch(
+        `/processes/${flowId}/in-progress`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["services"]);
+      toast.success("Processo retomado com sucesso");
+    },
+  });
+
+  const {
+    mutateAsync: mutateAsyncPostRequest,
+    isLoading: isLoadingPostRequest,
+  } = useMutation({
+    mutationFn: ({ processId }: { processId: number }) =>
+      axiosClient.post(
+        `/requests`,
+        {
+          processId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["services"]);
+      toast.success("Processo iniciado com sucesso");
+    },
+  });
+
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
 
   return (
     <>
@@ -81,26 +126,51 @@ function ProcessCard({ process, order }: { process: Process; order: number }) {
             )}
           </div>
           <div className="flex gap-4 items-center">
+            {process.endDate === "" ? (
+              <Button
+                disabled={process.endDate !== ""}
+                variant="destructive"
+                className="gap-2"
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+              >
+                <CircleOff className="size-5" />
+                Finalizar
+              </Button>
+            ) : (
+              <Button
+                variant={"outline"}
+                disabled={isLoadingPatchProcessInProgress}
+                className="gap-2"
+                onClick={() => {
+                  mutateAsyncPatchProcessInProgress();
+                }}
+              >
+                <PanelBottomOpen className="size-5" />
+                Retomar
+              </Button>
+            )}
             <Button
-              disabled={process.endDate !== ""}
-              variant='destructive'
-              className="gap-2"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
-              <CircleOff className='size-5'/>
-              Finalizar
-            </Button>
-            <Button
-              className="gap-2"
+              className="flex gap-2"
               onClick={() => {
                 navigate(
                   `/groups/${id}/flows/${flowId}/processes/${process.id}`,
                 );
               }}
             >
-              Acessar
+              <Edit />
+              Editar
+            </Button>
+            <Button
+              className="gap-2"
+              disabled={isLoadingPostRequest}
+              loading={isLoadingPostRequest}
+              onClick={() => {
+                setIsRequestOpen(true);
+              }}
+            >
+              Iniciar
               <ArrowRight />
             </Button>
           </div>
@@ -121,10 +191,70 @@ function ProcessCard({ process, order }: { process: Process; order: number }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => finishProcess({
-              idProcess: process.id,
-              endDate: formatDateBrazil(new Date()),
-            })}>
+            <AlertDialogAction
+              onClick={() =>
+                finishProcess({
+                  idProcess: process.id,
+                  endDate: formatDateBrazil(new Date()),
+                })
+              }
+            >
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={isOpen}
+        onOpenChange={() => {
+          setIsOpen(false);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Finalização</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja finalizar este processo?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                finishProcess({
+                  idProcess: process.id,
+                  endDate: formatDateBrazil(new Date()),
+                })
+              }
+            >
+              Confirmar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={isRequestOpen}
+        onOpenChange={() => {
+          setIsRequestOpen(false);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Requisição</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja iniciar este processo? Depois de
+              iniciado não será possível finalizar.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() =>
+                mutateAsyncPostRequest({
+                  processId: process.id,
+                })
+              }
+            >
               Confirmar
             </AlertDialogAction>
           </AlertDialogFooter>

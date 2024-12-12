@@ -70,7 +70,6 @@ function RoleCard({
         exit={{ opacity: 0 }}
       >
         <Card
-          className="h-[167px]"
           style={{
             borderLeft: `16px solid ${color}`,
           }}

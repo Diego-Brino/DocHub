@@ -6,7 +6,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { ArrowRight, EditIcon, TextIcon, TrashIcon } from "lucide-react";
+import {
+  EditIcon,
+  Files,
+  FolderGit2,
+  GitPullRequest,
+  TextIcon,
+  TrashIcon,
+} from "lucide-react";
 import { Button } from "@/components/custom/button.tsx";
 import { useDeleteGroup } from "@/services/groups/use-delete-group.ts";
 import { motion } from "framer-motion";
@@ -24,6 +31,11 @@ import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import { useGetGroupHistory } from "@/services/groups/use-get-group-history.ts";
 import { Separator } from "@/components/ui/separator.tsx";
 import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
 
 type GroupCardProps = {
   group: {
@@ -101,22 +113,53 @@ function GroupCard({
             <Button
               className="gap-2"
               variant="outline"
+              size="icon"
               onClick={() => {
                 navigate(`/groups/${id}/flows`);
               }}
             >
-              Fluxos
-              <ArrowRight className="size-5" />
+              <Tooltip>
+                <TooltipTrigger>
+                  <GitPullRequest className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Gerenciar Fluxos</p>
+                </TooltipContent>
+              </Tooltip>
             </Button>
             <Button
               className="gap-2"
               variant="outline"
+              size="icon"
+              onClick={() => {
+                navigate(`/groups/${id}/use-flows`);
+              }}
+            >
+              <Tooltip>
+                <TooltipTrigger>
+                  <FolderGit2 className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Meus Fluxos</p>
+                </TooltipContent>
+              </Tooltip>
+            </Button>
+            <Button
+              className="gap-2"
+              variant="outline"
+              size="icon"
               onClick={() => {
                 navigate(`/groups/${id}/files`);
               }}
             >
-              Arquivos
-              <ArrowRight className="size-5" />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Files className="size-5" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Gerenciar Arquivos</p>
+                </TooltipContent>
+              </Tooltip>
             </Button>
           </CardFooter>
         </Card>

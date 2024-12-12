@@ -1,18 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "@/contexts/auth";
 import { Button } from "@/components/custom/button.tsx";
-import {ArrowLeft, PackagePlus} from "lucide-react";
+import { ArrowLeft, PackagePlus } from "lucide-react";
 import { Separator } from "@/components/ui/separator.tsx";
 import {
   GroupToolbar,
-  GroupToolbarProvider, useGroupToolbarContext,
+  GroupToolbarProvider,
+  useGroupToolbarContext,
 } from "@/features/groups/group-toolbar/group-toolbar.tsx";
 import { useGetGroup } from "@/services/groups/use-get-group.ts";
-import {useMutation, useQuery} from "react-query";
+import { useMutation, useQuery } from "react-query";
 import axiosClient from "@/lib/axios";
 import { ProcessCard } from "@/features/flows/service-card/process-card.tsx";
 import queryClient from "@/lib/react-query";
-import {toast} from "sonner";
+import { toast } from "sonner";
 
 export type Process = {
   id: number;
@@ -47,7 +48,7 @@ type FlowUser = {
   flow: Flow;
 };
 
-type User = {
+export type User = {
   id: number;
   name: string;
   email: string;
@@ -159,27 +160,47 @@ function Flow() {
     },
   });
 
+  const {
+    mutateAsync: mutateAsyncPatchProcessInProgress,
+    isLoading: isLoadingPatchProcessInProgress,
+  } = useMutation({
+    mutationFn: () =>
+      axiosClient.patch(
+        `/processes/${flowId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["services"]);
+      toast.success("Processo iniciado com sucesso");
+    },
+  });
+
   const submitFormProcess = () => {
     mutateAsyncPostProcess();
   };
 
   const ProcessList = () => {
-    const {appliedFilter} = useGroupToolbarContext();
+    const { appliedFilter } = useGroupToolbarContext();
 
     return (
       <div className="flex flex-col items-start justify-start w-full pb-4 gap-4 overflow-scroll h-full">
-        {dataServiceProcesses?.filter(
-          (process, index) => ("Processo" + " - " + index).toLowerCase().includes(appliedFilter.toLowerCase())
-        ).map((process, index) => (
-          <ProcessCard
-            process={process}
-            order={index + 1}
-            key={process.id}
-          />
-        ))}
+        {dataServiceProcesses
+          ?.filter((process, index) =>
+            ("Processo" + " - " + index)
+              .toLowerCase()
+              .includes(appliedFilter.toLowerCase()),
+          )
+          .map((process, index) => (
+            <ProcessCard process={process} order={index + 1} key={process.id} />
+          ))}
       </div>
     );
-  }
+  };
 
   return (
     <>
@@ -221,7 +242,7 @@ function Flow() {
               </>
             }
           />
-        <ProcessList />
+          <ProcessList />
         </GroupToolbarProvider>
       </div>
     </>

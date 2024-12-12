@@ -18,7 +18,6 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
         SELECT a
           FROM Archive a
         WHERE a.id = :idArchive
-          AND a.resource.origin = 'GRUPO'
           AND (
                 EXISTS        (
                                 SELECT uc

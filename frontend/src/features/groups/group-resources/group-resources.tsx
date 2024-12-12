@@ -219,10 +219,12 @@ const FolderCard = ({
 };
 
 function GroupResources({
+  other = false,
   data,
   currentPath,
   setCurrentPath,
 }: {
+  other?: boolean;
   data: {
     folders: Folder[];
     archives: Archive[];

@@ -111,7 +111,7 @@ function GroupFiles() {
           id: toastId,
         });
 
-        await delay(1000);
+        await delay(1500);
       }
 
       queryClient.invalidateQueries(["archives"]);

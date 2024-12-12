@@ -1,16 +1,30 @@
-import {useNavigate, useParams} from "react-router-dom";
-import {useAuthContext} from "@/contexts/auth";
-import {Button} from "@/components/custom/button.tsx";
-import {ArrowLeft, TextCursorInput, Waypoints, Workflow} from "lucide-react";
-import {Separator} from "@/components/ui/separator.tsx";
-import {GroupToolbar, GroupToolbarProvider,} from "@/features/groups/group-toolbar/group-toolbar.tsx";
-import {useGetGroup} from "@/services/groups/use-get-group.ts";
-import {useMutation, useQuery} from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuthContext } from "@/contexts/auth";
+import { Button } from "@/components/custom/button.tsx";
+import {
+  ArrowLeft,
+  TextCursorInput,
+  Users,
+  Waypoints,
+  Workflow,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator.tsx";
+import {
+  GroupToolbar,
+  GroupToolbarProvider,
+} from "@/features/groups/group-toolbar/group-toolbar.tsx";
+import { useGetGroup } from "@/services/groups/use-get-group.ts";
+import { useMutation, useQuery } from "react-query";
 import axiosClient from "@/lib/axios";
-import {Process, ResponseFlow} from "@/pages/flow.tsx";
-import {NodeMouseHandler, ReactFlow, useEdgesState, useNodesState,} from "@xyflow/react";
+import { Process, ResponseFlow } from "@/pages/flow.tsx";
+import {
+  NodeMouseHandler,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import {SetStateAction, useEffect, useState} from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,10 +42,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form.tsx";
-import {Input} from "@/components/custom/input.tsx";
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
+import { Input } from "@/components/custom/input.tsx";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
   SelectContent,
@@ -41,12 +55,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select.tsx";
-import {toast} from "sonner";
+import { toast } from "sonner";
 import queryClient from "@/lib/react-query";
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,} from "@/components/ui/sheet.tsx";
-import {DataTable} from "@/components/custom/data-table.tsx";
-import {ColumnDef} from "@tanstack/react-table";
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover.tsx";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet.tsx";
+import { DataTable } from "@/components/custom/data-table.tsx";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  FlowUsersDialog,
+  useFlowUsersDialogContext,
+} from "@/features/flows/flow-users-dialog.tsx";
 
 const getMaxFlowsOrder = (process: Process) => {
   const val = process.flows.reduce((acc, flow) => {
@@ -80,6 +103,12 @@ const schema = z.object({
 
 const schemaResponse = z.object({
   description: z.string().min(1, "Nome é obrigatório"),
+});
+
+const schemaResponseFlow = z.object({
+  flowId: z.string().min(1, "Fluxo é obrigatório"),
+  responseId: z.string().min(1, "Resposta é obrigatória"),
+  destinationFlowId: z.string().nullable(),
 });
 
 function ProcessPage() {
@@ -135,10 +164,12 @@ function ProcessPage() {
 
   const { data: dataResponses } = useQuery(
     ["responses"],
-    async (): Promise<{
-      id: number;
-      description: string;
-    }[]> => {
+    async (): Promise<
+      {
+        id: number;
+        description: string;
+      }[]
+    > => {
       const response = await axiosClient.get(`/responses`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -183,7 +214,7 @@ function ProcessPage() {
     async (data: {
       flowId: number;
       responseId: number;
-      destinationFlowId: number;
+      destinationFlowId: number | null;
     }) => {
       const response = await axiosClient.post(`/response-flows`, data, {
         headers: {
@@ -221,14 +252,11 @@ function ProcessPage() {
 
   const { mutateAsync: mutateAsyncDeleteFlow } = useMutation(
     async (data: { idFlow: number }) => {
-      const response = await axiosClient.delete(
-        `/flows/${data.idFlow}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axiosClient.delete(`/flows/${data.idFlow}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       return response.data;
     },
   );
@@ -268,8 +296,8 @@ function ProcessPage() {
   const [mountTrigger, setMountTrigger] = useState(false);
 
   useEffect(() => {
-    setNodes([])
-    setEdges([])
+    setNodes([]);
+    setEdges([]);
 
     if (!dataProcess) {
       return;
@@ -277,28 +305,51 @@ function ProcessPage() {
 
     for (let i = 0; i < dataProcess?.flows.length; i++) {
       const flow = dataProcess?.flows[i];
-
       setNodes((nodes) => [
         ...nodes,
         {
           id: flow.id.toString(),
-          position: { x: 100 * i, y: 100 * flow?.order},
-          data: { label: flow?.order + " - " + flow?.activity.description }
+          position: { x: 100 * i, y: 200 * flow.order },
+          data: { label: flow.order + " - " + flow.activity.description },
         },
       ]);
+
+      for (let j = 0; j < flow.responseFlows.length; j++) {
+        const responseFlow = flow.responseFlows[j];
+        setNodes((nodes) => [
+          ...nodes,
+          {
+            id: "RESPOSTA " + responseFlow.response.id.toString(),
+            position: { x: 100 * i, y: 200 * flow.order + 100 * j },
+            data: { label: responseFlow.response.description },
+          },
+        ]);
+      }
 
       flow.responseFlows.forEach((responseFlow) => {
         setEdges((edges) => [
           ...edges,
           {
-            id: responseFlow.response.id.toString(),
+            id:
+              "FROM " +
+              flow.id.toString() +
+              " TO RESPOSTA" +
+              responseFlow.response.id.toString(),
             source: flow.id.toString(),
-            target: responseFlow.destinationFlow?.id.toString() as string,
-          }
+            target: "RESPOSTA " + responseFlow.response.id.toString(),
+          },
+          {
+            id:
+              "FROM RESPOSTA" +
+              responseFlow.response.id.toString() +
+              " TO " +
+              responseFlow.destinationFlow?.id.toString(),
+            source: "RESPOSTA " + responseFlow.response.id.toString(),
+            target: responseFlow.destinationFlow?.id.toString(),
+          },
         ]);
       });
     }
-
   }, [dataService, mountTrigger]);
 
   const [selectedNode, setSelectedNode] = useState<{
@@ -313,6 +364,10 @@ function ProcessPage() {
     position: { x: number; y: number };
     data: { label: string };
   }> = (_event, node) => {
+    if (node.id.includes("RESPOSTA")) {
+      return;
+    }
+
     setSelectedNode(node);
     setBottomSheetOpen(true);
   };
@@ -337,46 +392,51 @@ function ProcessPage() {
       accessorKey: "time",
       cell: ({ row }) => <p className="text-nowrap">{row.getValue("time")}</p>,
     },
-    {
-      header: "Ações",
-      accessorKey: "actions",
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            onClick={() => {
-              const connectedFlow = dataProcess?.flows.find(
-                (flow) => flow.id.toString() === selectedNode?.id,
-              );
-
-              const responseFlow = connectedFlow?.responseFlows.find(
-                (response) =>
-                  response.destinationFlow?.activity.description.toString() ===
-                  row.original.name,
-              );
-
-              if (!responseFlow) {
-                toast.error("ID de resposta não encontrado.");
-                return;
-              }
-
-              mutateAsyncDeleteResponseFlow({
-                idFlow: Number(selectedNode?.id),
-                idResponse: responseFlow.response.id,
-              }).then(() => {
-                toast.success("Etapa desvinculada com sucesso");
-                queryClient.invalidateQueries(["processes"]);
-                queryClient.invalidateQueries(["services"]);
-                setMountTrigger(!mountTrigger);
-                setBottomSheetOpen(false);
-              });
-            }}
-          >
-            Excluir
-          </Button>
-        </div>
-      ),
-    },
+    // {
+    //   header: "Ações",
+    //   accessorKey: "actions",
+    //   cell: ({ row }) => (
+    //     <div className="flex gap-2">
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => {
+    //           const connectedFlow = dataProcess?.flows.find(
+    //             (flow) => flow.id.toString() === selectedNode?.id,
+    //           );
+    //
+    //           if (!connectedFlow) {
+    //             toast.error("ID de etapa não encontrado.");
+    //             return;
+    //           }
+    //
+    //           const responseFlow = connectedFlow.responseFlows.find(
+    //             (responseFlow) =>
+    //               responseFlow.response.id.toString() ===
+    //               row.getValue("name").split(" ")[1],
+    //           );
+    //
+    //           if (!responseFlow) {
+    //             toast.error("ID de resposta não encontrado.");
+    //             return;
+    //           }
+    //
+    //           mutateAsyncDeleteResponseFlow({
+    //             idFlow: Number(selectedNode?.id),
+    //             idResponse: responseFlow.response.id,
+    //           }).then(() => {
+    //             toast.success("Etapa desvinculada com sucesso");
+    //             queryClient.invalidateQueries(["processes"]);
+    //             queryClient.invalidateQueries(["services"]);
+    //             setMountTrigger(!mountTrigger);
+    //             setBottomSheetOpen(false);
+    //           });
+    //         }}
+    //       >
+    //         Excluir
+    //       </Button>
+    //     </div>
+    //   ),
+    // },
   ];
 
   const [connectedFlows, setConnectedFlows] = useState<
@@ -418,7 +478,11 @@ function ProcessPage() {
         ),
     );
 
-    setConnectedFlows(uniqueFlows as SetStateAction<{   name: string;   order: string;   time: string; }[]>);
+    setConnectedFlows(
+      uniqueFlows as SetStateAction<
+        { name: string; order: string; time: string }[]
+      >,
+    );
   }, [selectedNode]);
 
   const formResponse = useForm<z.infer<typeof schemaResponse>>({
@@ -426,19 +490,50 @@ function ProcessPage() {
     defaultValues: {
       description: "",
     },
-  })
+  });
 
   const submitFormResponse = (data: z.infer<typeof schemaResponse>) => {
     mutateAsyncPostResponse({
       description: data.description,
-    }).then((response) => {
+    }).then(() => {
       queryClient.invalidateQueries(["responses"]);
       toast.success("Resposta criada com sucesso");
       setOpenNewResponseModal(false);
     });
-  }
+  };
 
   const [openNewLinkModal, setOpenNewLinkModal] = useState(false);
+
+  const formResponseFlow = useForm<z.infer<typeof schemaResponseFlow>>({
+    resolver: zodResolver(schemaResponseFlow),
+    defaultValues: {
+      flowId: "0",
+      responseId: "0",
+      destinationFlowId: "0",
+    },
+  });
+
+  const submitFormResponseFlow = (data: z.infer<typeof schemaResponseFlow>) => {
+    mutateAsyncPostResponseFlow({
+      flowId: Number(data.flowId),
+      responseId: Number(data.responseId),
+      destinationFlowId:
+        data.destinationFlowId === "0" ? null : Number(data.destinationFlowId),
+    }).then(() => {
+      queryClient.invalidateQueries(["processes"]);
+      queryClient.invalidateQueries(["services"]);
+      toast.success("Vínculo criado com sucesso");
+      setOpenNewLinkModal(false);
+    });
+  };
+
+  useEffect(() => {
+    if (selectedNode) {
+      formResponseFlow.setValue("flowId", selectedNode.id);
+    }
+  }, [selectedNode]);
+
+  const { open, close } = useFlowUsersDialogContext();
 
   return (
     <>
@@ -467,7 +562,7 @@ function ProcessPage() {
             currentPath={[]}
             setCurrentPath={() => {}}
             buttons={
-              <div className='flex gap-4'>
+              <div className="flex gap-4">
                 <Button
                   disabled={isLoading}
                   loading={isLoading}
@@ -476,7 +571,7 @@ function ProcessPage() {
                     setOpenNewResponseModal(true);
                   }}
                 >
-                  <TextCursorInput className='size-5' />
+                  <TextCursorInput className="size-5" />
                   Criar Nova Resposta
                 </Button>
                 <Button
@@ -517,28 +612,110 @@ function ProcessPage() {
               Adicione uma nova opção de resposta para ser vinculada a uma etapa
             </DialogDescription>
           </DialogHeader>
-          <Form {...formResponse}>
-            <form onSubmit={formResponse.handleSubmit(submitFormResponse)}>
+          <Form {...formResponseFlow}>
+            <form
+              onSubmit={formResponseFlow.handleSubmit(submitFormResponseFlow)}
+            >
               <div className="pb-6 space-y-4">
                 <FormField
-                  control={formResponse.control}
-                  name="description"
+                  control={formResponseFlow.control}
+                  name="responseId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Descrição</FormLabel>
+                      <FormLabel>Descrição da Resposta</FormLabel>
                       <FormControl>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value.toString()}
+                        >
                           <SelectTrigger>
-                            <SelectValue placeholder={"Selecione uma opção de descrição"} />
+                            <SelectValue
+                              placeholder={"Selecione uma opção de descrição"}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Descrição</SelectLabel>
-                              {dataResponses?.map((response) => (
-                                <SelectItem key={response.id} value={response.id.toString()}>
-                                  {response.description}
-                                </SelectItem>
-                              ))}
+                              {dataResponses
+                                ?.filter((r) => {
+                                  let used = false;
+                                  dataProcess?.flows.forEach((flow) => {
+                                    flow.responseFlows.forEach(
+                                      (responseFlow) => {
+                                        if (responseFlow.response.id === r.id) {
+                                          used = true;
+                                        }
+                                      },
+                                    );
+                                  });
+
+                                  return !used;
+                                })
+                                ?.map((response) => (
+                                  <SelectItem
+                                    key={response.id}
+                                    value={response.id.toString()}
+                                  >
+                                    {response.description}
+                                  </SelectItem>
+                                ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formResponseFlow.control}
+                  name="destinationFlowId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fluxo Alvo</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value.toString()}
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={"Selecione um fluxo alvo"}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Fluxo</SelectLabel>
+                              <SelectItem value={"0"}>Nenhum</SelectItem>
+                              {dataProcess?.flows
+                                .filter((flow) => {
+                                  let show = true;
+
+                                  if (flow.id.toString() === selectedNode?.id) {
+                                    show = false;
+                                  }
+
+                                  if (
+                                    flow.order !==
+                                    Number(
+                                      selectedNode?.data.label.split(" - ")[0],
+                                    ) +
+                                      1
+                                  ) {
+                                    show = false;
+                                  }
+
+                                  return show;
+                                })
+                                .map((flow) => (
+                                  <SelectItem
+                                    key={flow.id}
+                                    value={flow.id.toString()}
+                                  >
+                                    {flow.activity.description}
+                                  </SelectItem>
+                                ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -583,7 +760,9 @@ function ProcessPage() {
                       <FormControl>
                         <Input
                           {...field}
-                          error={formResponse.formState.errors.description?.message}
+                          error={
+                            formResponse.formState.errors.description?.message
+                          }
                         />
                       </FormControl>
                       <FormDescription />
@@ -707,55 +886,28 @@ function ProcessPage() {
             <SheetTitle>Etapa</SheetTitle>
             <SheetDescription>{selectedNode?.data.label}</SheetDescription>
           </SheetHeader>
-          <div className="pt-4">
+          <div className="flex flex-col gap-2 pt-4">
+            <p className="text-lg font-semibold text-foreground">Vínculos</p>
             <DataTable columns={columns} data={connectedFlows} />
           </div>
           <div className="w-full flex flex-col gap-2">
-            <Popover>
-              <PopoverTrigger className="w-full">
-                <Button className="w-full flex gap-2" onClick={
-                  () => setOpenNewLinkModal(true)
-                }>
-                  <Waypoints className='size-5'/>
-                  Criar novo vínculo
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                {dataProcess?.flows
-                  .filter(
-                    (f) =>
-                      f.id != selectedNode?.id &&
-                      (f.order === dataProcess?.flows.find((flow) => flow.id.toString() === selectedNode?.id,)?.order + 1) &&
-                      !connectedFlows.find((flow) => flow.name === f.activity.description),
-                  )
-                  .map((flow) => (
-                    <Button
-                      variant="ghost"
-                      className="w-full"
-                      onClick={() => {
-                        mutateAsyncPostResponse({
-                          description: flow.activity.description,
-                        }).then((response) => {
-                          mutateAsyncPostResponseFlow({
-                            flowId: Number(selectedNode?.id),
-                            responseId: response,
-                            destinationFlowId: flow.id,
-                          }).then(() => {
-                            toast.success("Etapa vinculada com sucesso");
-                            queryClient.invalidateQueries(["processes"]);
-                            queryClient.invalidateQueries(["services"]);
-                            setBottomSheetOpen(false);
-                          });
-                        });
-                      }}
-                    >
-                      {flow.activity.description}
-                    </Button>
-                  ))}
-              </PopoverContent>
-            </Popover>
-            <Button variant='destructive' onClick={
-              () => {
+            <Button
+              className="w-full flex gap-2"
+              onClick={() => setOpenNewLinkModal(true)}
+            >
+              <Waypoints className="size-5" />
+              Criar novo vínculo
+            </Button>
+            <Button
+              className="w-full flex gap-2"
+              onClick={() => open(Number(selectedNode?.id))}
+            >
+              <Users className="size-5" />
+              Usuários Vinculados
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
                 mutateAsyncDeleteFlow({
                   idFlow: Number(selectedNode?.id),
                 }).then(() => {
@@ -763,14 +915,16 @@ function ProcessPage() {
                   queryClient.invalidateQueries(["processes"]);
                   queryClient.invalidateQueries(["services"]);
                   setMountTrigger(!mountTrigger);
-                setBottomSheetOpen(false);
-              });
-            }}>
-              Excluir
+                  setBottomSheetOpen(false);
+                });
+              }}
+            >
+              Excluir Etapa
             </Button>
           </div>
         </SheetContent>
       </Sheet>
+      <FlowUsersDialog />
     </>
   );
 }

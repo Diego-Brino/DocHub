@@ -79,16 +79,16 @@ function ServiceCard({
         <div className="flex gap-4 items-center justify-between">
           <h2 className="text-lg font-semibold">{service.description}</h2>
           <div className="flex gap-4 items-center">
-            {dataServiceProcesses && dataServiceProcesses.length == 0 && (
-              <Tooltip>
-                <TooltipTrigger>
-                  <AlertTriangle />
-                </TooltipTrigger>
-                <TooltipContent>
-                  Nenhum processo cadastrado para este fluxo
-                </TooltipContent>
-              </Tooltip>
-            )}
+            {/*{dataServiceProcesses && dataServiceProcesses.length == 0 && (*/}
+            {/*  <Tooltip>*/}
+            {/*    <TooltipTrigger>*/}
+            {/*      <AlertTriangle />*/}
+            {/*    </TooltipTrigger>*/}
+            {/*    <TooltipContent>*/}
+            {/*      Nenhum processo cadastrado para este fluxo*/}
+            {/*    </TooltipContent>*/}
+            {/*  </Tooltip>*/}
+            {/*)}*/}
             <Button
               size={`icon`}
               onClick={() => setIsOpen(true)}
