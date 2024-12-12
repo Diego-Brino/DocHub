@@ -18,6 +18,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
         SELECT a
           FROM Archive a
         WHERE a.id = :idArchive
+          AND a.resource.origin = 'GRUPO'
           AND (
                 EXISTS        (
                                 SELECT uc
@@ -51,6 +52,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
           FROM Archive a
         WHERE a.resource.group = :group
           AND a.folder IS NULL
+          AND a.resource.origin = 'GRUPO'
           AND (
                 EXISTS        (
                                 SELECT uc
@@ -84,6 +86,7 @@ public interface ArchiveRepository extends JpaRepository<Archive, Integer> {
           FROM Archive a
         WHERE a.resource.group = :group
           AND a.folder = :folder
+          AND a.resource.origin = 'GRUPO'
           AND (
                 EXISTS        (
                                 SELECT uc
