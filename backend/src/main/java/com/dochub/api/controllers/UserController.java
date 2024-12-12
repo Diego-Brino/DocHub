@@ -64,9 +64,10 @@ public class UserController {
             .body(flowService.getAllFlowsInProgressAssignedToUser(user.getId()));
     }
 
-    @GetMapping("/{id}/requests")
-    public ResponseEntity<List<RequestResponseDTO>> getRequests (@PathVariable("id") @NonNull final Integer id) {
-        final User user = userService.getById(id);
+    @GetMapping("/requests")
+    public ResponseEntity<List<RequestResponseDTO>> getRequests (@RequestHeader(Constants.AUTHORIZATION_HEADER) final String token) {
+        final String userEmail = jwtService.extractUserEmail(token);
+        final User user = userService.getByEmail(userEmail);
 
         return ResponseEntity
             .ok()
