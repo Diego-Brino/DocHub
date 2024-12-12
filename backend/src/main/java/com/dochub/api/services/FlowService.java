@@ -18,10 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -72,6 +69,12 @@ public class FlowService {
             .stream()
             .map(FlowResponseDTO::new)
             .collect(Collectors.toList());
+    }
+
+    public FlowResponseDTO getActualRequestFlow (final Integer requestId) {
+        final Optional<Flow> flow = flowRepository.findFlowByRequestId(requestId);
+
+        return flow.map(FlowResponseDTO::new).orElse(null);
     }
 
     @Transactional

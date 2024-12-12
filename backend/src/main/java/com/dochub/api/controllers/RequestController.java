@@ -1,5 +1,6 @@
 package com.dochub.api.controllers;
 
+import com.dochub.api.dtos.flow.FlowResponseDTO;
 import com.dochub.api.dtos.request.CreateRequestDTO;
 import com.dochub.api.dtos.request.RequestResponseDTO;
 import com.dochub.api.dtos.user_roles.UserRoleResponseDTO;
@@ -10,6 +11,7 @@ import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,7 @@ public class RequestController {
     private final UserRoleService userRoleService;
     private final ProcessService processService;
     private final RequestService requestService;
+    private final FlowService flowService;
 
     @GetMapping
     public ResponseEntity<List<RequestResponseDTO>> getAll () {
@@ -38,6 +41,13 @@ public class RequestController {
         return ResponseEntity
             .ok()
             .body(requestService.getDtoById(id));
+    }
+
+    @GetMapping("/{id}/actual-flow")
+    public ResponseEntity<FlowResponseDTO> getActualFlow (@PathVariable("id") @NonNull final Integer id) {
+        return ResponseEntity
+            .ok()
+            .body(flowService.getActualRequestFlow(id));
     }
 
     @PostMapping
