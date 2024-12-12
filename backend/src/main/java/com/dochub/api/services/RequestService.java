@@ -106,6 +106,17 @@ public class RequestService {
             .collect(Collectors.toList());
     }
 
+    public List<RequestResponseDTO> getAllRequestAssignedToUser (final Integer userId) {
+        final List<Request> requests = requestRepository
+            .findRequestByUser(userId)
+            .orElse(Collections.emptyList());
+
+        return requests
+            .stream()
+            .map(RequestResponseDTO::new)
+            .collect(Collectors.toList());
+    }
+
     public void setRequestAsFinished (final Integer requestId) {
         final Request request = getById(requestId);
 

@@ -34,5 +34,12 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     """)
     Optional<List<Request>> findByProcess_ServiceAndStatus_InProgress (Service service);
 
-    Optional<List<Request>> findByProcess_Service (Service service);
+    @Query("""
+        SELECT r
+          FROM Request r
+         JOIN Flow f ON ( f.process.id = r.process.id )
+         JOIN FlowUser fu ON ( fu.flow.id = f.id )
+        WHERE fu.user.id = :userId
+    """)
+    Optional<List<Request>> findRequestByUser (Integer userId);
 }

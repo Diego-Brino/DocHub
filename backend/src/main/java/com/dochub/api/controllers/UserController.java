@@ -1,6 +1,7 @@
 package com.dochub.api.controllers;
 
 import com.dochub.api.dtos.flow.FlowResponseDTO;
+import com.dochub.api.dtos.request.RequestResponseDTO;
 import com.dochub.api.dtos.user.UpdatePasswordDTO;
 import com.dochub.api.dtos.user.UpdateUserDTO;
 import com.dochub.api.dtos.user.UpdateUserResponseDTO;
@@ -8,6 +9,7 @@ import com.dochub.api.dtos.user.UserResponseDTO;
 import com.dochub.api.entities.User;
 import com.dochub.api.services.FlowService;
 import com.dochub.api.services.JwtService;
+import com.dochub.api.services.RequestService;
 import com.dochub.api.services.UserService;
 import com.dochub.api.utils.Constants;
 import jakarta.validation.Valid;
@@ -27,6 +29,7 @@ public class UserController {
     private final JwtService jwtService;
     private final UserService userService;
     private final FlowService flowService;
+    private final RequestService requestService;
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAll () {
@@ -59,6 +62,15 @@ public class UserController {
         return ResponseEntity
             .ok()
             .body(flowService.getAllFlowsInProgressAssignedToUser(user.getId()));
+    }
+
+    @GetMapping("/{id}/requests")
+    public ResponseEntity<List<RequestResponseDTO>> getRequests (@PathVariable("id") @NonNull final Integer id) {
+        final User user = userService.getById(id);
+
+        return ResponseEntity
+            .ok()
+            .body(requestService.getAllRequestAssignedToUser(user.getId()));
     }
 
     @PutMapping("/{id}")
